@@ -1,16 +1,24 @@
 import React, { FC } from "react";
-import "./App.css";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+
 import Container from "@material-ui/core/Container";
-import Header from "./containers/common/Header";
-import EventNameList from "./containers/Home/EventNameList";
+import Header from "containers/common/Header";
+import HomeMain from "containers/Home/HomeMain";
+import DetailsMain from "containers/Details/DetailsMain";
+import "./App.css";
 
 const App: FC = () => (
-  <div className="App">
+  <>
+    <Header />
     <Container>
-      <Header />
-      <EventNameList />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomeMain />} />
+          <Route path="details" element={<DetailsMain />} />
+        </Routes>
+      </BrowserRouter>
     </Container>
-  </div>
+  </>
 );
 
 export default App;
