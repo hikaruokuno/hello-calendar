@@ -1,10 +1,11 @@
 import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import ListItemText from "@material-ui/core/ListItemText";
+import { Event } from "services/hello-calendar/models/event";
 
-const EventName: FC = () => (
+const EventName: FC<{ event: Event }> = ({ event }) => (
   <Link to="/details">
-    <ListItemText primary="ひなフェス2022" />
+    <ListItemText primary={event.title} />
   </Link>
 );
 

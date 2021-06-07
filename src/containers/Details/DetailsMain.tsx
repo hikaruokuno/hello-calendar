@@ -3,7 +3,7 @@ import EventDetalsList from "components/common/list/EventDetalsList";
 
 const DetailsMain: FC = () => (
   <>
-    <h1>ひなフェス2022</h1>
+    {/* <h1>ひなフェス2022</h1> */}
     <EventDetalsList />
   </>
 );

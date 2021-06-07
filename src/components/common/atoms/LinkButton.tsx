@@ -1,19 +1,30 @@
 import React, { FC } from "react";
-import Button from "@material-ui/core/Button";
+// import Button from '@material-ui/core/Button';
 
 const LinkButton: FC = () => {
   const queries = new URLSearchParams();
   queries.set("action", "TEMPLATE");
-  queries.set("text", "『ひなフェス2022』公演日");
-  queries.set("details", "開場： 15：00 開演：16:00");
-  queries.set("location", "幕張メッセ 国際展示場1・2 ホール");
+  queries.set("text", "『title』");
   queries.set("dates", "20220327T160000/20220327T160000");
+  queries.set("ctz", "Asia/Tokyo");
+  // queries.set('details', '開場： 15：00 開演：16:00');
+  queries.set("location", "中野サンプラザ, 東京都中野区中野４丁目１−１");
+  // queries.set('action', 'TEMPLATE');
+  // queries.set('text', '『ひなフェス2022』');
+  // queries.set('dates', '20220327T160000/20220327T160000');
+  // queries.set('ctz', 'Asia/Tokyo');
+  // queries.set('details', '開場： 15：00 開演：16:00');
+  // queries.set('location', 'North Pole');
 
-  const url = `https://www.google.com/calendar/event?${queries.toString()}`;
+  // const url = `https://calendar.google.com/event?${queries.toString()}`;
+  // const url = `https://calendar.google.com/calendar/u/0/r/eventedit?${queries.toString()}`;
+  const url = `https://calendar.google.com/calendar/gp#~calendar:view=e&bm=1?${queries.toString()}`;
+  // const url = `https://calendar.google.com/calendar/render?${queries.toString()}`;
 
   return (
-    <a href={url}>
-      <Button size="small">Googleカレンダーに追加する</Button>
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      Add to Google Calendar
+      {/* <Button size="small">Add to Google Calendar</Button> */}
     </a>
   );
 };

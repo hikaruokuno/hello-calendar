@@ -1,22 +1,20 @@
 import React, { FC } from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
 import Container from "@material-ui/core/Container";
 import Header from "containers/common/Header";
-import HomeMain from "containers/Home/HomeMain";
 import DetailsMain from "containers/Details/DetailsMain";
 import "./App.css";
+import Home from "components/Home";
 
 const App: FC = () => (
   <>
     <Header />
     <Container>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomeMain />} />
-          <Route path="details" element={<DetailsMain />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="details" element={<DetailsMain />} />
+      </Routes>
     </Container>
   </>
 );
