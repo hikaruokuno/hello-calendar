@@ -17,7 +17,7 @@ export const events = functions
       const eventIds: string[] = [];
       await admin
         .firestore()
-        .collection('ticketInfo')
+        .collection('events')
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
@@ -35,10 +35,13 @@ export const events = functions
       await page.goto('https://www.up-fc.jp/helloproject/fanclub_Login.php');
       await page.type('input[name="User_No"]', loginInfo.userNo);
       await page.type('input[name="User_LoginPassword"]', loginInfo.password);
-      await page.click(
-        '#main > div.contents-body > div:nth-child(2) > div > table > tbody > tr:nth-child(2) > td > form > p:nth-child(5) > input[type=checkbox]'
-      );
-      await page.click('input[name="@Control_Name@"]');
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] }),
+        await page.click(
+          '#main > div.contents-body > div:nth-child(2) > div > table > tbody > tr:nth-child(2) > td > form > p:nth-child(5) > input[type=checkbox]'
+        ),
+        await page.click('input[name="@Control_Name@"]'),
+      ]);
       await sleep(1000);
       await page.goto(
         'https://www.up-fc.jp/helloproject/fan_AllEventTour_List.php'
@@ -46,36 +49,26 @@ export const events = functions
       await sleep(1000);
       // TODO: 現状、プロト作成のため期間を取得するのに、ループをたくさんしている
       // もっと良い方法（パフォーマンス的に）がないか検討する
-      interface TitleAndLink {
-        title: string;
-        link: string;
-      }
 
-      const titlesAndLinks: TitleAndLink[] = await page.evaluate(() => {
-        const dataList: TitleAndLink[] = [];
+      const links: string[] = await page.evaluate(() => {
+        const dataList: string[] = [];
         const nodeList: NodeListOf<HTMLBaseElement> =
           document.querySelectorAll('tr a');
 
         nodeList.forEach((_node) => {
           // 現在受付中ものの、リンクを取得する
           if (_node.innerText.indexOf('[受付中]') != -1) {
-            const acceptedTitlesAndLinks: TitleAndLink = {
-              title: _node.innerText.replace('[受付中]', ''),
-              link: _node.href,
-            };
-            dataList.push(acceptedTitlesAndLinks);
+            const acceptedLinks: string = _node.href;
+            dataList.push(acceptedLinks);
           }
         });
         return dataList;
       });
 
       // '受付中'の公演の数だけくり返す
-      for (const data of titlesAndLinks) {
+      for (const link of links) {
         // 申込期間、当落確認期間、入金締切日のページ
-        await page.goto(data.link);
-
-        // タイトルを取得する
-        const title: string = data.title;
+        await page.goto(link);
 
         // TODO：innerTextを取得してから申込期間を取得する？
         // 申込期間を取得する
@@ -125,129 +118,180 @@ export const events = functions
         });
 
         // 公演選択のページ
-        await page.click(
-          '#main > div.contents-body > div > p:nth-child(2) > a > img'
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] }),
+          await page.click(
+            '#main > div.contents-body > div > p:nth-child(2) > a > img'
+          ),
+        ]);
+        await sleep(1000);
+
+        // イベントに紐づく公演の種類の数だけくり返す
+
+        // const count: number = await page.evaluate(() => {
+        //   const typeOfPerformance: any = document.querySelectorAll(
+        //     'select[name="Event_ID"]'
+        //   )[0];
+        //   return typeOfPerformance.options.length;
+        // });
+        const count: number = await page.$eval(
+          'select[name="Event_ID"]',
+          (el: any) => el.length
         );
-        await sleep(1000);
 
-        const docNameEventId: string = await page.evaluate(() => {
-          const select: any = document.querySelectorAll(
-            'select[name="Event_ID"]'
-          )[0];
-          const eventId: string = select.options[1].value;
-          return eventId;
-        });
+        console.log(count);
 
-        if (eventIds.includes(docNameEventId)) {
-          return;
-        }
+        for (let i = 1; i < count; i++) {
+          // const typeOfPerformance: any = await page.evaluateHandle(() => {
+          //   return Array.from(
+          //     document.querySelectorAll('select[name="Event_ID"]')
+          //   ).map((option) => option);
+          // });
+          await page.waitForSelector('select[name="Event_ID"] option');
 
-        // 公演を選択して、公演開催日のページへ
-        const selectPerformance = await page.evaluate(() => {
-          const select: any = document.querySelectorAll(
-            'select[name="Event_ID"]'
-          )[0];
-          select.options[1].selected = true;
-        });
-        await selectPerformance;
-        await page.click('input[name="@Control_Name@"]');
-        await sleep(1000);
-
-        interface PerfomanceInfo {
-          performanceDay: string;
-          meetingPlace: string;
-          openingTime: string;
-          startTime: string;
-        }
-
-        // 公演の数だけループして、公演の情報を取得する
-        const performances: PerfomanceInfo[] = await page.evaluate(() => {
-          const formEntry: NodeListOf<HTMLBaseElement> =
-            document.querySelectorAll('form[name="form_Entry"]');
-          const performances = [];
-          for (let i = 0; i < formEntry.length; i++) {
-            const tableInfo: NodeListOf<HTMLBaseElement> =
-              formEntry[i].querySelectorAll('table tbody tr td');
-            const performanceDay: string = '公演日: '.concat(
-              tableInfo[2].innerText
+          const child: number = i + 1;
+          const title: string = await page.evaluate((child: number) => {
+            const option: any = document.querySelector(
+              '#main > div.contents-body > div > div > form > select > option:nth-child(' +
+                child +
+                ')'
             );
-            const meetingPlace: string = '会場: '.concat(
-              tableInfo[3].innerText.replace('\n', ' ')
+            return option.innerText;
+          }, child);
+          console.log('title', title);
+          const eventId: string = await page.evaluate((child: number) => {
+            const option: any = document.querySelector(
+              '#main > div.contents-body > div > div > form > select > option:nth-child(' +
+                child +
+                ')'
             );
-            const openingTime: string = tableInfo[4].innerText.replace(
-              '\n',
-              ': '
-            );
-            const startTime: string = tableInfo[5].innerText.replace(
-              '\n',
-              ': '
-            );
+            return option.value;
+          }, child);
+          console.log('eventId', eventId);
 
-            const performanceInfo: PerfomanceInfo = {
-              performanceDay: performanceDay,
-              meetingPlace: meetingPlace,
-              openingTime: openingTime,
-              startTime: startTime,
-            };
-            performances.push(performanceInfo);
+          if (eventIds.includes(eventId)) {
+            return;
           }
-          return performances;
-        });
 
-        interface TicketInfo {
-          id: string;
-          title: string;
-          applicationPeriod: string;
-          confirmPeriodForWinAndLose: string;
-          depositDeadline: string;
-          status: number;
+          // 公演を選択して、公演開催日のページへ
+          const selectPerformance = await page.evaluate((i: number) => {
+            const select: any = document.querySelectorAll(
+              'select[name="Event_ID"]'
+            )[0];
+            select.options[i].selected = true;
+          }, i);
+          await selectPerformance;
+          await Promise.all([
+            page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] }),
+            await page.click('input[name="@Control_Name@"]'),
+          ]);
+          await sleep(1000);
+
+          interface EventDetails {
+            id: string;
+            title: string;
+            performanceDay: string;
+            meetingPlace: string;
+            openingTime: string;
+            startTime: string;
+          }
+
+          // 公演の数だけループして、公演の情報を取得する
+          const eventDetails: EventDetails[] = await page.evaluate(
+            (eventId: string, title: string) => {
+              const formEntry: NodeListOf<HTMLBaseElement> =
+                document.querySelectorAll('form[name="form_Entry"]');
+              const eventDetails = [];
+              for (let i = 0; i < formEntry.length; i++) {
+                const tableInfo: NodeListOf<HTMLBaseElement> =
+                  formEntry[i].querySelectorAll('table tbody tr td');
+                const performanceDay: string = '公演日: '.concat(
+                  tableInfo[2].innerText
+                );
+                const meetingPlace: string = '会場: '.concat(
+                  tableInfo[3].innerText.replace('\n', ' ')
+                );
+                const openingTime: string = tableInfo[4].innerText.replace(
+                  '\n',
+                  ': '
+                );
+                const startTime: string = tableInfo[5].innerText.replace(
+                  '\n',
+                  ': '
+                );
+
+                const eventDetail: EventDetails = {
+                  id: eventId,
+                  title: title,
+                  performanceDay: performanceDay,
+                  meetingPlace: meetingPlace,
+                  openingTime: openingTime,
+                  startTime: startTime,
+                };
+                eventDetails.push(eventDetail);
+              }
+              return eventDetails;
+            },
+            eventId,
+            title
+          );
+
+          interface Event {
+            id: string;
+            title: string;
+            applicationPeriod: string;
+            confirmPeriodForWinAndLose: string;
+            depositDeadline: string;
+            status: number;
+          }
+
+          const event: Event = {
+            id: eventId,
+            title: title,
+            applicationPeriod: getApplicationPeriod,
+            confirmPeriodForWinAndLose:
+              getConfirmationPeriodForWinningAndLosing,
+            depositDeadline: getDepositDeadline,
+            status: 1,
+          };
+
+          console.log('タイトル： ', title);
+          console.log('申込期間： ', getApplicationPeriod);
+          console.log(
+            '当落確認期間： ',
+            getConfirmationPeriodForWinningAndLosing
+          );
+          console.log('入金締切日： ', getDepositDeadline);
+
+          // TODO: ドルdocNameほにゃららとしなくても動くか確認する
+          const ticketInfoRef = admin
+            .firestore()
+            .collection('events')
+            .doc(eventId);
+          ticketInfoRef.set(event);
+
+          eventDetails.map((detail, index) => {
+            ticketInfoRef
+              .collection('eventDetails')
+              .doc(eventId + '-' + index)
+              .set(detail)
+              .then(function () {
+                console.log(
+                  'Document successfully written!',
+                  ' eventId: ',
+                  eventId
+                );
+              })
+              .catch(function (error) {
+                console.error(
+                  'Error writing document: ',
+                  ' eventId: ',
+                  eventId,
+                  error
+                );
+              });
+          });
         }
-
-        const ticketInfo: TicketInfo = {
-          id: docNameEventId,
-          title: title,
-          applicationPeriod: getApplicationPeriod,
-          confirmPeriodForWinAndLose: getConfirmationPeriodForWinningAndLosing,
-          depositDeadline: getDepositDeadline,
-          status: 1,
-        };
-
-        console.log('タイトル： ', title);
-        console.log('申込期間： ', getApplicationPeriod);
-        console.log(
-          '当落確認期間： ',
-          getConfirmationPeriodForWinningAndLosing
-        );
-        console.log('入金締切日： ', getDepositDeadline);
-
-        // TODO: ドルdocNameほにゃららとしなくても動くか確認する
-        const ticketInfoRef = admin
-          .firestore()
-          .collection('ticketInfo')
-          .doc(docNameEventId);
-        ticketInfoRef.set(ticketInfo);
-
-        performances.map((performance, index) => {
-          ticketInfoRef
-            .collection('performances')
-            .doc(docNameEventId + '-' + index)
-            .set(performance)
-            .then(function () {
-              console.log(
-                'Document successfully written!',
-                ' eventId: ',
-                docNameEventId
-              );
-            })
-            .catch(function (error) {
-              console.error(
-                'Error writing document: ',
-                ' eventId: ',
-                docNameEventId,
-                error
-              );
-            });
-        });
       }
       await browser.close();
     })();
