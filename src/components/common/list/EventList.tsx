@@ -21,7 +21,6 @@ const EventList: FC<{ events: Event[] }> = ({ events }) => {
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-        {/* <ListItem button>{events}</ListItem> */}
         {events.map((event) => (
           <ListItem button key={event.id}>
             <EventName event={event} />

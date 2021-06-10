@@ -3,8 +3,9 @@ import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
-import EventDetail from "../atoms/EventDetail";
-import LinkButton from "../atoms/LinkButton";
+import EventDetailText from "components/common/atoms/EventDetailText";
+import AddCalendarButton from "components/Details/AddCalendarButton";
+import { EventDetail } from "services/hello-calendar/models/eventDetail";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,16 +16,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EventDetalsList: FC = () => {
+const EventDetalsList: FC<{ eventDetails: EventDetail[] }> = ({
+  eventDetails,
+}) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-        <ListItem>
-          <EventDetail />
-        </ListItem>
-        <LinkButton />
+        {eventDetails.map((detail) => (
+          <>
+            <ListItem key={detail.id}>
+              <EventDetailText detail={detail} />
+            </ListItem>
+            <AddCalendarButton detail={detail} />
+          </>
+        ))}
       </List>
       <Divider />
     </div>

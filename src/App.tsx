@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router";
 
 import Container from "@material-ui/core/Container";
 import Header from "containers/common/Header";
-import DetailsMain from "containers/Details/DetailsMain";
+import EventDetailsMain from "containers/Details/EventDetailMain";
 import "./App.css";
 import Home from "components/Home";
 
@@ -13,7 +13,7 @@ const App: FC = () => (
     <Container>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="details" element={<DetailsMain />} />
+        <Route path="/details/:eventId" element={<EventDetailsMain />} />
       </Routes>
     </Container>
   </>
