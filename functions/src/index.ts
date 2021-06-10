@@ -17,7 +17,7 @@ export const events = functions
       const eventIds: string[] = [];
       await admin
         .firestore()
-        .collection('events')
+        .collection('hEvents')
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
@@ -191,49 +191,62 @@ export const events = functions
             id: string;
             title: string;
             performanceDay: string;
-            meetingPlace: string;
+            performer: string | null;
+            venue: string;
             openingTime: string;
-            startTime: string;
+            showTime: string;
           }
+
+          // 出演者を取得する
+          const getPerformer: string | null = await page.evaluate(() => {
+            const selector: NodeListOf<HTMLBaseElement> =
+              document.querySelectorAll('.Note5');
+            const text = selector[0].innerText;
+
+            if (text.indexOf('出演：') != -1) {
+              const start = text.indexOf('出演：') + 3;
+              const end = text.substring(start).indexOf('\n');
+              return text.substring(start).substring(0, end);
+            }
+            return null;
+          });
 
           // 公演の数だけループして、公演の情報を取得する
           const eventDetails: EventDetails[] = await page.evaluate(
-            (eventId: string, title: string) => {
+            (eventId: string, title: string, performer: string | null) => {
               const formEntry: NodeListOf<HTMLBaseElement> =
                 document.querySelectorAll('form[name="form_Entry"]');
               const eventDetails = [];
               for (let i = 0; i < formEntry.length; i++) {
                 const tableInfo: NodeListOf<HTMLBaseElement> =
                   formEntry[i].querySelectorAll('table tbody tr td');
-                const performanceDay: string = '公演日: '.concat(
-                  tableInfo[2].innerText
-                );
-                const meetingPlace: string = '会場: '.concat(
-                  tableInfo[3].innerText.replace('\n', ' ')
-                );
+                const performanceDay: string = tableInfo[2].innerText;
+                const venue: string = tableInfo[3].innerText.replace('\n', ' ');
                 const openingTime: string = tableInfo[4].innerText.replace(
-                  '\n',
-                  ': '
+                  '開場\n',
+                  ''
                 );
-                const startTime: string = tableInfo[5].innerText.replace(
-                  '\n',
-                  ': '
+                const showTime: string = tableInfo[5].innerText.replace(
+                  '開演\n',
+                  ''
                 );
 
                 const eventDetail: EventDetails = {
                   id: eventId,
                   title: title,
                   performanceDay: performanceDay,
-                  meetingPlace: meetingPlace,
+                  performer: performer,
+                  venue: venue,
                   openingTime: openingTime,
-                  startTime: startTime,
+                  showTime: showTime,
                 };
                 eventDetails.push(eventDetail);
               }
               return eventDetails;
             },
             eventId,
-            title
+            title,
+            getPerformer
           );
 
           interface Event {
@@ -266,7 +279,7 @@ export const events = functions
           // TODO: ドルdocNameほにゃららとしなくても動くか確認する
           const ticketInfoRef = admin
             .firestore()
-            .collection('events')
+            .collection('hEvents')
             .doc(eventId);
           ticketInfoRef.set(event);
 
