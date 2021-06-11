@@ -18,7 +18,8 @@ const useEventDetails = (id: string) => {
     const collection = db
       .collection("hEvents")
       .doc(id)
-      .collection("eventDetails");
+      .collection("eventDetails")
+      .orderBy("performanceDate", "asc");
 
     const load = async () => {
       setLoading(true);

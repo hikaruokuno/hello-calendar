@@ -14,7 +14,7 @@ const useEvents = () => {
     if (!db) throw new Error("Firestore is not initialized");
 
     // TODO: ひきすうにファンクラブの種別をもらい、M-lineとの切り替えできるようにする
-    const query = db.collection("hEvents");
+    const query = db.collection("hEvents").orderBy("id", "desc");
 
     const load = async () => {
       setLoading(true);

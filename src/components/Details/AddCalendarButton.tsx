@@ -27,11 +27,6 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
     <>
       <LinkButton
         url={`https://calendar.google.com/calendar/u/0/r/eventedit?${queries.toString()}`}
-        device="PC"
-      />
-      <LinkButton
-        url={`https://calendar.google.com/calendar/gp#~calendar:view=e&bm=1?${queries.toString()}`}
-        device="スマホ"
       />
     </>
   );
