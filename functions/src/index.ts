@@ -4,6 +4,8 @@ const puppeteer = require('puppeteer');
 // import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import firebase from 'firebase/app';
+import { parseFromTimeZone } from 'date-fns-timezone';
 
 admin.initializeApp();
 // TODO:当落確認期間と、受付終了しているもののステータスを更新する
@@ -89,33 +91,205 @@ export const events = functions
           return applicationPeriod;
         });
 
-        // 当選落選確認期間を取得する
-        const getConfirmationPeriodForWinningAndLosing: string =
-          await page.evaluate(() => {
-            const tableInfo: NodeListOf<HTMLBaseElement> = document
-              .querySelectorAll('table')[1]
-              .querySelectorAll('tbody tr td');
-            const tableText: string = tableInfo[1].innerText;
-            const numberOfCharactersToTheFirstLineBreak: number =
-              tableText.indexOf('\n', 0);
-            const winningAndLosingPeriod: string = tableText.substr(
+        // 申込開始日、終了日を取得する
+        type ApplyPeriod = {
+          applyStartDate: string;
+          applyEndDate: string;
+        };
+
+        const getApplyPeriod: ApplyPeriod = await page.evaluate(
+          (getApplicationPeriod: string) => {
+            // TODO: 文字列操作を関数化して外だしする方法を調査する
+            // 　⇛　evaluate内ではモジュールは使えない
+            const applyPeriodText = getApplicationPeriod
+              .replace(/[年月日時月火水木金土日まで]/g, '')
+              .replaceAll('（）', '')
+              .replace(/\s+/g, '');
+
+            const start = applyPeriodText.substring(
               0,
-              numberOfCharactersToTheFirstLineBreak
+              applyPeriodText.indexOf('～')
             );
-            return winningAndLosingPeriod;
-          });
+            const startDateStr =
+              start.substring(0, 4) +
+              '-' +
+              start.substring(4, 6) +
+              '-' +
+              start.substring(6, 8) +
+              ' ' +
+              start.substring(8, 10) +
+              ':00:00';
+
+            const end = applyPeriodText.substring(
+              applyPeriodText.indexOf('～') + 1
+            );
+            const endDateStr =
+              end.substring(0, 4) +
+              '-' +
+              end.substring(4, 6) +
+              '-' +
+              end.substring(6, 8) +
+              ' ' +
+              end.substring(8, 10) +
+              ':00:00';
+
+            const applyPeriod: ApplyPeriod = {
+              applyStartDate: startDateStr,
+              applyEndDate: endDateStr,
+            };
+
+            return applyPeriod;
+          },
+          getApplicationPeriod
+        );
+        console.log(getApplyPeriod.applyStartDate);
+        console.log(getApplyPeriod.applyEndDate);
+
+        const applyStartDate = parseFromTimeZone(
+          getApplyPeriod.applyStartDate,
+          {
+            timeZone: 'Asia/Tokyo',
+          }
+        );
+
+        const applyEndDate = parseFromTimeZone(getApplyPeriod.applyEndDate, {
+          timeZone: 'Asia/Tokyo',
+        });
+
+        // 当選落選確認期間を取得する
+        const getConfirmationPeriod: string = await page.evaluate(() => {
+          const tableInfo: NodeListOf<HTMLBaseElement> = document
+            .querySelectorAll('table')[1]
+            .querySelectorAll('tbody tr td');
+          const tableText: string = tableInfo[1].innerText;
+          const numberOfCharactersToTheFirstLineBreak: number =
+            tableText.indexOf('\n', 0);
+          const winningAndLosingPeriod: string = tableText.substr(
+            0,
+            numberOfCharactersToTheFirstLineBreak
+          );
+          return winningAndLosingPeriod;
+        });
+
+        // 当落確認開始日、終了日を取得する
+        type ConfirmPeriod = {
+          confirmStartDate: string;
+          confirmEndDate: string;
+        };
+
+        const getConfirmPeriod: ConfirmPeriod = await page.evaluate(
+          (getConfirmationPeriod: string) => {
+            // TODO: 文字列操作を関数化して外だしする方法を調査する
+            const confirmPeriodText = getConfirmationPeriod
+              .replace(/[年月日時月火水木金土日まで]/g, '')
+              .replaceAll('（）', '')
+              .replace(/\s+/g, '');
+
+            const start = confirmPeriodText.substring(
+              0,
+              confirmPeriodText.indexOf('～')
+            );
+            const startDateStr =
+              start.substring(0, 4) +
+              '-' +
+              start.substring(4, 6) +
+              '-' +
+              start.substring(6, 8) +
+              ' ' +
+              start.substring(8, 10) +
+              ':00:00';
+
+            const end = confirmPeriodText.substring(
+              confirmPeriodText.indexOf('～') + 1
+            );
+            const endDateStr =
+              end.substring(0, 4) +
+              '-' +
+              end.substring(4, 6) +
+              '-' +
+              end.substring(6, 8) +
+              ' ' +
+              end.substring(8, 10) +
+              ':00:00';
+
+            const confirmPeriod: ConfirmPeriod = {
+              confirmStartDate: startDateStr,
+              confirmEndDate: endDateStr,
+            };
+
+            return confirmPeriod;
+          },
+          getConfirmationPeriod
+        );
+        console.log(getConfirmPeriod.confirmStartDate);
+        console.log(getConfirmPeriod.confirmEndDate);
+
+        const confirmStartDate = parseFromTimeZone(
+          getConfirmPeriod.confirmStartDate,
+          {
+            timeZone: 'Asia/Tokyo',
+          }
+        );
+
+        const confirmEndDate = parseFromTimeZone(
+          getConfirmPeriod.confirmEndDate,
+          {
+            timeZone: 'Asia/Tokyo',
+          }
+        );
 
         // 入金締切日を取得する
-        const getDepositDeadline: string = await page.evaluate(() => {
+        const getPaymentDate: string = await page.evaluate(() => {
           const tdSelector: NodeListOf<HTMLBaseElement> = document
             .querySelectorAll('table')[1]
             .querySelectorAll('tbody tr td');
-          const tableText: string =
-            tdSelector.length > 3 ? tdSelector[3].innerText : ' 当日入金';
-          // const numberOfCharactersToTheFirstLineBreak = tableText.indexOf('\n', 0);
-          const depositDeadline: string = tableText.substr(1);
+
+          let tableText = '';
+          if (tdSelector.length === 3) {
+            tableText = '当日支払い';
+          } else if (tdSelector.length === 4) {
+            tableText = tdSelector[2].innerText;
+          } else if (tdSelector.length === 5) {
+            tableText = tdSelector[3].innerText;
+          }
+          const depositDeadline = tableText.replace(/\s+/g, '');
+
           return depositDeadline;
         });
+
+        const getPayDate: string = await page.evaluate(
+          (getPaymentDate: string) => {
+            if (getPaymentDate === '当日支払い') {
+              return '';
+            }
+
+            const paymentDateText = getPaymentDate
+              .replace(/[年月日月火水木金土]/g, '')
+              .replaceAll('（）', '');
+
+            const paymentDateStr =
+              paymentDateText.substring(0, 4) +
+              '-' +
+              paymentDateText.substring(4, 6) +
+              '-' +
+              paymentDateText.substring(6, 8) +
+              ' ' +
+              '00:00:00';
+
+            return paymentDateStr;
+          },
+          getPaymentDate
+        );
+
+        console.log('getPayDate', getPayDate);
+
+        const payDate =
+          getPayDate !== ''
+            ? parseFromTimeZone(getPayDate, {
+                timeZone: 'Asia/Tokyo',
+              })
+            : null;
+        console.log('payDate', payDate);
 
         // 公演選択のページ
         await Promise.all([
@@ -156,7 +330,14 @@ export const events = functions
                 child +
                 ')'
             );
-            return option.innerText;
+
+            const text = option.innerText;
+
+            if (text.substring(0, 1) === '【') {
+              return text.substring(text.indexOf('】') + 1);
+            }
+
+            return text;
           }, child);
           console.log('title', title);
           const eventId: string = await page.evaluate((child: number) => {
@@ -170,7 +351,7 @@ export const events = functions
           console.log('eventId', eventId);
 
           if (eventIds.includes(eventId)) {
-            return;
+            continue;
           }
 
           // 公演を選択して、公演開催日のページへ
@@ -192,9 +373,13 @@ export const events = functions
             title: string;
             performanceDay: string;
             performer: string | null;
+            mc: string | null;
             venue: string;
             openingTime: string;
             showTime: string;
+            performanceDate: firebase.firestore.Timestamp | null;
+            createdAt: firebase.firestore.FieldValue | null;
+            updatedAt: firebase.firestore.FieldValue | null;
           }
 
           // 出演者を取得する
@@ -211,9 +396,28 @@ export const events = functions
             return null;
           });
 
+          // MCを取得する
+          const getMc: string | null = await page.evaluate(() => {
+            const selector: NodeListOf<HTMLBaseElement> =
+              document.querySelectorAll('.Note5');
+            const text = selector[0].innerText;
+
+            if (text.indexOf('MC：') != -1) {
+              const start = text.indexOf('MC：') + 3;
+              const end = text.substring(start).indexOf('\n');
+              return text.substring(start).substring(0, end);
+            }
+            return null;
+          });
+
           // 公演の数だけループして、公演の情報を取得する
           const eventDetails: EventDetails[] = await page.evaluate(
-            (eventId: string, title: string, performer: string | null) => {
+            (
+              eventId: string,
+              title: string,
+              performer: string | null,
+              mc: string | null
+            ) => {
               const formEntry: NodeListOf<HTMLBaseElement> =
                 document.querySelectorAll('form[name="form_Entry"]');
               const eventDetails = [];
@@ -236,9 +440,13 @@ export const events = functions
                   title: title,
                   performanceDay: performanceDay,
                   performer: performer,
+                  mc: mc,
                   venue: venue,
                   openingTime: openingTime,
                   showTime: showTime,
+                  performanceDate: null,
+                  createdAt: null,
+                  updatedAt: null,
                 };
                 eventDetails.push(eventDetail);
               }
@@ -246,37 +454,50 @@ export const events = functions
             },
             eventId,
             title,
-            getPerformer
+            getPerformer,
+            getMc
           );
 
           interface Event {
             id: string;
             title: string;
-            applicationPeriod: string;
-            confirmPeriodForWinAndLose: string;
-            depositDeadline: string;
+            applyPeriodStr: string;
+            confirmPeriodStr: string;
+            paymentDateStr: string;
             status: number;
+            applyStartDate: firebase.firestore.Timestamp | null;
+            applyEndDate: firebase.firestore.Timestamp | null;
+            confirmStartDate: firebase.firestore.Timestamp | null;
+            confirmEndDate: firebase.firestore.Timestamp | null;
+            paymentDate: firebase.firestore.Timestamp | null;
+            createdAt: firebase.firestore.FieldValue | null;
+            updatedAt: firebase.firestore.FieldValue | null;
           }
 
           const event: Event = {
             id: eventId,
             title: title,
-            applicationPeriod: getApplicationPeriod,
-            confirmPeriodForWinAndLose:
-              getConfirmationPeriodForWinningAndLosing,
-            depositDeadline: getDepositDeadline,
+            applyPeriodStr: getApplicationPeriod,
+            confirmPeriodStr: getConfirmationPeriod,
+            paymentDateStr: getPaymentDate,
             status: 1,
+            applyStartDate: admin.firestore.Timestamp.fromDate(applyStartDate),
+            applyEndDate: admin.firestore.Timestamp.fromDate(applyEndDate),
+            confirmStartDate:
+              admin.firestore.Timestamp.fromDate(confirmStartDate),
+            confirmEndDate: admin.firestore.Timestamp.fromDate(confirmEndDate),
+            paymentDate: payDate
+              ? admin.firestore.Timestamp.fromDate(payDate)
+              : payDate,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
           };
 
           console.log('タイトル： ', title);
           console.log('申込期間： ', getApplicationPeriod);
-          console.log(
-            '当落確認期間： ',
-            getConfirmationPeriodForWinningAndLosing
-          );
-          console.log('入金締切日： ', getDepositDeadline);
+          console.log('当落確認期間： ', getConfirmationPeriod);
+          console.log('入金締切日： ', getPaymentDate);
 
-          // TODO: ドルdocNameほにゃららとしなくても動くか確認する
           const ticketInfoRef = admin
             .firestore()
             .collection('hEvents')
@@ -284,6 +505,22 @@ export const events = functions
           ticketInfoRef.set(event);
 
           eventDetails.map((detail, index) => {
+            const formatPerformDay = detail.performanceDay
+              .replace('/', '-')
+              .replace('/', '-')
+              .replace(/[月火水木金土日]/g, '')
+              .replace('()', '');
+            const formatShowTime = detail.showTime + ':00';
+            const performanceDate = formatPerformDay + ' ' + formatShowTime;
+
+            const performanceDateStr = parseFromTimeZone(performanceDate, {
+              timeZone: 'Asia/Tokyo',
+            });
+            detail.performanceDate =
+              admin.firestore.Timestamp.fromDate(performanceDateStr);
+            detail.createdAt = admin.firestore.FieldValue.serverTimestamp();
+            detail.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+
             ticketInfoRef
               .collection('eventDetails')
               .doc(eventId + '-' + index)
