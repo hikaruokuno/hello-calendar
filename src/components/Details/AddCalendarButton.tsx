@@ -6,7 +6,14 @@ import getDates from "components/item-tools";
 const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
   const queries = new URLSearchParams();
   queries.set("action", "TEMPLATE");
-  queries.set("text", `『${detail.title}』公演日`);
+  if (detail.title.substring(0, 1) === "【") {
+    queries.set(
+      "text",
+      `『${detail.title.substring(detail.title.indexOf("】") + 1)}』公演日`
+    );
+  } else {
+    queries.set("text", `『${detail.title}』公演日`);
+  }
   queries.set("dates", getDates(detail.performanceDay, detail.showTime));
   queries.set("ctz", "Asia/Tokyo");
 
