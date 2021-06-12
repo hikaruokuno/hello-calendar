@@ -12,10 +12,12 @@ admin.initializeApp();
 export const events = functions
   .region('asia-northeast1')
   .runWith({
-    timeoutSeconds: 300,
+    timeoutSeconds: 120,
     memory: '2GB',
   })
-  .https.onRequest(async (req, res) => {
+  .pubsub.schedule('0,5,10,15,30,45 10,12,15-20 * * 1-5')
+  .timeZone('Asia/Tokyo')
+  .onRun(async () => {
     (async () => {
       const eventIds: string[] = [];
       await admin
