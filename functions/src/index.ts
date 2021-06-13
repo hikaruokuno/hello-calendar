@@ -434,6 +434,7 @@ export const events = functions
 
           interface Event {
             id: string;
+            type: string;
             title: string;
             applyPeriodStr: string;
             confirmPeriodStr: string;
@@ -450,6 +451,7 @@ export const events = functions
 
           const event: Event = {
             id: eventId,
+            type: 'hello',
             title: title,
             applyPeriodStr: getApplicationPeriod,
             confirmPeriodStr: getConfirmationPeriod,
@@ -925,6 +927,7 @@ export const events = functions
 
           interface Event {
             id: string;
+            type: string;
             title: string;
             applyPeriodStr: string;
             confirmPeriodStr: string;
@@ -941,6 +944,7 @@ export const events = functions
 
           const event: Event = {
             id: eventId,
+            type: 'mline',
             title: title,
             applyPeriodStr: getApplicationPeriod,
             confirmPeriodStr: getConfirmationPeriod,
