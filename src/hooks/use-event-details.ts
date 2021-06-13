@@ -1,13 +1,15 @@
-import FirebaseContext from "contexts";
+import { FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 
-const useEventDetails = (id: string) => {
+const useEventDetails = (type: string, id: string) => {
   const [title, setTitle] = useState("");
   const [performer, setPerformer] = useState<string | null>("");
   const [eventDetails, setEventDetails] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  const collectionName = type === "hello" ? "hEvents" : "mEvents";
 
   const firebaseRef = useRef(useContext(FirebaseContext));
 
@@ -16,7 +18,7 @@ const useEventDetails = (id: string) => {
     if (!db) throw new Error("Firestore is not initialized");
 
     const collection = db
-      .collection("hEvents")
+      .collection(collectionName)
       .doc(id)
       .collection("eventDetails")
       .orderBy("performanceDate", "asc");
@@ -43,7 +45,7 @@ const useEventDetails = (id: string) => {
     load().catch((err) => {
       console.error(err);
     });
-  }, [id]);
+  }, [id, collectionName]);
 
   return { title, performer, eventDetails, loading, error };
 };

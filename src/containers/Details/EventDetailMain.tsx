@@ -4,8 +4,11 @@ import { useParams } from "react-router";
 import useEventDetails from "hooks/use-event-details";
 
 const EventDetailsMainContainer: FC = () => {
-  const { eventId } = useParams();
-  const { title, performer, eventDetails, loading } = useEventDetails(eventId);
+  const { type, eventId } = useParams();
+  const { title, performer, eventDetails, loading } = useEventDetails(
+    type,
+    eventId
+  );
 
   return (
     <EventDetailsMain

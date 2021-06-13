@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
+import { EventTypeContext } from "contexts";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
@@ -13,6 +14,7 @@ const useStyles = makeStyles({
 const CenteredTabs: FC = () => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const { type, setType } = useContext(EventTypeContext);
 
   const handleChange = (event: React.ChangeEvent<any>, newValue: number) => {
     setValue(newValue);
@@ -21,14 +23,14 @@ const CenteredTabs: FC = () => {
   return (
     <Paper className={classes.root}>
       <Tabs
-        value={value}
+        value={type === "mEvents" ? 1 : value}
         onChange={handleChange}
         indicatorColor="primary"
         textColor="primary"
         centered
       >
-        <Tab label="ハロプロ" />
-        <Tab label="M-line" />
+        <Tab label="ハロプロ" onClick={() => setType("hEvents")} />
+        <Tab label="M-line" onClick={() => setType("mEvents")} />
       </Tabs>
     </Paper>
   );

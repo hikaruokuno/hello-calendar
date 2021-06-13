@@ -7,8 +7,16 @@ type FirebaseContextValue = {
   db: firebase.firestore.Firestore | null;
 };
 
-const FirebaseContext = createContext<FirebaseContextValue>({
+export const FirebaseContext = createContext<FirebaseContextValue>({
   db: null,
 });
 
-export default FirebaseContext;
+type EventTypeContextValue = {
+  type: string;
+  setType: (type: string) => void;
+};
+
+export const EventTypeContext = createContext<EventTypeContextValue>({
+  type: "hEvents",
+  setType: () => undefined,
+});

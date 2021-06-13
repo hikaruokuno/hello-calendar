@@ -1,8 +1,8 @@
-import FirebaseContext from "contexts";
+import { FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Event } from "services/hello-calendar/models/event";
 
-const useEvents = () => {
+const useEvents = (type: string) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -13,8 +13,7 @@ const useEvents = () => {
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
-    // TODO: ひきすうにファンクラブの種別をもらい、M-lineとの切り替えできるようにする
-    const query = db.collection("hEvents").orderBy("id", "desc");
+    const query = db.collection(type).orderBy("id", "desc");
 
     const load = async () => {
       setLoading(true);
@@ -36,7 +35,7 @@ const useEvents = () => {
     load().catch((err) => {
       console.error(err);
     });
-  }, []);
+  }, [type]);
 
   return { events, loading, error };
 };

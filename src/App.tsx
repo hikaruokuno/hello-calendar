@@ -13,7 +13,7 @@ const App: FC = () => (
     <Container>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/details/:eventId" element={<EventDetailsMain />} />
+        <Route path="details/:type/:eventId" element={<EventDetailsMain />} />
       </Routes>
     </Container>
   </>
