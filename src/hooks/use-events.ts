@@ -3,8 +3,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Event } from "services/hello-calendar/models/event";
 
 const useEvents = (type: string) => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [mainEvents, setEvents] = useState<Event[]>([]);
+  const [mainLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const firebaseRef = useRef(useContext(FirebaseContext));
@@ -37,7 +37,7 @@ const useEvents = (type: string) => {
     });
   }, [type]);
 
-  return { events, loading, error };
+  return { mainEvents, mainLoading, error };
 };
 
 export default useEvents;

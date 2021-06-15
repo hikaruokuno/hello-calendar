@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EventDetalsList: FC<{ eventDetails: EventDetail[] }> = ({
+const EventDetalsList: FC<{ title: string; eventDetails: EventDetail[] }> = ({
+  title,
   eventDetails,
 }) => {
   const classes = useStyles();
@@ -29,7 +30,7 @@ const EventDetalsList: FC<{ eventDetails: EventDetail[] }> = ({
             <ListItem key={detail.id}>
               <EventDetailText detail={detail} />
             </ListItem>
-            <AddCalendarButton detail={detail} />
+            <AddCalendarButton title={title} detail={detail} />
           </>
         ))}
       </List>

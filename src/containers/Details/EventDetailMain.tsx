@@ -5,18 +5,17 @@ import useEventDetails from "hooks/use-event-details";
 
 const EventDetailsMainContainer: FC = () => {
   const { type, eventId } = useParams();
-  const { title, performer, eventDetails, loading } = useEventDetails(
-    type,
-    eventId
-  );
+  const { event, eventDetails, loading } = useEventDetails(type, eventId);
 
-  return (
+  return event ? (
     <EventDetailsMain
-      title={title}
-      performer={performer}
+      event={event}
+      performer={event ? event.performer : ""}
       eventDetails={eventDetails}
       loading={loading}
     />
+  ) : (
+    <></>
   );
 };
 

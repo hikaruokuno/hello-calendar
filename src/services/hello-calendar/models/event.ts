@@ -4,16 +4,38 @@ export type Event = {
   id: string;
   type: string;
   title: string;
-  status: number;
-  createdAt: Firebase.firestore.Timestamp | null;
-  updatedAt: Firebase.firestore.Timestamp | null;
+  performer: string | null;
+  mc: string | null;
+  isConfirmEnded: boolean;
+  isApplyEnded: boolean;
+  applyPeriodStr: string;
+  confirmPeriodStr: string;
+  paymentDateStr: string;
+  applyStartDate: Firebase.firestore.Timestamp | null;
+  applyEndDate: Firebase.firestore.Timestamp | null;
+  confirmStartDate: Firebase.firestore.Timestamp | null;
+  confirmEndDate: Firebase.firestore.Timestamp | null;
+  paymentDate: Firebase.firestore.Timestamp | null;
+  createdAt: Firebase.firestore.FieldValue | null;
+  updatedAt: Firebase.firestore.FieldValue | null;
 };
 
 export const blankEvent: Event = {
   id: "",
   type: "",
   title: "",
-  status: 1,
+  performer: null,
+  mc: null,
+  isConfirmEnded: false,
+  isApplyEnded: false,
+  applyPeriodStr: "",
+  confirmPeriodStr: "",
+  paymentDateStr: "",
+  applyStartDate: null,
+  applyEndDate: null,
+  confirmStartDate: null,
+  confirmEndDate: null,
+  paymentDate: null,
   createdAt: null,
   updatedAt: null,
 };

@@ -5,13 +5,23 @@ import EventList from "components/common/list/EventList";
 import ListCircular from "components/common/atoms/ListCircular";
 import { Event } from "services/hello-calendar/models/event";
 
-type EventProps = { events: Event[]; loading?: boolean };
+type EventProps = {
+  mainEvents: Event[];
+  confirmEvents: Event[];
+  loading?: boolean;
+};
 
-const EventMain: FC<EventProps> = ({ events, loading }) => (
+const EventMain: FC<EventProps> = ({ mainEvents, confirmEvents, loading }) => (
   <>
-    <h2>イベント一覧</h2>
     <Tabs />
-    {loading ? <ListCircular /> : <EventList events={events} />}
+    {loading ? (
+      <ListCircular />
+    ) : (
+      <>
+        <EventList title="当落確認期間中のイベント" events={confirmEvents} />
+        <EventList title="イベント一覧" events={mainEvents} />
+      </>
+    )}
   </>
 );
 

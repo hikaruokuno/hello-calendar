@@ -15,11 +15,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EventList: FC<{ events: Event[] }> = ({ events }) => {
+const EventList: FC<{ title: string; events: Event[] }> = ({
+  title,
+  events,
+}) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      <h4>{title}</h4>
       <List component="nav" aria-label="main mailbox folders">
         {events.map((event) => (
           <ListItem button key={event.id}>

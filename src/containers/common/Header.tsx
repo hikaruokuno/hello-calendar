@@ -30,7 +30,7 @@ const DenseAppBar: FC = () => {
             aria-label="menu"
           />
           <Typography variant="h6" color="inherit">
-            {/* <strong>ハロカレ</strong> */}
+            <strong>ハロカレ</strong>
           </Typography>
         </Toolbar>
       </AppBar>

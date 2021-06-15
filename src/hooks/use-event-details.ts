@@ -1,10 +1,10 @@
 import { FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
+import { Event } from "services/hello-calendar/models/event";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 
 const useEventDetails = (type: string, id: string) => {
-  const [title, setTitle] = useState("");
-  const [performer, setPerformer] = useState<string | null>("");
+  const [event, setEvent] = useState<Event>();
   const [eventDetails, setEventDetails] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -17,7 +17,9 @@ const useEventDetails = (type: string, id: string) => {
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
-    const collection = db
+    const eventQuery = db.collection(collectionName).doc(id);
+
+    const details = db
       .collection(collectionName)
       .doc(id)
       .collection("eventDetails")
@@ -27,13 +29,16 @@ const useEventDetails = (type: string, id: string) => {
       setLoading(true);
 
       try {
-        const snap = await collection.get();
-        const eventDetailsData = snap.docs.map((doc) => ({
+        const snapEvent = await eventQuery.get();
+        const eventData = snapEvent.data() as Event;
+
+        const snapDetails = await details.get();
+        const eventDetailsData = snapDetails.docs.map((doc) => ({
           ...(doc.data() as EventDetail),
           id: doc.id,
         }));
-        setTitle(eventDetailsData[0].title);
-        setPerformer(eventDetailsData[0].performer);
+
+        setEvent({ ...eventData, id: snapEvent.id });
         setEventDetails(eventDetailsData);
         setError(null);
       } catch (err) {
@@ -47,7 +52,7 @@ const useEventDetails = (type: string, id: string) => {
     });
   }, [id, collectionName]);
 
-  return { title, performer, eventDetails, loading, error };
+  return { event, eventDetails, loading, error };
 };
 
 export default useEventDetails;
