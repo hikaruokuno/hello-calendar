@@ -549,7 +549,7 @@ export const events = functions
           // doc.data() is never undefined for query doc snapshots
           mEventIds.push(doc.id);
 
-          const isEnded = doc.data().applyEndDate <= new Date();
+          const isEnded = doc.data().applyEndDate.toDate() <= new Date();
 
           if (isEnded) {
             doc.ref.update({
@@ -567,7 +567,7 @@ export const events = functions
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
-          const isEnded = doc.data().confirmEndDate <= new Date();
+          const isEnded = doc.data().confirmEndDate.toDate() <= new Date();
 
           if (isEnded) {
             doc.ref.update({
