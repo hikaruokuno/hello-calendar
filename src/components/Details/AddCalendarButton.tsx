@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import LinkButton from "components/common/atoms/LinkButton";
-import getDates from "components/item-tools";
+import { getDates, getRegularTitle } from "components/item-tools";
 
 const AddCalendarButton: FC<{ title: string; detail: EventDetail }> = ({
   title,
@@ -9,14 +9,7 @@ const AddCalendarButton: FC<{ title: string; detail: EventDetail }> = ({
 }) => {
   const queries = new URLSearchParams();
   queries.set("action", "TEMPLATE");
-  if (title.substring(0, 1) === "【") {
-    queries.set(
-      "text",
-      `『${title.substring(title.indexOf("】") + 1)}』公演日`
-    );
-  } else {
-    queries.set("text", `『${title}』公演日`);
-  }
+  queries.set("text", `『${getRegularTitle(title)}』公演日`);
   queries.set("dates", getDates(detail.performanceDay, detail.showTime));
   queries.set("ctz", "Asia/Tokyo");
 

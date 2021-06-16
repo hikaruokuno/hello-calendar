@@ -6,6 +6,7 @@ import Divider from "@material-ui/core/Divider";
 import EventDetailText from "components/common/atoms/EventDetailText";
 import AddCalendarButton from "components/Details/AddCalendarButton";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
+import TweetButton from "components/Details/TweetButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +32,7 @@ const EventDetalsList: FC<{ title: string; eventDetails: EventDetail[] }> = ({
               <EventDetailText detail={detail} />
             </ListItem>
             <AddCalendarButton title={title} detail={detail} />
+            <TweetButton title={title} detail={detail} />
           </>
         ))}
       </List>

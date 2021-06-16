@@ -8,6 +8,7 @@ export type EventDetail = {
   venue: string;
   openingTime: string;
   showTime: string;
+  performanceDate: Firebase.firestore.Timestamp | null;
   createdAt: Firebase.firestore.Timestamp | null;
   updatedAt: Firebase.firestore.Timestamp | null;
 };
@@ -20,6 +21,7 @@ export const blankEventDetail: EventDetail = {
   venue: "",
   openingTime: "",
   showTime: "",
+  performanceDate: null,
   createdAt: null,
   updatedAt: null,
 };
