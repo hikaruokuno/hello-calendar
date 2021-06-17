@@ -15,7 +15,7 @@ export const events = functions
     timeoutSeconds: 120,
     memory: '2GB',
   })
-  .pubsub.schedule('0,5,10,15,30,45 10,12,15-20 * * 1-5')
+  .pubsub.schedule('0,5,55 10,12,15-20 * * 1-5')
   .timeZone('Asia/Tokyo')
   .onRun(async () => {
     const eventIds: string[] = [];
@@ -372,6 +372,11 @@ export const events = functions
           venue: string;
           openingTime: string;
           showTime: string;
+          openText: string;
+          showText: string;
+          otherText: string | null;
+          otherDetail: string | null;
+          performer: string | null;
           performanceDate: firebase.firestore.Timestamp | null;
           createdAt: firebase.firestore.FieldValue | null;
           updatedAt: firebase.firestore.FieldValue | null;
@@ -379,23 +384,41 @@ export const events = functions
 
         // 出演者を取得する
         const getPerformer: string | null = await page.evaluate(() => {
-          const selector: NodeListOf<HTMLBaseElement> =
-            document.querySelectorAll('.Note5');
-          const text = selector[0].innerText;
+          const selector = document.querySelector<HTMLElement>('.Note5');
+          const text = selector!.innerText;
 
-          if (text.indexOf('出演：') != -1) {
-            const start = text.indexOf('出演：') + 3;
-            const end = text.substring(start).indexOf('\n');
-            return text.substring(start).substring(0, end);
+          if (text.indexOf('出演：') === -1) {
+            return null;
           }
-          return null;
+
+          const performText = text.substring(text.indexOf('出演：') + 3);
+          const array = performText.split(/\r\n|\r|\n/);
+
+          let performer = '';
+          for (let i = 0; i < array.length; i++) {
+            if (i === 0) {
+              performer = array[0];
+              continue;
+            }
+            if (
+              array[i].includes('/') ||
+              array[i].includes('／') ||
+              array[i].includes('・')
+            ) {
+              performer = performer + array[i];
+              continue;
+            } else {
+              break;
+            }
+          }
+
+          return performer;
         });
 
         // MCを取得する
         const getMc: string | null = await page.evaluate(() => {
-          const selector: NodeListOf<HTMLBaseElement> =
-            document.querySelectorAll('.Note5');
-          const text = selector[0].innerText;
+          const selector = document.querySelector<HTMLElement>('.Note5');
+          const text = selector!.innerText;
 
           if (text.indexOf('MC：') != -1) {
             const start = text.indexOf('MC：') + 3;
@@ -416,14 +439,61 @@ export const events = functions
                 formEntry[i].querySelectorAll('table tbody tr td');
               const performanceDay: string = tableInfo[2].innerText;
               const venue: string = tableInfo[3].innerText.replace('\n', ' ');
-              const openingTime: string = tableInfo[4].innerText.replace(
-                '開場\n',
-                ''
+
+              const openInnerText = tableInfo[4].innerText;
+              const openText = openInnerText.substring(
+                0,
+                openInnerText.indexOf('\n')
               );
-              const showTime: string = tableInfo[5].innerText.replace(
-                '開演\n',
-                ''
+
+              const openingTime: string = openInnerText.substring(
+                openInnerText.indexOf('\n') + 1
               );
+
+              const showInnerText = tableInfo[5].innerText;
+              const showText = showInnerText.substring(
+                0,
+                showInnerText.indexOf('\n')
+              );
+
+              const showTime: string = showInnerText.substring(
+                showInnerText.indexOf('\n') + 1
+              );
+
+              let otherText = null;
+              let otherDetail = null;
+              if (tableInfo[6].innerText !== '\n') {
+                const otherInnerText = tableInfo[6].innerText;
+                otherText = otherInnerText.substring(
+                  0,
+                  otherInnerText.indexOf('\n')
+                );
+                otherDetail = otherInnerText.substring(
+                  otherInnerText.indexOf('\n') + 1
+                );
+              }
+
+              const array = tableInfo[7].innerText.split(/\r\n|\r|\n/);
+              let performer = null;
+              for (let i = 0; i < array.length; i++) {
+                if (!array[0].includes('出演')) {
+                  break;
+                }
+                if (i === 0) {
+                  performer = array[0];
+                  continue;
+                }
+                if (
+                  array[i].includes('/') ||
+                  array[i].includes('／') ||
+                  array[i].includes('・')
+                ) {
+                  performer = performer + array[i];
+                  continue;
+                } else {
+                  break;
+                }
+              }
 
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -431,6 +501,11 @@ export const events = functions
                 venue: venue,
                 openingTime: openingTime,
                 showTime: showTime,
+                openText: openText,
+                showText: showText,
+                otherText: otherText,
+                otherDetail: otherDetail,
+                performer: performer,
                 performanceDate: null,
                 createdAt: null,
                 updatedAt: null,
@@ -884,6 +959,11 @@ export const events = functions
           venue: string;
           openingTime: string;
           showTime: string;
+          openText: string;
+          showText: string;
+          otherText: string | null;
+          otherDetail: string | null;
+          performer: string | null;
           performanceDate: firebase.firestore.Timestamp | null;
           createdAt: firebase.firestore.FieldValue | null;
           updatedAt: firebase.firestore.FieldValue | null;
@@ -894,19 +974,38 @@ export const events = functions
           const selector = document.querySelector<HTMLElement>('.Note5');
           const text = selector!.innerText;
 
-          if (text.indexOf('出演：') != -1) {
-            const start = text.indexOf('出演：') + 3;
-            const end = text.substring(start).indexOf('\n');
-            return text.substring(start).substring(0, end);
+          if (text.indexOf('出演：') === -1) {
+            return null;
           }
-          return null;
+
+          const performText = text.substring(text.indexOf('出演：') + 3);
+          const array = performText.split(/\r\n|\r|\n/);
+
+          let performer = '';
+          for (let i = 0; i < array.length; i++) {
+            if (i === 0) {
+              performer = array[0];
+              continue;
+            }
+            if (
+              array[i].includes('/') ||
+              array[i].includes('／') ||
+              array[i].includes('・')
+            ) {
+              performer = performer + array[i];
+              continue;
+            } else {
+              break;
+            }
+          }
+
+          return performer;
         });
 
         // MCを取得する
         const getMc: string | null = await page.evaluate(() => {
-          const selector: NodeListOf<HTMLBaseElement> =
-            document.querySelectorAll('.Note5');
-          const text = selector[0].innerText;
+          const selector = document.querySelector<HTMLElement>('.Note5');
+          const text = selector!.innerText;
 
           if (text.indexOf('MC：') != -1) {
             const start = text.indexOf('MC：') + 3;
@@ -927,14 +1026,61 @@ export const events = functions
                 formEntry[i].querySelectorAll('table tbody tr td');
               const performanceDay: string = tableInfo[2].innerText;
               const venue: string = tableInfo[3].innerText.replace('\n', ' ');
-              const openingTime: string = tableInfo[4].innerText.replace(
-                '開場\n',
-                ''
+
+              const openInnerText = tableInfo[4].innerText;
+              const openText = openInnerText.substring(
+                0,
+                openInnerText.indexOf('\n')
               );
-              const showTime: string = tableInfo[5].innerText.replace(
-                '開演\n',
-                ''
+
+              const openingTime: string = openInnerText.substring(
+                openInnerText.indexOf('\n') + 1
               );
+
+              const showInnerText = tableInfo[5].innerText;
+              const showText = showInnerText.substring(
+                0,
+                showInnerText.indexOf('\n')
+              );
+
+              const showTime: string = showInnerText.substring(
+                showInnerText.indexOf('\n') + 1
+              );
+
+              let otherText = null;
+              let otherDetail = null;
+              if (tableInfo[6].innerText !== '\n') {
+                const otherInnerText = tableInfo[6].innerText;
+                otherText = otherInnerText.substring(
+                  0,
+                  otherInnerText.indexOf('\n')
+                );
+                otherDetail = otherInnerText.substring(
+                  otherInnerText.indexOf('\n') + 1
+                );
+              }
+
+              const array = tableInfo[7].innerText.split(/\r\n|\r|\n/);
+              let performer = null;
+              for (let i = 0; i < array.length; i++) {
+                if (!array[0].includes('出演')) {
+                  break;
+                }
+                if (i === 0) {
+                  performer = array[0];
+                  continue;
+                }
+                if (
+                  array[i].includes('/') ||
+                  array[i].includes('／') ||
+                  array[i].includes('・')
+                ) {
+                  performer = performer + array[i];
+                  continue;
+                } else {
+                  break;
+                }
+              }
 
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -942,6 +1088,11 @@ export const events = functions
                 venue: venue,
                 openingTime: openingTime,
                 showTime: showTime,
+                openText: openText,
+                showText: showText,
+                otherText: otherText,
+                otherDetail: otherDetail,
+                performer: performer,
                 performanceDate: null,
                 createdAt: null,
                 updatedAt: null,
@@ -1048,3 +1199,67 @@ export const events = functions
     }
     await browser.close();
   });
+
+// export const updateText = functions
+//   .region('asia-northeast1')
+//   .https.onRequest(async (req, res) => {
+//     const eventIds: string[] = [];
+//     await admin
+//       .firestore()
+//       .collection('hEvents')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           // doc.data() is never undefined for query doc snapshots
+
+//           eventIds.push(doc.id);
+//         });
+//       });
+//     eventIds.forEach(async (id) => {
+//       await admin
+//         .firestore()
+//         .collection('hEvents')
+//         .doc(id)
+//         .collection('eventDetails')
+//         .get()
+//         .then(function (querySnapshot) {
+//           // doc.data() is never undefined for query doc snapshots
+//           querySnapshot.forEach(function (doc) {
+//             doc.ref.set(
+//               { openText: '開場', showText: '開演' },
+//               { merge: true }
+//             );
+//           });
+//         });
+//     });
+
+//     const mEventIds: string[] = [];
+//     await admin
+//       .firestore()
+//       .collection('mEvents')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           // doc.data() is never undefined for query doc snapshots
+
+//           mEventIds.push(doc.id);
+//         });
+//       });
+//     eventIds.forEach(async (id) => {
+//       await admin
+//         .firestore()
+//         .collection('mEvents')
+//         .doc(id)
+//         .collection('eventDetails')
+//         .get()
+//         .then(function (querySnapshot) {
+//           // doc.data() is never undefined for query doc snapshots
+//           querySnapshot.forEach(function (doc) {
+//             doc.ref.set(
+//               { openText: '開場', showText: '開演' },
+//               { merge: true }
+//             );
+//           });
+//         });
+//     });
+//   });
