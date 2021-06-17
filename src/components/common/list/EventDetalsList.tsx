@@ -31,8 +31,15 @@ const EventDetalsList: FC<{ title: string; eventDetails: EventDetail[] }> = ({
             <ListItem key={detail.id}>
               <EventDetailText detail={detail} />
             </ListItem>
-            <AddCalendarButton title={title} detail={detail} />
-            <TweetButton title={title} detail={detail} />
+            {detail.openText.includes("開演") &&
+            detail.showText.includes("開演") ? (
+              ""
+            ) : (
+              <>
+                <AddCalendarButton title={title} detail={detail} />
+                <TweetButton title={title} detail={detail} />
+              </>
+            )}
           </>
         ))}
       </List>

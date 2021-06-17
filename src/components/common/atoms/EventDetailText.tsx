@@ -7,10 +7,26 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => (
     <br />
     会場: {detail.venue}
     <br />
-    開場: {detail.openingTime}
+    {detail.performer ? (
+      <>
+        {detail.performer}
+        <br />
+      </>
+    ) : (
+      ""
+    )}
+    {detail.openText}: {detail.openingTime}
     <br />
-    開演: {detail.showTime}
+    {detail.showText}: {detail.showTime}
     <br />
+    {detail.otherText && detail.otherDetail ? (
+      <>
+        {detail.otherText}: {detail.otherDetail}
+        <br />
+      </>
+    ) : (
+      ""
+    )}
   </>
 );
 

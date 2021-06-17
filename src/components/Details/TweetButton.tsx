@@ -9,6 +9,13 @@ const TweetButton: FC<{ title: string; detail: EventDetail }> = ({
 }) => {
   const url = window.location.href;
   const prefecture = getTweetPrefecture(detail.venue);
+  const performanceDay = detail.performanceDay.substring(
+    0,
+    detail.performanceDay.indexOf("(")
+  );
+  const showTime = detail.openText.includes("開演")
+    ? detail.openingTime
+    : detail.showTime;
 
   return (
     <>
@@ -16,9 +23,7 @@ const TweetButton: FC<{ title: string; detail: EventDetail }> = ({
         url={url}
         title={`『${getRegularTitle(
           title
-        )}』${prefecture}公演 ${detail.performanceDay.substring(5)} ${
-          detail.showTime
-        }〜 にいきます！`}
+        )}』${prefecture} | ${performanceDay} ${showTime}〜 にいきます！`}
         hashtags={["ハロカレ"]}
       >
         <TwitterIcon size={32} round />

@@ -10,20 +10,29 @@ const AddCalendarButton: FC<{ title: string; detail: EventDetail }> = ({
   const queries = new URLSearchParams();
   queries.set("action", "TEMPLATE");
   queries.set("text", `『${getRegularTitle(title)}』公演日`);
-  queries.set("dates", getDates(detail.performanceDay, detail.showTime));
+  queries.set(
+    "dates",
+    getDates(
+      detail.performanceDay,
+      detail.openText.includes("開演") ? detail.openingTime : detail.showTime
+    )
+  );
   queries.set("ctz", "Asia/Tokyo");
 
+  let detailText = `会場： ${detail.venue}\n`;
   if (detail.performer) {
-    queries.set(
-      "details",
-      `出演者： ${detail.performer} \n会場： ${detail.venue}\n開場： ${detail.openingTime} 開演： ${detail.showTime}\n`
-    );
-  } else {
-    queries.set(
-      "details",
-      `会場： ${detail.venue}\n開場： ${detail.openingTime} 開演： ${detail.showTime}`
+    detailText = detailText.concat(`${detail.performer.replace(":", "：")}\n`);
+  }
+  detailText = detailText.concat(
+    `${detail.openText}： ${detail.openingTime}, ${detail.showText}： ${detail.showTime}\n`
+  );
+  if (detail.otherText && detail.otherDetail) {
+    detailText = detailText.concat(
+      `${detail.otherText}： ${detail.otherDetail}`
     );
   }
+  queries.set("details", detailText);
+
   queries.set("location", `${detail.venue}`);
 
   return (
