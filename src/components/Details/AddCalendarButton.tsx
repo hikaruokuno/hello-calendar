@@ -24,14 +24,16 @@ const AddCalendarButton: FC<{ title: string; detail: EventDetail }> = ({
     detailText = detailText.concat(`${detail.performer.replace(":", "：")}\n`);
   }
   detailText = detailText.concat(
-    `${detail.openText}： ${detail.openingTime}, ${detail.showText}： ${detail.showTime}\n`
+    `${detail.openText}： ${detail.openingTime} | ${detail.showText}： ${detail.showTime}\n`
   );
   if (detail.otherText && detail.otherDetail) {
     detailText = detailText.concat(
-      `${detail.otherText}： ${detail.otherDetail}`
+      `${detail.otherText}： ${detail.otherDetail}\n`
     );
+  } else if (detail.otherText && !detail.otherDetail) {
+    detailText = detailText.concat(`${detail.otherText}\n`);
   }
-  queries.set("details", detailText);
+  queries.set("details", detailText.concat("@ハロカレ"));
 
   queries.set("location", `${detail.venue}`);
 

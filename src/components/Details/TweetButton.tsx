@@ -23,7 +23,7 @@ const TweetButton: FC<{ title: string; detail: EventDetail }> = ({
         url={url}
         title={`『${getRegularTitle(
           title
-        )}』${prefecture} | ${performanceDay} ${showTime}〜 にいきます！`}
+        )}』${prefecture} | ${performanceDay} ${showTime}〜 に行きます！`}
         hashtags={["ハロカレ"]}
       >
         <TwitterIcon size={32} round />

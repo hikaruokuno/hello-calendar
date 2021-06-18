@@ -25,7 +25,10 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => (
         <br />
       </>
     ) : (
-      ""
+      <>
+        {detail.otherText}
+        <br />
+      </>
     )}
   </>
 );
