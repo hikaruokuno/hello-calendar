@@ -29,8 +29,11 @@ const DenseAppBar: FC = () => {
             color="inherit"
             aria-label="menu"
           />
-          <Typography variant="h6" color="inherit">
+          <Typography variant="h5" color="inherit">
             <strong>ハロカレ</strong>
+          </Typography>
+          <Typography variant="subtitle2" color="inherit">
+            &nbsp;&nbsp;&nbsp;&nbsp;ハロプロFCイベントのカレンダー登録サイト
           </Typography>
         </Toolbar>
       </AppBar>

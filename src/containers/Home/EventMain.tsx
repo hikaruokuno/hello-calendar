@@ -1,22 +1,22 @@
 import React, { FC, useContext } from "react";
 import { EventTypeContext } from "contexts";
 
-import useEvents from "hooks/use-events";
-import EventMain from "components/Home/EventMain";
+import useEventsApply from "hooks/use-events-apply";
 import useEventsConfirm from "hooks/use-events-confirm";
+import EventMain from "components/Home/EventMain";
 
 const EventMainContainer: FC = () => {
-  const { mainEvents, mainLoading } = useEvents(
+  const { applyEvents, applyLoading } = useEventsApply(
     useContext(EventTypeContext).type
   );
   const { confirmEvents, confirmLoading } = useEventsConfirm(
     useContext(EventTypeContext).type
   );
-  const loading = mainLoading && confirmLoading ? mainLoading : false;
+  const loading = applyLoading && confirmLoading ? applyLoading : false;
 
   return (
     <EventMain
-      mainEvents={mainEvents}
+      applyEvents={applyEvents}
       confirmEvents={confirmEvents}
       loading={loading}
     />

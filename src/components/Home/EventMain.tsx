@@ -6,12 +6,12 @@ import ListCircular from "components/common/atoms/ListCircular";
 import { Event } from "services/hello-calendar/models/event";
 
 type EventProps = {
-  mainEvents: Event[];
+  applyEvents: Event[];
   confirmEvents: Event[];
   loading?: boolean;
 };
 
-const EventMain: FC<EventProps> = ({ mainEvents, confirmEvents, loading }) => (
+const EventMain: FC<EventProps> = ({ applyEvents, confirmEvents, loading }) => (
   <>
     <Tabs />
     {loading ? (
@@ -19,7 +19,7 @@ const EventMain: FC<EventProps> = ({ mainEvents, confirmEvents, loading }) => (
     ) : (
       <>
         <EventList title="当落確認期間中のイベント" events={confirmEvents} />
-        <EventList title="イベント一覧" events={mainEvents} />
+        <EventList title="申込期間中のイベント" events={applyEvents} />
       </>
     )}
   </>

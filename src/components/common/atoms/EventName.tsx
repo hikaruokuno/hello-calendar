@@ -24,10 +24,12 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
     event.confirmStartDate!.toDate() <= new Date() && !event.isConfirmEnded;
   if (isOpenAppryPeriod) {
     subTitle = " [受付中]";
-    secondary = `申込期間: ${event.applyPeriodStr}`;
+    secondary = `申込期日: ${event.applyPeriodStr.substring(
+      event.applyPeriodStr.indexOf("～") + 1
+    )}`;
     color = "secondary";
   } else if (isOpenConfirmPeriod) {
-    subTitle = " [当落確認期間中]";
+    // subTitle = " [当落確認期間中]";
     color = "initial";
     secondary = `入金締切日: ${event.paymentDateStr}`;
   } else {
