@@ -33,7 +33,9 @@ const DenseAppBar: FC = () => {
             <strong>ハロカレ</strong>
           </Typography>
           <Typography variant="subtitle2" color="inherit">
-            &nbsp;&nbsp;&nbsp;&nbsp;ハロプロFCイベントのカレンダー登録サイト
+            &nbsp;&nbsp;&nbsp;&nbsp;ハロプロFCイベントの
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;スケジュール管理サイト
           </Typography>
         </Toolbar>
       </AppBar>

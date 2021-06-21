@@ -20,9 +20,8 @@ const useEventDetails = (type: string, id: string) => {
     const eventQuery = db.collection(collectionName).doc(id);
 
     const details = db
-      .collection(collectionName)
-      .doc(id)
       .collection("eventDetails")
+      .where("id", "==", id)
       .orderBy("performanceDate", "asc");
 
     const load = async () => {
