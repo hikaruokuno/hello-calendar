@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const getStartDateStr = (dateText: string) => {
   const applyPeriodText = dateText
     .replace(/[年月日時月火水木金土日まで]/g, '')
@@ -29,4 +31,11 @@ export const getEndDateStr = (dateText: string) => {
     end.substring(8, 10) +
     ':00:00';
   return endDateStr;
+};
+
+export const getToday = () => {
+  const date = new Date();
+  const dateString = format(date, 'yyyy-MM-dd');
+
+  return new Date(dateString);
 };
