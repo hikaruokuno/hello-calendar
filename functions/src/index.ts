@@ -6,6 +6,8 @@ import admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import firebase from 'firebase/app';
 import { parseFromTimeZone } from 'date-fns-timezone';
+import { isToday, isAfter } from 'date-fns';
+import { getToday } from './utils/date';
 
 admin.initializeApp();
 
@@ -15,7 +17,7 @@ export const events = functions
     timeoutSeconds: 120,
     memory: '2GB',
   })
-  .pubsub.schedule('0,5,55 10,12,15-20 * * 1-5')
+  .pubsub.schedule('0,5 10,12,15-20 * * 1-5')
   .timeZone('Asia/Tokyo')
   .onRun(async () => {
     const eventIds: string[] = [];
@@ -34,6 +36,7 @@ export const events = functions
           if (isEnded) {
             doc.ref.update({
               isApplyEnded: true,
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
           }
         });
@@ -52,6 +55,7 @@ export const events = functions
           if (isEnded) {
             doc.ref.update({
               isConfirmEnded: true,
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
           }
         });
@@ -588,9 +592,12 @@ export const events = functions
           detail.createdAt = admin.firestore.FieldValue.serverTimestamp();
           detail.updatedAt = admin.firestore.FieldValue.serverTimestamp();
 
-          ticketInfoRef
-            .collection('eventDetails')
-            .doc(eventId + '-' + index)
+          const detailCollectionName = admin
+            .firestore()
+            .collection('eventDetails');
+
+          const docId = detailCollectionName.doc('H' + eventId + '-' + index);
+          docId
             .set(detail)
             .then(function () {
               console.log(
@@ -1158,6 +1165,10 @@ export const events = functions
           .doc(eventId);
         ticketInfoRef.set(event);
 
+        const detailCollectionName = admin
+          .firestore()
+          .collection('eventDetails');
+
         eventDetails.map((detail, index) => {
           const formatPerformDay = detail.performanceDay
             .replace('/', '-')
@@ -1175,9 +1186,8 @@ export const events = functions
           detail.createdAt = admin.firestore.FieldValue.serverTimestamp();
           detail.updatedAt = admin.firestore.FieldValue.serverTimestamp();
 
-          ticketInfoRef
-            .collection('eventDetails')
-            .doc(eventId + '-' + index)
+          const docId = detailCollectionName.doc('M' + eventId + '-' + index);
+          docId
             .set(detail)
             .then(function () {
               console.log(
@@ -1200,10 +1210,46 @@ export const events = functions
     await browser.close();
   });
 
+export const updateStatus = functions
+  .region('asia-northeast1')
+  .runWith({
+    timeoutSeconds: 120,
+    memory: '2GB',
+  })
+  .pubsub.schedule('00 0 * * *')
+  .timeZone('Asia/Tokyo')
+  .onRun(async () => {
+    await admin
+      .firestore()
+      .collection('eventDetails')
+      .where('status', '==', 'wait')
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          if (isToday(doc.data().performanceDate.toDate())) {
+            doc.ref.update({
+              status: 'start',
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+          } else if (isAfter(getToday(), doc.data().performanceDate.toDate())) {
+            doc.ref.update({
+              status: 'end',
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+          }
+        });
+      });
+  });
+
 // export const updateText = functions
 //   .region('asia-northeast1')
 //   .https.onRequest(async (req, res) => {
-//     const eventIds: string[] = [];
+//     interface idAndTitle {
+//       id: string;
+//       title: string;
+//     }
+
+//     const hIdAndTitles: idAndTitle[] = [];
 //     await admin
 //       .firestore()
 //       .collection('hEvents')
@@ -1211,11 +1257,50 @@ export const events = functions
 //       .then(function (querySnapshot) {
 //         querySnapshot.forEach(function (doc) {
 //           // doc.data() is never undefined for query doc snapshots
+//           const idAndTitle: idAndTitle = {
+//             id: doc.data().id,
+//             title: doc.data().title,
+//           };
 
-//           eventIds.push(doc.id);
+//           hIdAndTitles.push(idAndTitle);
 //         });
 //       });
-//     eventIds.forEach(async (id) => {
+
+//     const mIdAndTitles: idAndTitle[] = [];
+//     await admin
+//       .firestore()
+//       .collection('mEvents')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           const idAndTitle: idAndTitle = {
+//             id: doc.data().id,
+//             title: doc.data().title,
+//           };
+
+//           mIdAndTitles.push(idAndTitle);
+//         });
+//       });
+
+//     interface EventDetails {
+//       id: string;
+//       title: string;
+//       performanceDay: string;
+//       venue: string;
+//       openingTime: string;
+//       showTime: string;
+//       openText: string;
+//       showText: string;
+//       otherText: string | null;
+//       otherDetail: string | null;
+//       performer: string | null;
+//       performanceDate: firebase.firestore.Timestamp | null;
+//       status: string;
+//       createdAt: firebase.firestore.FieldValue | null;
+//       updatedAt: firebase.firestore.FieldValue | null;
+//     }
+
+//     hIdAndTitles.forEach(async ({ id, title }) => {
 //       await admin
 //         .firestore()
 //         .collection('hEvents')
@@ -1225,27 +1310,36 @@ export const events = functions
 //         .then(function (querySnapshot) {
 //           // doc.data() is never undefined for query doc snapshots
 //           querySnapshot.forEach(function (doc) {
-//             doc.ref.set(
-//               { openText: '開場', showText: '開演' },
-//               { merge: true }
-//             );
+//             const eventDetail: EventDetails = {
+//               id: doc.data().id,
+//               title: title,
+//               performanceDay: doc.data().performanceDay,
+//               venue: doc.data().venue,
+//               openingTime: doc.data().openingTime,
+//               showTime: doc.data().showTime,
+//               openText: doc.data().openText,
+//               showText: doc.data().showText,
+//               otherText: doc.data().otherText ? doc.data().otherText : null,
+//               otherDetail: doc.data().otherDetail
+//                 ? doc.data().otherDetail
+//                 : null,
+//               performer: doc.data().performer ? doc.data().performer : null,
+//               performanceDate: doc.data().performanceDate,
+//               status: 'wait',
+//               createdAt: doc.data().createdAt,
+//               updatedAt: doc.data().updatedAt,
+//             };
+
+//             const eventInfoRef = admin
+//               .firestore()
+//               .collection('eventDetails')
+//               .doc('H' + doc.id);
+//             eventInfoRef.set(eventDetail);
 //           });
 //         });
 //     });
 
-//     const mEventIds: string[] = [];
-//     await admin
-//       .firestore()
-//       .collection('mEvents')
-//       .get()
-//       .then(function (querySnapshot) {
-//         querySnapshot.forEach(function (doc) {
-//           // doc.data() is never undefined for query doc snapshots
-
-//           mEventIds.push(doc.id);
-//         });
-//       });
-//     eventIds.forEach(async (id) => {
+//     mIdAndTitles.forEach(async ({ id, title }) => {
 //       await admin
 //         .firestore()
 //         .collection('mEvents')
@@ -1255,10 +1349,31 @@ export const events = functions
 //         .then(function (querySnapshot) {
 //           // doc.data() is never undefined for query doc snapshots
 //           querySnapshot.forEach(function (doc) {
-//             doc.ref.set(
-//               { openText: '開場', showText: '開演' },
-//               { merge: true }
-//             );
+//             const eventDetail: EventDetails = {
+//               id: doc.data().id,
+//               title: title,
+//               performanceDay: doc.data().performanceDay,
+//               venue: doc.data().venue,
+//               openingTime: doc.data().openingTime,
+//               showTime: doc.data().showTime,
+//               openText: doc.data().openText,
+//               showText: doc.data().showText,
+//               otherText: doc.data().otherText ? doc.data().otherText : null,
+//               otherDetail: doc.data().otherDetail
+//                 ? doc.data().otherDetail
+//                 : null,
+//               performer: doc.data().performer ? doc.data().performer : null,
+//               performanceDate: doc.data().performanceDate,
+//               status: 'wait',
+//               createdAt: doc.data().createdAt,
+//               updatedAt: doc.data().updatedAt,
+//             };
+
+//             const eventInfoRef = admin
+//               .firestore()
+//               .collection('eventDetails')
+//               .doc('M' + doc.id);
+//             eventInfoRef.set(eventDetail);
 //           });
 //         });
 //     });
