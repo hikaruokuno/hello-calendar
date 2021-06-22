@@ -1,3 +1,5 @@
+import { differenceInCalendarDays } from "date-fns";
+
 export const getDates = (date: string, time: string) => {
   const slashRemoved = date.replaceAll("/", "");
   const yyyyMMdd = slashRemoved.substring(0, slashRemoved.indexOf("("));
@@ -30,3 +32,6 @@ export const getTweetPrefecture = (beforeText: string) => {
 
   return beforeText.substring(0, beforeText.indexOf(" ") - 1);
 };
+
+export const isAfterThreeDays = (date: Date) =>
+  differenceInCalendarDays(new Date(date), new Date()) <= 3;

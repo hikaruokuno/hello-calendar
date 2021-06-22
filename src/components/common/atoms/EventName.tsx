@@ -1,11 +1,26 @@
 import React, { FC } from "react";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Event } from "services/hello-calendar/models/event";
 import { FiberNew, AssignmentOutlined } from "@material-ui/icons";
 import { differenceInCalendarDays } from "date-fns";
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    primary: {
+      color: "black",
+      fontWeight: "bold",
+      fontSize: "smaller",
+    },
+    secondary: {
+      fontSize: "small",
+    },
+  })
+);
+
 const EventName: FC<{ event: Event }> = ({ event }) => {
+  const classes = useStyles();
   let secondary = "";
   let newTitle = false;
 
@@ -35,9 +50,9 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
 
   return (
     <Link to={`details/${event.type}/${event.id}`}>
-      <ListItem button key={event.id}>
+      <ListItem button key={event.id} divider>
         <ListItemIcon>
-          <AssignmentOutlined fontSize="large" />
+          <AssignmentOutlined fontSize="large" color="primary" />
         </ListItemIcon>
         <ListItemText
           primary={
@@ -47,6 +62,7 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
             </>
           }
           secondary={secondary}
+          classes={{ primary: classes.primary, secondary: classes.secondary }}
         />
       </ListItem>
     </Link>
