@@ -76,7 +76,10 @@ const EventDetailMain: FC<EventDetailProps> = ({
             ) : (
               <Typography variant="body2" color="inherit">
                 <strong>申込期間</strong>
-                <Link href={applyUrl}> [申し込む]</Link>
+                <Link href={applyUrl} target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  [ファンクラブで申し込む]
+                </Link>
                 <br />
                 {event.applyPeriodStr}
               </Typography>
@@ -88,7 +91,14 @@ const EventDetailMain: FC<EventDetailProps> = ({
                 <Typography variant="body2" color="inherit">
                   <strong>当落確認期間</strong>
                   {isConfirmStarted ? (
-                    <Link href={confirmUrl}> [確認する]</Link>
+                    <Link
+                      href={confirmUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {" "}
+                      [ファンクラブで確認する]
+                    </Link>
                   ) : (
                     ""
                   )}
@@ -103,7 +113,7 @@ const EventDetailMain: FC<EventDetailProps> = ({
               </>
             )}
           </div>
-          <EventDetalsList title={event.title} eventDetails={eventDetails} />
+          <EventDetalsList eventDetails={eventDetails} />
         </div>
       )}
     </>

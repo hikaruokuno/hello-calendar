@@ -17,7 +17,7 @@ const LinkButton: FC<{ url: string }> = ({ url }) => {
   return (
     <div className={classes.root}>
       <Button
-        size="small"
+        size="medium"
         variant="outlined"
         color="primary"
         href={url}
