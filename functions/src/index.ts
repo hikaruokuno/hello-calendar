@@ -6,8 +6,8 @@ import admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import firebase from 'firebase/app';
 import { parseFromTimeZone } from 'date-fns-timezone';
-import { isToday, isAfter } from 'date-fns';
-import { getToday } from './utils/date';
+// import { isToday, isAfter } from 'date-fns';
+// import { getToday } from './utils/date';
 
 admin.initializeApp();
 
@@ -372,6 +372,7 @@ export const events = functions
 
         interface EventDetails {
           id: string;
+          title: string;
           performanceDay: string;
           venue: string;
           openingTime: string;
@@ -499,8 +500,12 @@ export const events = functions
                 }
               }
 
+              const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
+                title: isRegularTitle
+                  ? title
+                  : title.substring(title.indexOf('】') + 1),
                 performanceDay: performanceDay,
                 venue: venue,
                 openingTime: openingTime,
@@ -962,6 +967,7 @@ export const events = functions
 
         interface EventDetails {
           id: string;
+          title: string;
           performanceDay: string;
           venue: string;
           openingTime: string;
@@ -1088,9 +1094,12 @@ export const events = functions
                   break;
                 }
               }
-
+              const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
+                title: isRegularTitle
+                  ? title
+                  : title.substring(title.indexOf('】') + 1),
                 performanceDay: performanceDay,
                 venue: venue,
                 openingTime: openingTime,
@@ -1210,36 +1219,55 @@ export const events = functions
     await browser.close();
   });
 
-export const updateStatus = functions
-  .region('asia-northeast1')
-  .runWith({
-    timeoutSeconds: 120,
-    memory: '2GB',
-  })
-  .pubsub.schedule('00 0 * * *')
-  .timeZone('Asia/Tokyo')
-  .onRun(async () => {
-    await admin
-      .firestore()
-      .collection('eventDetails')
-      .where('status', '==', 'wait')
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          if (isToday(doc.data().performanceDate.toDate())) {
-            doc.ref.update({
-              status: 'start',
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
-          } else if (isAfter(getToday(), doc.data().performanceDate.toDate())) {
-            doc.ref.update({
-              status: 'end',
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
-          }
-        });
-      });
-  });
+// export const updateStatus = functions
+//   .region('asia-northeast1')
+//   .runWith({
+//     timeoutSeconds: 120,
+//     memory: '2GB',
+//   })
+//   .pubsub.schedule('00 0 * * *')
+//   .timeZone('Asia/Tokyo')
+//   .onRun(async () => {
+//     await admin
+//       .firestore()
+//       .collection('eventDetails')
+//       .where('status', '==', 'wait')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           if (isToday(doc.data().performanceDate.toDate())) {
+//             doc.ref.update({
+//               status: 'start',
+//               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+//             });
+//           } else if (isAfter(getToday(), doc.data().performanceDate.toDate())) {
+//             doc.ref.update({
+//               status: 'end',
+//               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+//             });
+//           }
+//         });
+//       });
+//   });
+
+// export const updateText = functions
+//   .region('asia-northeast1')
+//   .https.onRequest(async (req, res) => {
+//     await admin
+//       .firestore()
+//       .collection('eventDetails')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           const title = doc.data().title;
+//           if (title.substring(0, 1) === '【') {
+//             doc.ref.update({
+//               title: title.substring(title.indexOf('】') + 1),
+//             });
+//           }
+//         });
+//       });
+//   });
 
 // export const updateText = functions
 //   .region('asia-northeast1')
