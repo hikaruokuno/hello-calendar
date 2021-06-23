@@ -3,7 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Event } from "services/hello-calendar/models/event";
-import { FiberNew, AssignmentOutlined } from "@material-ui/icons";
+import { FiberNew, EventNote } from "@material-ui/icons";
 import { differenceInCalendarDays } from "date-fns";
 
 const useStyles = makeStyles(() =>
@@ -29,7 +29,7 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
   const isOpenConfirmPeriod =
     event.confirmStartDate!.toDate() <= new Date() && !event.isConfirmEnded;
   if (isOpenAppryPeriod) {
-    secondary = `申込期日: ${event.applyPeriodStr.substring(
+    secondary = `申込締切日: ${event.applyPeriodStr.substring(
       event.applyPeriodStr.indexOf("～") + 1
     )}`;
 
@@ -52,7 +52,7 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
     <Link to={`details/${event.type}/${event.id}`}>
       <ListItem button key={event.id} divider>
         <ListItemIcon>
-          <AssignmentOutlined fontSize="large" color="primary" />
+          <EventNote fontSize="large" color="primary" />
         </ListItemIcon>
         <ListItemText
           primary={

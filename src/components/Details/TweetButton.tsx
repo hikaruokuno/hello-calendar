@@ -1,14 +1,13 @@
 import React, { FC } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { TwitterShareButton, TwitterIcon } from "react-share";
-import { getRegularTitle, getTweetPrefecture } from "components/item-tools";
+import { getTweetPrefecture } from "components/item-tools";
 
 const TweetButton: FC<{
-  title: string;
   detail: EventDetail;
   type?: string;
   size?: number;
-}> = ({ title, detail, type, size }) => {
+}> = ({ detail, type, size }) => {
   const url = window.location.href;
   const prefecture = getTweetPrefecture(detail.venue);
   const performanceDay = detail.performanceDay.substring(
@@ -24,10 +23,7 @@ const TweetButton: FC<{
     <>
       <TwitterShareButton
         url={url}
-        title={`『${getRegularTitle(
-          title
-        )}』${prefecture} | ${performanceDay} ${showTime}〜 ${endText}`}
-        hashtags={["ハロカレ"]}
+        title={`『${detail.title}』${prefecture} | ${performanceDay} ${showTime}〜 ${endText} #ハロカレ`}
       >
         <TwitterIcon size={size !== undefined ? size : 32} round />
       </TwitterShareButton>

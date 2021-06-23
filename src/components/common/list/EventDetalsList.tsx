@@ -1,12 +1,9 @@
 import React, { FC } from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import { List, ListItem } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import EventDetailText from "components/common/atoms/EventDetailText";
-import AddCalendarButton from "components/Details/AddCalendarButton";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-import TweetButton from "components/Details/TweetButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,8 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EventDetalsList: FC<{ title: string; eventDetails: EventDetail[] }> = ({
-  title,
+const EventDetalsList: FC<{ eventDetails: EventDetail[] }> = ({
   eventDetails,
 }) => {
   const classes = useStyles();
@@ -28,18 +24,9 @@ const EventDetalsList: FC<{ title: string; eventDetails: EventDetail[] }> = ({
       <List component="nav" aria-label="main mailbox folders">
         {eventDetails.map((detail) => (
           <>
-            <ListItem key={detail.id}>
+            <ListItem key={detail.id} divider>
               <EventDetailText detail={detail} />
             </ListItem>
-            {detail.openText.includes("開演") &&
-            detail.showText.includes("開演") ? (
-              ""
-            ) : (
-              <>
-                <AddCalendarButton title={title} detail={detail} />
-                <TweetButton title={title} detail={detail} />
-              </>
-            )}
           </>
         ))}
       </List>

@@ -3,7 +3,6 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { ListItemIcon, ListItemText, Typography } from "@material-ui/core";
-import { getRegularTitle } from "components/item-tools";
 import TweetButton from "components/Details/TweetButton";
 import { isToday } from "date-fns";
 
@@ -45,15 +44,13 @@ const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
     color = "textSecondary";
   }
 
-  const eventTitle = getRegularTitle(event.title);
-
   return (
     <>
-      <ListItem key={event.id} className={classes.listItem}>
+      <ListItem key={event.id} className={classes.listItem} divider>
         <ListItemText
           primary={
             <>
-              {eventTitle}
+              {event.title}
               <Typography component="span" variant="body2" color={color}>
                 {subTitle}
               </Typography>
@@ -66,7 +63,7 @@ const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
         />
         {isToday(performanceDate) ? (
           <ListItemIcon className={classes.icon}>
-            <TweetButton title={eventTitle} detail={event} type="top" />
+            <TweetButton detail={event} type="top" />
           </ListItemIcon>
         ) : (
           ""
