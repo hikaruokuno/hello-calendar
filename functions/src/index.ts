@@ -523,7 +523,8 @@ export const events = functions
             }
             return eventDetails;
           },
-          eventId
+          eventId,
+          title
         );
 
         interface Event {
@@ -1117,7 +1118,8 @@ export const events = functions
             }
             return eventDetails;
           },
-          eventId
+          eventId,
+          title
         );
 
         interface Event {
