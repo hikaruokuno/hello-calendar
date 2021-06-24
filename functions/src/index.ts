@@ -435,7 +435,7 @@ export const events = functions
 
         // 公演の数だけループして、公演の情報を取得する
         const eventDetails: EventDetails[] = await page.evaluate(
-          (eventId: string) => {
+          (eventId: string, title: string) => {
             const formEntry: NodeListOf<HTMLBaseElement> =
               document.querySelectorAll('form[name="form_Entry"]');
             const eventDetails = [];
@@ -1031,7 +1031,7 @@ export const events = functions
 
         // 公演の数だけループして、公演の情報を取得する
         const eventDetails: EventDetails[] = await page.evaluate(
-          (eventId: string) => {
+          (eventId: string, title: string) => {
             const formEntry: NodeListOf<HTMLBaseElement> =
               document.querySelectorAll('form[name="form_Entry"]');
             const eventDetails = [];
