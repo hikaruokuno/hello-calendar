@@ -6,6 +6,7 @@ import admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import firebase from 'firebase/app';
 import { parseFromTimeZone } from 'date-fns-timezone';
+import { tokenize } from './utils/text-processor';
 // import { isToday, isAfter } from 'date-fns';
 // import { getToday } from './utils/date';
 
@@ -20,6 +21,16 @@ export const events = functions
   .pubsub.schedule('0,5 10,12,15-20 * * 1-5')
   .timeZone('Asia/Tokyo')
   .onRun(async () => {
+    const buildTokenMap = (...words: string[]) => {
+      const tokenMap: { [k: string]: boolean } = {};
+
+      tokenize(...words).forEach((token) => {
+        tokenMap[token] = true;
+      });
+
+      return tokenMap;
+    };
+
     const eventIds: string[] = [];
     await admin
       .firestore()
@@ -383,6 +394,7 @@ export const events = functions
           otherDetail: string | null;
           performer: string | null;
           performanceDate: firebase.firestore.Timestamp | null;
+          tokenMap: { [token: string]: boolean } | null;
           createdAt: firebase.firestore.FieldValue | null;
           updatedAt: firebase.firestore.FieldValue | null;
         }
@@ -500,6 +512,8 @@ export const events = functions
                 }
               }
 
+              const tokenMap = buildTokenMap(title, venue);
+
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -516,6 +530,7 @@ export const events = functions
                 otherDetail: otherDetail,
                 performer: performer,
                 performanceDate: null,
+                tokenMap: tokenMap,
                 createdAt: null,
                 updatedAt: null,
               };
@@ -979,6 +994,7 @@ export const events = functions
           otherDetail: string | null;
           performer: string | null;
           performanceDate: firebase.firestore.Timestamp | null;
+          tokenMap: { [token: string]: boolean } | null;
           createdAt: firebase.firestore.FieldValue | null;
           updatedAt: firebase.firestore.FieldValue | null;
         }
@@ -1095,6 +1111,9 @@ export const events = functions
                   break;
                 }
               }
+
+              const tokenMap = buildTokenMap(title, venue);
+
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -1111,6 +1130,7 @@ export const events = functions
                 otherDetail: otherDetail,
                 performer: performer,
                 performanceDate: null,
+                tokenMap: tokenMap,
                 createdAt: null,
                 updatedAt: null,
               };
@@ -1252,24 +1272,32 @@ export const events = functions
 //       });
 //   });
 
-// export const updateText = functions
-//   .region('asia-northeast1')
-//   .https.onRequest(async (req, res) => {
-//     await admin
-//       .firestore()
-//       .collection('eventDetails')
-//       .get()
-//       .then(function (querySnapshot) {
-//         querySnapshot.forEach(function (doc) {
-//           const title = doc.data().title;
-//           if (title.substring(0, 1) === '【') {
-//             doc.ref.update({
-//               title: title.substring(title.indexOf('】') + 1),
-//             });
-//           }
-//         });
-//       });
-//   });
+export const updateText = functions
+  .region('asia-northeast1')
+  .https.onRequest(async (req, res) => {
+    const buildTokenMap = (...words: string[]) => {
+      const tokenMap: { [k: string]: boolean } = {};
+
+      tokenize(...words).forEach((token) => {
+        tokenMap[token] = true;
+      });
+
+      return tokenMap;
+    };
+    await admin
+      .firestore()
+      .collection('eventDetails')
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          const title = doc.data().title;
+          const venue = doc.data().venue;
+          const tokenMap = buildTokenMap(title, venue);
+
+          doc.ref.set({ tokenMap: tokenMap }, { merge: true });
+        });
+      });
+  });
 
 // export const updateText = functions
 //   .region('asia-northeast1')
