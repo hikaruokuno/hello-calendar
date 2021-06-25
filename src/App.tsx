@@ -6,6 +6,7 @@ import Header from "containers/common/Header";
 import EventDetailsMain from "containers/Details/EventDetailMain";
 import "./App.css";
 import Home from "components/Home";
+import Search from "components/Search";
 
 const App: FC = () => (
   <>
@@ -14,6 +15,7 @@ const App: FC = () => (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="details/:type/:eventId" element={<EventDetailsMain />} />
+        <Route path="search" element={<Search />} />
       </Routes>
     </Container>
   </>

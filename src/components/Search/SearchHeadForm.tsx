@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// import React, { useState } from 'react';
 import InputBase from "@material-ui/core/InputBase";
 import {
   createStyles,
@@ -7,6 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
+// import useEventDetailsSearch from 'hooks/use-performances-search';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,6 +50,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SearchHeadForm = () => {
   const classes = useStyles();
+  const [typing, setTyping] = useState(false);
+  const navigate = useNavigate();
+  // const [value, setValue] = useState('');
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const { performances, loading } = useEventDetailsSearch(value, { limit: 20 });
+  // performances.map((d) => console.log(d.title, d.venue));
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event) event.persist();
+
+  //   setValue(event.target.value);
+  // };
+
+  const onKeyDownHandler = (
+    e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    if (e.key !== "Enter" || typing) {
+      return;
+    }
+    navigate(`search?q=${e.currentTarget.value}`);
+    // console.log(e.currentTarget.value);
+    // setValue(e.currentTarget.value);
+  };
 
   return (
     <div className={classes.search}>
@@ -60,6 +86,10 @@ const SearchHeadForm = () => {
           input: classes.inputInput,
         }}
         inputProps={{ "aria-label": "search" }}
+        // onChange={handleChange}
+        onKeyDown={onKeyDownHandler}
+        onCompositionStart={() => setTyping(true)}
+        onCompositionEnd={() => setTyping(false)}
       />
     </div>
   );
