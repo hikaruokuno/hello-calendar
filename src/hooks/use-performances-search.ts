@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-plusplus */
 import { useContext, useEffect, useRef, useState } from "react";
 
 import firebase from "firebase/app";
 import { FirebaseContext } from "contexts";
 import { tokenize } from "utils/text-processor";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
+import { isAfter } from "date-fns";
 
 type searchOptions = {
   limit?: number;
+  includePast?: boolean;
 };
 const defaultOptions: searchOptions = {
   limit: 30,
@@ -27,7 +30,11 @@ const buildQuery = (
   return query;
 };
 
-const useEventDetailsSearch = (q: string, options?: searchOptions) => {
+const useEventDetailsSearch = (
+  q: string,
+  options?: searchOptions,
+  includePast?: boolean
+) => {
   const [performances, setPerformances] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -46,11 +53,23 @@ const useEventDetailsSearch = (q: string, options?: searchOptions) => {
         setLoading(true);
         try {
           const snap = await query.get();
-
-          const performancesData = snap.docs.map((doc) => ({
-            ...(doc.data() as EventDetail),
-            id: doc.id,
-          }));
+          let performancesData = [];
+          if (includePast) {
+            performancesData = snap.docs.map((doc) => ({
+              ...(doc.data() as EventDetail),
+              id: doc.id,
+            }));
+          } else {
+            for (let i = 0; i < snap.docs.length; i++) {
+              const data = snap.docs[i].data() as EventDetail;
+              if (isAfter(data.performanceDate!.toDate(), new Date())) {
+                performancesData.push(data);
+              }
+            }
+          }
+          performancesData.sort((a, b) =>
+            a.performanceDate!.toDate() < b.performanceDate!.toDate() ? -1 : 1
+          );
           setPerformances(performancesData);
           setError(null);
         } catch (err) {
@@ -65,7 +84,7 @@ const useEventDetailsSearch = (q: string, options?: searchOptions) => {
     load().catch((err) => {
       console.error(err);
     });
-  }, [q]);
+  }, [q, includePast]);
 
   return { performances, loading, error };
 };

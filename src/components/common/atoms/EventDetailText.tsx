@@ -1,9 +1,10 @@
 import React, { FC } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { ListItemText, ListItemIcon } from "@material-ui/core";
+import { ListItemText, ListItemIcon, Typography } from "@material-ui/core";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import AddCalendarButton from "components/Details/AddCalendarButton";
 import TweetButton from "components/Details/TweetButton";
+import { useLocation } from "react-router";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -28,11 +29,23 @@ const useStyles = makeStyles(() =>
 
 const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
   const classes = useStyles();
+  const isSearch = useLocation().pathname === "/search";
 
   return (
     <>
       <ListItemText
-        primary={`${detail.performanceDay}`}
+        primary={
+          isSearch ? (
+            <>
+              <Typography variant="subtitle1" color="textPrimary">
+                {detail.title}
+              </Typography>
+              {detail.performanceDay}
+            </>
+          ) : (
+            detail.performanceDay
+          )
+        }
         secondary={
           <>
             会場: {detail.venue}
