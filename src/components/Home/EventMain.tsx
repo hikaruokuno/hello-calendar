@@ -27,8 +27,8 @@ const EventMain: FC<EventProps> = ({
       <>
         <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />
         <Tabs />
-        <EventList title="当落確認期間中のイベント" events={confirmEvents} />
         <EventList title="申込期間中のイベント" events={applyEvents} />
+        <EventList title="当落確認期間中のイベント" events={confirmEvents} />
       </>
     )}
   </>

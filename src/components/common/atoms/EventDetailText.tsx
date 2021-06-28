@@ -9,7 +9,7 @@ import { useLocation } from "react-router";
 const useStyles = makeStyles(() =>
   createStyles({
     primary: {
-      color: "black",
+      color: "blue",
       fontWeight: "bold",
       fontSize: "large",
     },
@@ -38,7 +38,7 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
           isSearch ? (
             <>
               <Typography variant="subtitle1" color="textPrimary">
-                {detail.title}
+                <strong>{detail.title}</strong>
               </Typography>
               {detail.performanceDay}
             </>

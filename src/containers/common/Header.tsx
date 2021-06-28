@@ -13,10 +13,12 @@ const useStyles = makeStyles(() =>
     },
     title: {
       display: "block",
+      fontSize: "medium",
     },
     subTitle: {
       flexGrow: 1,
       display: "block",
+      fontSize: "small",
     },
   })
 );
@@ -43,7 +45,7 @@ const DenseAppBar: FC = () => {
             color="inherit"
             noWrap
           >
-            &nbsp;&nbsp;&nbsp;&nbsp;ハロプロの
+            &nbsp;&nbsp;&nbsp;&nbsp;忙しいハロヲタのための
             <br />
             &nbsp;&nbsp;&nbsp;&nbsp;FCイベント情報サイト
           </Typography>

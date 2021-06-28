@@ -70,28 +70,33 @@ const SearchHeadForm = () => {
       return;
     }
     navigate(`search?q=${e.currentTarget.value}`);
+    e.currentTarget.value = "";
+    e.currentTarget.blur();
     // console.log(e.currentTarget.value);
     // setValue(e.currentTarget.value);
   };
 
   return (
-    <div className={classes.search}>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
+    <form action="#">
+      <div className={classes.search}>
+        <div className={classes.searchIcon}>
+          <SearchIcon />
+        </div>
+        <InputBase
+          type="search"
+          placeholder="公演名・会場・都道府県で検索"
+          classes={{
+            root: classes.inputRoot,
+            input: classes.inputInput,
+          }}
+          inputProps={{ "aria-label": "search" }}
+          // onChange={handleChange}
+          onKeyDown={onKeyDownHandler}
+          onCompositionStart={() => setTyping(true)}
+          onCompositionEnd={() => setTyping(false)}
+        />
       </div>
-      <InputBase
-        placeholder="公演名・会場・都道府県で検索"
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-        inputProps={{ "aria-label": "search" }}
-        // onChange={handleChange}
-        onKeyDown={onKeyDownHandler}
-        onCompositionStart={() => setTyping(true)}
-        onCompositionEnd={() => setTyping(false)}
-      />
-    </div>
+    </form>
   );
 };
 

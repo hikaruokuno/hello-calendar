@@ -62,11 +62,23 @@ const useEventDetailsSearch = (
           } else {
             for (let i = 0; i < snap.docs.length; i++) {
               const data = snap.docs[i].data() as EventDetail;
+              console.log(data.title);
               if (isAfter(data.performanceDate!.toDate(), new Date())) {
                 performancesData.push(data);
               }
             }
           }
+
+          performancesData = performancesData.filter(
+            (element, index, self) =>
+              self.findIndex(
+                (e) =>
+                  e.title === element.title &&
+                  e.performanceDay === element.performanceDay &&
+                  e.showTime === element.showTime
+              ) === index
+          );
+
           performancesData.sort((a, b) =>
             a.performanceDate!.toDate() < b.performanceDate!.toDate() ? -1 : 1
           );

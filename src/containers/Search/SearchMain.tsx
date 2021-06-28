@@ -1,43 +1,81 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, SyntheticEvent } from "react";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import useEventDetailsSearch from "hooks/use-performances-search";
 import ListCircular from "components/common/atoms/ListCircular";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import EventDetalsList from "components/common/list/EventDetalsList";
 import SearchForm from "components/Search/SearchForm";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    check: {
+      marginTop: "8px",
+    },
+  })
+);
+
 const SearchMainContainer: FC = () => {
-  const query = new URLSearchParams(useLocation().search);
-  const [value, setValue] = useState(query.get("q")!);
+  const classes = useStyles();
+  const query = new URLSearchParams(useLocation().search).get("q");
+  const param = query === null || query === undefined ? "" : query;
+  const [values, setValues] = useState({ q: param });
   const [past, setPast] = useState({
     checked: false,
   });
-  console.log(past);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { performances, loading } = useEventDetailsSearch(
-    value,
+    values.q,
     {
       limit: 20,
     },
     past.checked
   );
+  const navigate = useNavigate();
 
-  if (value !== query.get("q")) {
-    setValue(query.get("q")!);
+  if (values.q !== param) {
+    setValues({ q: param });
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPast({ ...past, [event.target.name]: event.target.checked });
   };
 
+  const handleChange2 = (
+    targetName: string,
+    newValue: string,
+    event?: SyntheticEvent
+  ) => {
+    if (event) event.persist();
+
+    navigate(`?q=${newValue}`, { replace: true });
+    setValues((v) => ({ ...v, [targetName]: newValue }));
+  };
+
+  const clear = () => {
+    navigate("", { replace: true });
+  };
+
+  // const onKeyDownHandler = (
+  //   e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
+  // ) => {
+  //   if (e.key !== 'Enter') {
+  //     return;
+  //   }
+  //   // navigate(`search?q=${e.currentTarget.value}`);
+  //   // console.log(e.currentTarget.value);
+  //   console.log(e.currentTarget.value);
+  //   setValues({ q: e.currentTarget.value });
+  // };
+
   return (
     <>
+      <SearchForm values={values} handleChange={handleChange2} clear={clear} />
       {loading ? (
         <ListCircular />
       ) : (
         <>
-          <SearchForm />
           <FormControlLabel
             control={
               <Checkbox
@@ -50,6 +88,7 @@ const SearchMainContainer: FC = () => {
             }
             label="過去の公演を含む"
             color="secondary"
+            className={classes.check}
           />
           <EventDetalsList eventDetails={performances} />
         </>
