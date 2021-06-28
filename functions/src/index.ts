@@ -418,9 +418,10 @@ export const events = functions
               continue;
             }
             if (
-              array[i].includes('/') ||
-              array[i].includes('／') ||
-              array[i].includes('・')
+              !array[i].includes('MC：') &&
+              (array[i].includes('/') ||
+                array[i].includes('／') ||
+                array[i].includes('・'))
             ) {
               performer = performer + array[i];
               continue;
@@ -491,7 +492,7 @@ export const events = functions
               }
 
               const array = tableInfo[7].innerText.split(/\r\n|\r|\n/);
-              let performer = null;
+              let performer = '';
               for (let i = 0; i < array.length; i++) {
                 if (!array[0].includes('出演')) {
                   break;
@@ -512,7 +513,7 @@ export const events = functions
                 }
               }
 
-              const tokenMap = buildTokenMap(title, venue);
+              const tokenMap = buildTokenMap(title, venue, performer);
 
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
@@ -1018,9 +1019,10 @@ export const events = functions
               continue;
             }
             if (
-              array[i].includes('/') ||
-              array[i].includes('／') ||
-              array[i].includes('・')
+              !array[i].includes('MC：') &&
+              (array[i].includes('/') ||
+                array[i].includes('／') ||
+                array[i].includes('・'))
             ) {
               performer = performer + array[i];
               continue;
@@ -1091,7 +1093,7 @@ export const events = functions
               }
 
               const array = tableInfo[7].innerText.split(/\r\n|\r|\n/);
-              let performer = null;
+              let performer = '';
               for (let i = 0; i < array.length; i++) {
                 if (!array[0].includes('出演')) {
                   break;
@@ -1112,7 +1114,7 @@ export const events = functions
                 }
               }
 
-              const tokenMap = buildTokenMap(title, venue);
+              const tokenMap = buildTokenMap(title, venue, performer);
 
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
@@ -1292,9 +1294,28 @@ export const updateText = functions
         querySnapshot.forEach(function (doc) {
           const title = doc.data().title;
           const venue = doc.data().venue;
-          const tokenMap = buildTokenMap(title, venue);
+          const performer =
+            doc.data().performer === null || doc.data().performer === undefined
+              ? ''
+              : doc.data().performer;
 
-          doc.ref.set({ tokenMap: tokenMap }, { merge: true });
+          let eventPerformer = '';
+          if (doc.data().id === '1410') {
+            eventPerformer = '田中れいな';
+          } else if (doc.data().id === '1409') {
+            eventPerformer = '清水佐紀';
+          }
+
+          const tokenMap = buildTokenMap(
+            title,
+            venue,
+            performer,
+            eventPerformer
+          );
+
+          doc.ref.update({
+            tokenMap: tokenMap,
+          });
         });
       });
   });
