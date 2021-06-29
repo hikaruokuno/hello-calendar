@@ -392,7 +392,7 @@ export const events = functions
           showText: string;
           otherText: string | null;
           otherDetail: string | null;
-          performer: string | null;
+          performer: string;
           performanceDate: firebase.firestore.Timestamp | null;
           tokenMap: { [token: string]: boolean } | null;
           createdAt: firebase.firestore.FieldValue | null;
@@ -513,8 +513,6 @@ export const events = functions
                 }
               }
 
-              const tokenMap = buildTokenMap(title, venue, performer);
-
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -531,7 +529,7 @@ export const events = functions
                 otherDetail: otherDetail,
                 performer: performer,
                 performanceDate: null,
-                tokenMap: tokenMap,
+                tokenMap: null,
                 createdAt: null,
                 updatedAt: null,
               };
@@ -613,6 +611,11 @@ export const events = functions
             admin.firestore.Timestamp.fromDate(performanceDateStr);
           detail.createdAt = admin.firestore.FieldValue.serverTimestamp();
           detail.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+
+          detail.tokenMap =
+            detail.performer !== ''
+              ? buildTokenMap(detail.title, detail.venue, detail.performer)
+              : buildTokenMap(detail.title, detail.venue);
 
           const detailCollectionName = admin
             .firestore()
@@ -993,7 +996,7 @@ export const events = functions
           showText: string;
           otherText: string | null;
           otherDetail: string | null;
-          performer: string | null;
+          performer: string;
           performanceDate: firebase.firestore.Timestamp | null;
           tokenMap: { [token: string]: boolean } | null;
           createdAt: firebase.firestore.FieldValue | null;
@@ -1114,8 +1117,6 @@ export const events = functions
                 }
               }
 
-              const tokenMap = buildTokenMap(title, venue, performer);
-
               const isRegularTitle = title.substring(0, 1) !== '【';
               const eventDetail: EventDetails = {
                 id: eventId,
@@ -1132,7 +1133,7 @@ export const events = functions
                 otherDetail: otherDetail,
                 performer: performer,
                 performanceDate: null,
-                tokenMap: tokenMap,
+                tokenMap: null,
                 createdAt: null,
                 updatedAt: null,
               };
@@ -1218,6 +1219,11 @@ export const events = functions
             admin.firestore.Timestamp.fromDate(performanceDateStr);
           detail.createdAt = admin.firestore.FieldValue.serverTimestamp();
           detail.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+
+          detail.tokenMap =
+            detail.performer !== ''
+              ? buildTokenMap(detail.title, detail.venue, detail.performer)
+              : buildTokenMap(detail.title, detail.venue);
 
           const docId = detailCollectionName.doc('M' + eventId + '-' + index);
           docId
