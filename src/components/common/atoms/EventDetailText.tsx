@@ -29,13 +29,14 @@ const useStyles = makeStyles(() =>
 
 const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
   const classes = useStyles();
-  const isSearch = useLocation().pathname === "/search";
+  const path = useLocation().pathname;
+  const isNotDetail = path === "/peformances" || path === "/search";
 
   return (
     <>
       <ListItemText
         primary={
-          isSearch ? (
+          isNotDetail ? (
             <>
               <Typography variant="subtitle1" color="textPrimary">
                 <strong>{detail.title}</strong>

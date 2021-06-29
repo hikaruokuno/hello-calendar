@@ -31,6 +31,7 @@ const CenteredTabs: FC = () => {
       >
         <Tab label="ハロプロ" onClick={() => setType("hEvents")} />
         <Tab label="M-line" onClick={() => setType("mEvents")} />
+        <Tab label="公演一覧" onClick={() => setType("performances")} />
       </Tabs>
     </Paper>
   );

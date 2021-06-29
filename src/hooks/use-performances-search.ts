@@ -49,7 +49,7 @@ const useEventDetailsSearch = (
     const query = buildQuery(collection, q, optionsRef.current);
 
     const load = async () => {
-      if (q.length >= 1) {
+      if (q.length > 1) {
         setLoading(true);
         try {
           const snap = await query.get();
@@ -62,7 +62,6 @@ const useEventDetailsSearch = (
           } else {
             for (let i = 0; i < snap.docs.length; i++) {
               const data = snap.docs[i].data() as EventDetail;
-              console.log(data.title);
               if (isAfter(data.performanceDate!.toDate(), new Date())) {
                 performancesData.push(data);
               }
