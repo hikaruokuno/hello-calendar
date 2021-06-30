@@ -10,7 +10,6 @@ import { isAfter } from "date-fns";
 
 type searchOptions = {
   limit?: number;
-  includePast?: boolean;
 };
 const defaultOptions: searchOptions = {
   limit: 30,
@@ -74,6 +73,7 @@ const useEventDetailsSearch = (
                 (e) =>
                   e.title === element.title &&
                   e.performanceDay === element.performanceDay &&
+                  e.openingTime === element.openingTime &&
                   e.showTime === element.showTime
               ) === index
           );

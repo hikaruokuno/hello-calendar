@@ -30,7 +30,8 @@ const useStyles = makeStyles(() =>
 const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
   const classes = useStyles();
   const path = useLocation().pathname;
-  const isNotDetail = path === "/peformances" || path === "/search";
+  const isNotDetail =
+    path === "/" || path === "/peformances" || path === "/search";
 
   return (
     <>
