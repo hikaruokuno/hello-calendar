@@ -1,16 +1,23 @@
-import { FirebaseContext } from "contexts";
+import { EventsContext, FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Event } from "services/hello-calendar/models/event";
 // import { startOfDay } from 'date-fns';
 
 const useEventsApply = (type: string) => {
-  const [applyEvents, setEvents] = useState<Event[]>([]);
+  const { applyEvents, setApplyEvents } = useContext(EventsContext);
+  const { applyMEvents, setApplyMEvents } = useContext(EventsContext);
   const [applyLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const firebaseRef = useRef(useContext(FirebaseContext));
 
   useEffect(() => {
+    if (
+      (type === "hEvents" && applyEvents.length !== 0) ||
+      (type === "mEvents" && applyMEvents.length !== 0)
+    ) {
+      return;
+    }
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
@@ -29,7 +36,11 @@ const useEventsApply = (type: string) => {
           ...(doc.data() as Event),
           id: doc.id,
         }));
-        setEvents(eventsData);
+        if (type === "hEvents") {
+          setApplyEvents(eventsData);
+        } else {
+          setApplyMEvents(eventsData);
+        }
         setError(null);
       } catch (err) {
         setError(err);
@@ -40,9 +51,9 @@ const useEventsApply = (type: string) => {
     load().catch((err) => {
       console.error(err);
     });
-  }, [type]);
+  }, [type, applyEvents, setApplyEvents, applyMEvents, setApplyMEvents]);
 
-  return { applyEvents, applyLoading, error };
+  return { applyEvents, applyLoading, error, applyMEvents };
 };
 
 export default useEventsApply;

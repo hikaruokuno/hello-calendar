@@ -52,16 +52,6 @@ const SearchHeadForm = () => {
   const classes = useStyles();
   const [typing, setTyping] = useState(false);
   const navigate = useNavigate();
-  // const [value, setValue] = useState('');
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const { performances, loading } = useEventDetailsSearch(value, { limit: 20 });
-  // performances.map((d) => console.log(d.title, d.venue));
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event) event.persist();
-
-  //   setValue(event.target.value);
-  // };
 
   const onKeyDownHandler = (
     e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -72,8 +62,6 @@ const SearchHeadForm = () => {
     navigate(`search?q=${e.currentTarget.value}`);
     e.currentTarget.value = "";
     e.currentTarget.blur();
-    // console.log(e.currentTarget.value);
-    // setValue(e.currentTarget.value);
   };
 
   return (

@@ -13,30 +13,33 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
       marginTop: "10px",
     },
+    title: {
+      fontSize: "medium",
+    },
   })
 );
 
-const WeekEventList: FC<{ title: string; events: EventDetail[] }> = ({
-  title,
-  events,
-}) => {
-  const classes = useStyles();
+const WeekEventList: FC<{ title: string; events: EventDetail[] }> = React.memo(
+  ({ title, events }) => {
+    const classes = useStyles();
+    console.log("week");
 
-  return (
-    <div className={classes.root}>
-      <Typography variant="h6" color="inherit">
-        <strong>{title}</strong>
-      </Typography>
-      <List component="nav" aria-label="main mailbox folders">
-        {events.map((detail) => (
-          <>
-            <WeekEventListItem event={detail} />
-          </>
-        ))}
-      </List>
-      <Divider />
-    </div>
-  );
-};
+    return (
+      <div className={classes.root}>
+        <Typography color="inherit" className={classes.title}>
+          <strong>{title}</strong>
+        </Typography>
+        <List component="nav" aria-label="main mailbox folders">
+          {events.map((detail) => (
+            <>
+              <WeekEventListItem event={detail} />
+            </>
+          ))}
+        </List>
+        <Divider />
+      </div>
+    );
+  }
+);
 
 export default WeekEventList;

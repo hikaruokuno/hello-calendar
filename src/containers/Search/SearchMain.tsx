@@ -57,17 +57,7 @@ const SearchMainContainer: FC = () => {
     navigate("", { replace: true });
   };
 
-  // const onKeyDownHandler = (
-  //   e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>
-  // ) => {
-  //   if (e.key !== 'Enter') {
-  //     return;
-  //   }
-  //   // navigate(`search?q=${e.currentTarget.value}`);
-  //   // console.log(e.currentTarget.value);
-  //   console.log(e.currentTarget.value);
-  //   setValues({ q: e.currentTarget.value });
-  // };
+  console.log("search-main");
 
   return (
     <>

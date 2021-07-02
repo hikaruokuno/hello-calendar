@@ -1,12 +1,22 @@
 import React, { FC, useState } from "react";
-import usePerformances from "hooks/use-all-performances";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import usePerformances from "hooks/use-performances";
 import ListCircular from "components/common/atoms/ListCircular";
 import EventDetailList from "components/common/list/EventDetalsList";
-// import { useState } from "react";
 import MoreButton from "components/common/atoms/MoreButton";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
+import { Typography } from "@material-ui/core";
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    title: {
+      fontSize: "medium",
+    },
+  })
+);
 
 const PerformanceMainContainer: FC = () => {
+  const classes = useStyles();
   const [array, setArray] = useState<EventDetail[]>([]);
   const [lastDate, setLastDate] = useState(new Date());
 
@@ -23,6 +33,10 @@ const PerformanceMainContainer: FC = () => {
 
   return (
     <>
+      <br />
+      <Typography color="inherit" className={classes.title}>
+        <strong>公演一覧</strong>
+      </Typography>
       <EventDetailList eventDetails={performances} />
       {performLoading ? (
         <ListCircular />

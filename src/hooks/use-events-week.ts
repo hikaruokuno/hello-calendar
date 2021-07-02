@@ -1,18 +1,24 @@
 /* eslint-disable no-plusplus */
-import { FirebaseContext } from "contexts";
+import { FirebaseContext, EventsContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { isAfterThreeDays } from "components/item-tools";
 // import { startOfDay } from 'date-fns';
 
 const useEventsWeek = () => {
-  const [weekEvents, setEvents] = useState<EventDetail[]>([]);
+  // const [weekEvents, setWeekEvents] = useState<EventDetail[]>([]);
+  const { weekEvents, setWeekEvents } = useContext(EventsContext);
   const [weekLoading, setLoading] = useState(false);
+
   const [error, setError] = useState<Error | null>(null);
 
   const firebaseRef = useRef(useContext(FirebaseContext));
 
   useEffect(() => {
+    if (weekEvents.length !== 0) {
+      return;
+    }
+    console.log(weekEvents);
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
@@ -36,7 +42,7 @@ const useEventsWeek = () => {
             eventsData.push(data);
           }
         }
-        setEvents(eventsData);
+        setWeekEvents(eventsData);
         setError(null);
       } catch (err) {
         setError(err);
@@ -47,7 +53,7 @@ const useEventsWeek = () => {
     load().catch((err) => {
       console.error(err);
     });
-  }, []);
+  }, [weekEvents, setWeekEvents]);
 
   return { weekEvents, weekLoading, error };
 };

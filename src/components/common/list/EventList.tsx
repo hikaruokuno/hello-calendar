@@ -12,29 +12,31 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       backgroundColor: theme.palette.background.paper,
     },
+    title: {
+      fontSize: "medium",
+    },
   })
 );
 
-const EventList: FC<{ title: string; events: Event[] }> = ({
-  title,
-  events,
-}) => {
-  const classes = useStyles();
+const EventList: FC<{ title: string; events: Event[]; arrayCount: number }> =
+  React.memo(({ title, events, arrayCount }) => {
+    const classes = useStyles();
+    console.log("back");
 
-  return (
-    <div className={classes.root}>
-      <br />
-      <Typography variant="h6" color="inherit">
-        <strong>{title}</strong>
-      </Typography>
-      <List component="nav" aria-label="main mailbox folders">
-        {events.map((event) => (
-          <EventName event={event} />
-        ))}
-      </List>
-      <Divider />
-    </div>
-  );
-};
+    return (
+      <div className={classes.root}>
+        <br />
+        <Typography color="inherit" className={classes.title}>
+          <strong>{title}</strong>
+        </Typography>
+        <List component="nav" aria-label="main mailbox folders">
+          {events.slice(0, arrayCount).map((event) => (
+            <EventName event={event} />
+          ))}
+        </List>
+        <Divider />
+      </div>
+    );
+  });
 
 export default EventList;

@@ -1,44 +1,27 @@
-import { FirebaseContext } from "contexts";
+import { EventsContext, FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-// import { startOfToday, startOfTomorrow } from 'date-fns';
+import { startOfToday } from "date-fns";
 
-// type SearchOptions = {
-//   limit?: number;
-//   today?: boolean;
-//   lastDate?: Date;
-// }
-
-const usePerformances = (
-  limit: number,
-  lastDate?: Date,
-  array?: EventDetail[]
-) => {
-  const [performances, setPerformances] = useState<EventDetail[]>([]);
+const usePerformances = (limit: number) => {
+  const { performances, setPerformances } = useContext(EventsContext);
   const [performLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [startAfter, setStartAfter] = useState(new Date());
-  const [end, setEnd] = useState(false);
 
   const firebaseRef = useRef(useContext(FirebaseContext));
 
   useEffect(() => {
+    if (performances.length !== 0) {
+      return;
+    }
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
-    const collection =
-      array!.length === 0
-        ? db
-            .collection("eventDetails")
-            .orderBy("performanceDate", "asc")
-            .startAt(lastDate)
-            .limit(20)
-        : db
-            .collection("eventDetails")
-            .orderBy("performanceDate", "asc")
-            .startAfter(lastDate)
-            .limit(limit);
-    console.log(array!.length);
+    const collection = db
+      .collection("eventDetails")
+      .where("performanceDate", ">=", startOfToday())
+      .orderBy("performanceDate", "asc")
+      .limit(limit);
 
     const load = async () => {
       setLoading(true);
@@ -49,7 +32,6 @@ const usePerformances = (
           ...(doc.data() as EventDetail),
           id: doc.id,
         }));
-        setEnd(performancesData.length !== limit);
 
         performancesData = performancesData.filter(
           (element, index, self) =>
@@ -61,11 +43,8 @@ const usePerformances = (
                 e.showTime === element.showTime
             ) === index
         );
-        setStartAfter(performancesData.slice(-1)[0].performanceDate!.toDate());
 
-        performancesData = array!.concat(performancesData);
         setPerformances(performancesData);
-
         setError(null);
       } catch (err) {
         setError(err);
@@ -76,9 +55,9 @@ const usePerformances = (
     load().catch((err) => {
       console.error(err);
     });
-  }, [limit, lastDate, array]);
+  }, [limit, performances, setPerformances]);
 
-  return { performances, performLoading, error, startAfter, end };
+  return { performances, performLoading, error };
 };
 
 export default usePerformances;

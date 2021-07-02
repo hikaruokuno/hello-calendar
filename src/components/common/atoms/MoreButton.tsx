@@ -11,22 +11,21 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const MoreButton: FC<{ onClick: () => void; end: boolean }> = ({
-  onClick,
-  end,
-}) => {
-  const classes = useStyles();
+const MoreButton: FC<{ onClick: () => void; end?: boolean }> = React.memo(
+  ({ onClick, end }) => {
+    const classes = useStyles();
 
-  return (
-    <div className={classes.root}>
-      {end ? (
-        ""
-      ) : (
-        <Button size="medium" variant="outlined" fullWidth onClick={onClick}>
-          もっと見る
-        </Button>
-      )}
-    </div>
-  );
-};
+    return (
+      <div className={classes.root}>
+        {end ? (
+          ""
+        ) : (
+          <Button size="medium" variant="outlined" fullWidth onClick={onClick}>
+            もっと見る
+          </Button>
+        )}
+      </div>
+    );
+  }
+);
 export default MoreButton;

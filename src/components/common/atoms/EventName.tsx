@@ -16,6 +16,9 @@ const useStyles = makeStyles(() =>
     secondary: {
       fontSize: "small",
     },
+    itemIcon: {
+      minWidth: "40px",
+    },
   })
 );
 
@@ -51,8 +54,8 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
   return (
     <Link to={`details/${event.type}/${event.id}`}>
       <ListItem button key={event.id} divider>
-        <ListItemIcon>
-          <EventNote fontSize="large" color="primary" />
+        <ListItemIcon className={classes.itemIcon}>
+          <EventNote fontSize="default" color="primary" />
         </ListItemIcon>
         <ListItemText
           primary={

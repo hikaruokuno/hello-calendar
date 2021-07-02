@@ -5,15 +5,15 @@ import useEventsApply from "hooks/use-events-apply";
 import useEventsConfirm from "hooks/use-events-confirm";
 import useEventsWeek from "hooks/use-events-week";
 import EventMain from "components/Home/EventMain";
-import usePerformances from "hooks/use-performances";
+import usePerformances from "hooks/use-performances-main";
 
 const EventMainContainer: FC = () => {
   const { weekEvents, weekLoading } = useEventsWeek();
 
-  const { applyEvents, applyLoading } = useEventsApply(
+  const { applyEvents, applyMEvents, applyLoading } = useEventsApply(
     useContext(EventTypeContext).type
   );
-  const { confirmEvents, confirmLoading } = useEventsConfirm(
+  const { confirmEvents, confirmMEvents, confirmLoading } = useEventsConfirm(
     useContext(EventTypeContext).type
   );
   const loading =
@@ -25,7 +25,9 @@ const EventMainContainer: FC = () => {
     <EventMain
       weekEvents={weekEvents}
       applyEvents={applyEvents}
+      applyMEvents={applyMEvents}
       confirmEvents={confirmEvents}
+      confirmMEvents={confirmMEvents}
       performances={performances}
       loading={loading}
     />
