@@ -15,9 +15,6 @@ const useEventsWeek = () => {
   const firebaseRef = useRef(useContext(FirebaseContext));
 
   useEffect(() => {
-    if (weekEvents.length !== 0) {
-      return;
-    }
     console.log(weekEvents);
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
@@ -42,7 +39,9 @@ const useEventsWeek = () => {
             eventsData.push(data);
           }
         }
-        setWeekEvents(eventsData);
+        if (eventsData.length !== 0) {
+          setWeekEvents(eventsData);
+        }
         setError(null);
       } catch (err) {
         setError(err);
