@@ -36,11 +36,13 @@ const useEventsApply = (type: string) => {
           ...(doc.data() as Event),
           id: doc.id,
         }));
-        if (type === "hEvents") {
+
+        if (type === "hEvents" && eventsData.length !== 0) {
           setApplyEvents(eventsData);
-        } else {
+        } else if (type === "mEvents" && eventsData.length !== 0) {
           setApplyMEvents(eventsData);
         }
+
         setError(null);
       } catch (err) {
         setError(err);

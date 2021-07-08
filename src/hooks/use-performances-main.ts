@@ -1,7 +1,6 @@
 import { EventsContext, FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-import { startOfToday } from "date-fns";
 
 const usePerformances = (limit: number) => {
   const { performances, setPerformances } = useContext(EventsContext);
@@ -19,7 +18,7 @@ const usePerformances = (limit: number) => {
 
     const collection = db
       .collection("eventDetails")
-      .where("performanceDate", ">=", startOfToday())
+      .where("performanceDate", ">=", new Date())
       .orderBy("performanceDate", "asc")
       .limit(limit);
 

@@ -21,7 +21,7 @@ const PerformanceMainContainer: FC = () => {
   const [lastDate, setLastDate] = useState(new Date());
 
   const { performances, performLoading, startAfter, end } = usePerformances(
-    10,
+    15,
     lastDate,
     array
   );

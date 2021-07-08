@@ -48,6 +48,7 @@ const SearchForm: FC<SearchFormProps> = ({
     <form onSubmit={handleSubmit}>
       <Paper className={classes.root}>
         <TextField
+          id="search"
           type="text"
           className={classes.input}
           placeholder="公演名・会場・都道府県で検索"

@@ -26,18 +26,11 @@ const usePerformances = (
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
 
-    const collection =
-      array.length === 0
-        ? db
-            .collection("eventDetails")
-            .orderBy("performanceDate", "asc")
-            .startAt(lastDate)
-            .limit(20)
-        : db
-            .collection("eventDetails")
-            .orderBy("performanceDate", "asc")
-            .startAfter(lastDate)
-            .limit(limit);
+    const collection = db
+      .collection("eventDetails")
+      .orderBy("performanceDate", "asc")
+      .startAt(lastDate)
+      .limit(array.length === 0 ? 20 : limit);
 
     const load = async () => {
       setLoading(true);

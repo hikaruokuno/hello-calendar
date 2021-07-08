@@ -55,6 +55,7 @@ const SearchMainContainer: FC = () => {
 
   const clear = () => {
     navigate("", { replace: true });
+    document.getElementById("search")!.focus();
   };
 
   console.log("search-main");

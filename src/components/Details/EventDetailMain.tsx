@@ -34,9 +34,9 @@ const EventDetailMain: FC<EventDetailProps> = ({
   loading,
 }) => {
   const classes = useStyles();
-  const applyUrl =
-    "https://www.up-fc.jp/helloproject/fan_AllEventTour_List.php";
-  const confirmUrl = "https://www.up-fc.jp/helloproject/mypage02.php";
+  const type = event.type === "hello" ? "helloproject" : "m-line";
+  const applyUrl = `https://www.up-fc.jp/${type}/fan_AllEventTour_List.php`;
+  const confirmUrl = `https://www.up-fc.jp/${type}/mypage02.php`;
   const isConfirmStarted = event.confirmStartDate!.toDate() <= new Date();
 
   return (

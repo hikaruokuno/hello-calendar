@@ -1,4 +1,4 @@
-import React, { FC, useContext, useCallback, useMemo } from "react";
+import React, { FC, useContext, useCallback } from "react";
 import { EventsCountContext, EventTypeContext } from "contexts";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 
@@ -57,18 +57,17 @@ const EventMain: FC<EventProps> = React.memo(
       setConfirmCount(confirmCount + 5);
     }, [confirmCount, setConfirmCount]);
 
-    const memoWeek = useMemo(
-      () => <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />,
-      [weekEvents]
-    );
-
     return (
       <>
         {loading ? (
           <ListCircular />
         ) : (
           <>
-            {memoWeek}
+            {weekEvents.length === 0 ? (
+              ""
+            ) : (
+              <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />
+            )}
             <Tabs />
             {isEvents ? (
               <>

@@ -37,9 +37,9 @@ const useEventsConfirm = (type: string) => {
           ...(doc.data() as Event),
           id: doc.id,
         }));
-        if (type === "hEvents") {
+        if (type === "hEvents" && eventsData.length !== 0) {
           setConfirmEvents(eventsData);
-        } else {
+        } else if (type === "mEvents" && eventsData.length !== 0) {
           setConfirmMEvents(eventsData);
         }
         setError(null);
