@@ -27,8 +27,14 @@ const App: FC = () => (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="details/:type/:eventId" element={<EventDetailsMain />} />
+          <Route
+            path="_details/:type/:eventId"
+            element={<EventDetailsMain />}
+          />
           <Route path="search" element={<Search />} />
+          <Route path="_search" element={<Search />} />
           <Route path="peformances" element={<Performance />} />
+          <Route path="_peformances" element={<Performance />} />
         </Routes>
       </Container>
       <Footer />

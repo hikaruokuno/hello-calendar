@@ -7,6 +7,8 @@ import * as functions from 'firebase-functions';
 import firebase from 'firebase/app';
 import { parseFromTimeZone } from 'date-fns-timezone';
 import { tokenize } from './utils/text-processor';
+// import * as fs from 'fs';
+// import * as path from 'path';
 // import { isToday, isAfter } from 'date-fns';
 // import { getToday } from './utils/date';
 
@@ -1280,51 +1282,51 @@ export const events = functions
 //       });
 //   });
 
-export const updateText = functions
-  .region('asia-northeast1')
-  .https.onRequest(async (req, res) => {
-    const buildTokenMap = (...words: string[]) => {
-      const tokenMap: { [k: string]: boolean } = {};
+// export const updateText = functions
+//   .region('asia-northeast1')
+//   .https.onRequest(async (req, res) => {
+//     const buildTokenMap = (...words: string[]) => {
+//       const tokenMap: { [k: string]: boolean } = {};
 
-      tokenize(...words).forEach((token) => {
-        tokenMap[token] = true;
-      });
+//       tokenize(...words).forEach((token) => {
+//         tokenMap[token] = true;
+//       });
 
-      return tokenMap;
-    };
-    await admin
-      .firestore()
-      .collection('eventDetails')
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          const title = doc.data().title;
-          const venue = doc.data().venue;
-          const performer =
-            doc.data().performer === null || doc.data().performer === undefined
-              ? ''
-              : doc.data().performer;
+//       return tokenMap;
+//     };
+//     await admin
+//       .firestore()
+//       .collection('eventDetails')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           const title = doc.data().title;
+//           const venue = doc.data().venue;
+//           const performer =
+//             doc.data().performer === null || doc.data().performer === undefined
+//               ? ''
+//               : doc.data().performer;
 
-          let eventPerformer = '';
-          if (doc.data().id === '1410') {
-            eventPerformer = '田中れいな';
-          } else if (doc.data().id === '1409') {
-            eventPerformer = '清水佐紀';
-          }
+//           let eventPerformer = '';
+//           if (doc.data().id === '1410') {
+//             eventPerformer = '田中れいな';
+//           } else if (doc.data().id === '1409') {
+//             eventPerformer = '清水佐紀';
+//           }
 
-          const tokenMap = buildTokenMap(
-            title,
-            venue,
-            performer,
-            eventPerformer
-          );
+//           const tokenMap = buildTokenMap(
+//             title,
+//             venue,
+//             performer,
+//             eventPerformer
+//           );
 
-          doc.ref.update({
-            tokenMap: tokenMap,
-          });
-        });
-      });
-  });
+//           doc.ref.update({
+//             tokenMap: tokenMap,
+//           });
+//         });
+//       });
+//   });
 
 // export const updateText = functions
 //   .region('asia-northeast1')
@@ -1463,3 +1465,63 @@ export const updateText = functions
 //         });
 //     });
 //   });
+
+export const rewritesHtmlDetails = functions.https.onRequest(
+  async (req, res) => {
+    const domain = 'https://hellocale.com';
+    const [, first, second, third] = req.path.split('/');
+    const query = req.query;
+    let title = '';
+    let redirectPath = '';
+    if (first === 'details') {
+      const type = second === 'hello' ? 'hEvents' : 'mEvents';
+      const doc = await admin.firestore().collection(type).doc(third).get();
+      if (!doc.exists) {
+        title = 'イベント詳細 | ハロカレ';
+      } else {
+        title = doc.data()!.title;
+      }
+      redirectPath = `/_${first}/${second}/${third}`;
+    } else if (first === 'search') {
+      title = '公演名・会場・都道府県で検索 | ハロカレ';
+      redirectPath = `/_${first}?q=${query.q}`;
+    } else if (first === 'peformances') {
+      title = '公演一覧 | ハロカレ';
+      redirectPath = `/_${first}`;
+    }
+    console.log(first, second, third);
+    console.log(req.path);
+    console.log(query);
+    const html = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://hellocale.com/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="参加予定のハロプロの公演を、Googleカレンダーに登録できる！​チケット申込期間や入金締切日も確認できるハロー！プロジェクト非公式サイトです。"
+    />
+    <link rel="apple-touch-icon" href="https://hellocale.com/hellocale-logo192.png" />
+    <link rel="manifest" href="https://hellocale.com/manifest.json" />
+    <meta name="twitter:card" content="summary"></meta>
+    <meta property="og:url" content="${domain}${req.path}"/>
+    <meta property="og:title" content="${title}" />
+    <meta
+      property="og:description"
+      content="参加予定のハロプロの公演を、Googleカレンダーに登録できる！​チケット申込期間や入金締切日も確認できるハロー！プロジェクト非公式サイトです。"
+    />
+    <meta
+      property="twitter:image"
+      content="https://hellocale.com/hellocale-logo192.png"
+    /></head>
+    <body><script type="text/javascript">window.location="${redirectPath}";</script></body></html>`;
+    // +
+    // '<meta property="og:description" content="{description}" />' +
+    // `<meta property="og:image" content="https://www.example.com/user_icons/${uid}.png" />`;
+    res.set('Cache-Control', 'public, max-age=600, s-maxage=600');
+    res.status(200).end(html);
+    return;
+  }
+);

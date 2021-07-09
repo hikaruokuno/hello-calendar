@@ -8,12 +8,20 @@
   },
   "hosting": {
     "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
+      {
+        "source": "/details/**",
+        "function": "rewritesHtmlDetails"
+      },
+      {
+        "source": "/search**",
+        "function": "rewritesHtmlDetails"
+      },
+      {
+        "source": "/peformances",
+        "function": "rewritesHtmlDetails"
+      },
       {
         "source": "**",
         "destination": "/index.html"
