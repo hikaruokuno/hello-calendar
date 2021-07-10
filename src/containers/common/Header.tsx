@@ -64,7 +64,7 @@ const DenseAppBar: FC = () => {
                 width="40"
                 height="40"
               />
-              <Typography
+              {/* <Typography
                 className={classes.title}
                 variant="h5"
                 color="inherit"
@@ -75,7 +75,7 @@ const DenseAppBar: FC = () => {
                   <br />
                   カレ
                 </strong>
-              </Typography>
+              </Typography> */}
               <Typography
                 className={classes.subTitle}
                 variant="subtitle2"

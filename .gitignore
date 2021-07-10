@@ -17,6 +17,9 @@
 #　firebase config
 firebase-config.ts
 
+#　google analytics config
+analytics-config.ts
+
 #.env.*
 .firebaserc
 

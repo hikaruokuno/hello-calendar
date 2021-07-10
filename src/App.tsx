@@ -10,6 +10,8 @@ import Home from "components/Home";
 import Search from "components/Search";
 import Performance from "containers/Performance/PerformanceMain";
 import { ThemeProvider } from "@material-ui/styles";
+import addGtag from "utils/add-gtag";
+import useTracking from "hooks/use-tracking";
 
 const theme = createMuiTheme({
   palette: {
@@ -19,27 +21,35 @@ const theme = createMuiTheme({
   },
 });
 
-const App: FC = () => (
-  <>
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Container>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="details/:type/:eventId" element={<EventDetailsMain />} />
-          <Route
-            path="_details/:type/:eventId"
-            element={<EventDetailsMain />}
-          />
-          <Route path="search" element={<Search />} />
-          <Route path="_search" element={<Search />} />
-          <Route path="peformances" element={<Performance />} />
-          <Route path="_peformances" element={<Performance />} />
-        </Routes>
-      </Container>
-      <Footer />
-    </ThemeProvider>
-  </>
-);
+const App: FC = () => {
+  addGtag();
+  useTracking();
+
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <Header />
+        <Container>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="details/:type/:eventId"
+              element={<EventDetailsMain />}
+            />
+            <Route
+              path="_details/:type/:eventId"
+              element={<EventDetailsMain />}
+            />
+            <Route path="search" element={<Search />} />
+            <Route path="_search" element={<Search />} />
+            <Route path="peformances" element={<Performance />} />
+            <Route path="_peformances" element={<Performance />} />
+          </Routes>
+        </Container>
+        <Footer />
+      </ThemeProvider>
+    </>
+  );
+};
 
 export default App;
