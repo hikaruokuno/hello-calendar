@@ -40,7 +40,7 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
       differenceInCalendarDays(
         new Date(),
         new Date(event.applyStartDate!.toDate())
-      ) <= 3;
+      ) <= 2;
   } else if (isOpenConfirmPeriod) {
     secondary = `入金締切日: ${event.paymentDateStr}`;
 
@@ -48,7 +48,7 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
       differenceInCalendarDays(
         new Date(),
         new Date(event.confirmStartDate!.toDate())
-      ) <= 3;
+      ) <= 2;
   }
 
   return (

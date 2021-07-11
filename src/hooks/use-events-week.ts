@@ -34,7 +34,7 @@ const useEventsWeek = () => {
       try {
         const snap = await query.get();
 
-        const eventsData = [];
+        let eventsData = [];
         for (let i = 0; i < snap.docs.length; i++) {
           const data = snap.docs[i].data() as EventDetail;
 
@@ -42,6 +42,18 @@ const useEventsWeek = () => {
             eventsData.push(data);
           }
         }
+
+        eventsData = eventsData.filter(
+          (element, index, self) =>
+            self.findIndex(
+              (e) =>
+                e.title === element.title &&
+                e.performanceDay === element.performanceDay &&
+                e.openingTime === element.openingTime &&
+                e.showTime === element.showTime
+            ) === index
+        );
+
         if (eventsData.length !== 0) {
           setWeekEvents(eventsData);
         }
