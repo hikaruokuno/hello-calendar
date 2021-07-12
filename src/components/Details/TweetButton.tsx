@@ -9,7 +9,7 @@ const TweetButton: FC<{
   type?: string;
   size?: number;
 }> = ({ detail, type, size }) => {
-  const currentUrl = window.location.href.replace("_", "");
+  const currentUrl = window.location.href;
   const url =
     useLocation().pathname === "/search"
       ? currentUrl.substring(0, currentUrl.indexOf("?"))

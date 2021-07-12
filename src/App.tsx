@@ -12,6 +12,7 @@ import Performance from "containers/Performance/PerformanceMain";
 import { ThemeProvider } from "@material-ui/styles";
 import addGtag from "utils/add-gtag";
 import useTracking from "hooks/use-tracking";
+import Redirect from "components/common/atoms/Redirect";
 
 const theme = createMuiTheme({
   palette: {
@@ -36,14 +37,11 @@ const App: FC = () => {
               path="details/:type/:eventId"
               element={<EventDetailsMain />}
             />
-            <Route
-              path="_details/:type/:eventId"
-              element={<EventDetailsMain />}
-            />
+            <Route path="_details/:type/:eventId" element={<Redirect />} />
             <Route path="search" element={<Search />} />
-            <Route path="_search" element={<Search />} />
+            <Route path="_search" element={<Redirect />} />
             <Route path="peformances" element={<Performance />} />
-            <Route path="_peformances" element={<Performance />} />
+            <Route path="_peformances" element={<Redirect />} />
           </Routes>
         </Container>
         <Footer />

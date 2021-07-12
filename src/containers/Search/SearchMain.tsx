@@ -28,7 +28,7 @@ const SearchMainContainer: FC = () => {
   const { performances, loading } = useEventDetailsSearch(
     values.q,
     {
-      limit: 20,
+      limit: 30,
     },
     past.checked
   );
