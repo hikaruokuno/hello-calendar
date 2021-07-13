@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import LinkButton from "components/common/atoms/LinkButton";
 import { getDates } from "components/item-tools";
+import { titleName } from "constants/constants";
 
 const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
   const queries = new URLSearchParams();
@@ -30,7 +31,7 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
   } else if (detail.otherText && !detail.otherDetail) {
     detailText = detailText.concat(`${detail.otherText}\n`);
   }
-  queries.set("details", detailText.concat("@ハロカレ"));
+  queries.set("details", detailText.concat(`@${titleName.main}`));
 
   queries.set("location", `${detail.venue}`);
 

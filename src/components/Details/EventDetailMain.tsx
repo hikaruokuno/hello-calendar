@@ -6,6 +6,7 @@ import EventDetalsList from "components/common/list/EventDetalsList";
 import { Event } from "services/hello-calendar/models/event";
 import { Typography, Link } from "@material-ui/core";
 import { Helmet } from "react-helmet";
+import { titleName } from "constants/constants";
 
 type EventDetailProps = {
   event: Event;
@@ -43,7 +44,9 @@ const EventDetailMain: FC<EventDetailProps> = ({
   return (
     <>
       <Helmet>
-        <title>{event.title} | ハロカレ</title>
+        <title>
+          {event.title} | {titleName.main}
+        </title>
       </Helmet>
       {loading ? (
         <ListCircular />

@@ -7,6 +7,7 @@ import MoreButton from "components/common/atoms/MoreButton";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { Typography } from "@material-ui/core";
 import { Helmet } from "react-helmet";
+import { titleName } from "constants/constants";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,11 +36,13 @@ const PerformanceMainContainer: FC = () => {
   return (
     <>
       <Helmet>
-        <title>公演一覧 | ハロカレ</title>
+        <title>
+          {titleName.performances} | {titleName.main}
+        </title>
       </Helmet>
       <br />
       <Typography color="inherit" className={classes.title}>
-        <strong>公演一覧</strong>
+        <strong>{titleName.performances}</strong>
       </Typography>
       <EventDetailList eventDetails={performances} />
       {performLoading ? (

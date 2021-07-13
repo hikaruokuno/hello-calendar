@@ -3,6 +3,7 @@ import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { TwitterShareButton, TwitterIcon } from "react-share";
 import { getTweetPrefecture } from "components/item-tools";
 import { useLocation } from "react-router";
+import { titleName } from "constants/constants";
 
 const TweetButton: FC<{
   detail: EventDetail;
@@ -28,7 +29,7 @@ const TweetButton: FC<{
     <>
       <TwitterShareButton
         url={url}
-        title={`『${detail.title}』${prefecture} | ${performanceDay} ${showTime}〜 ${endText} #ハロカレ`}
+        title={`『${detail.title}』${prefecture} | ${performanceDay} ${showTime}〜 ${endText} #${titleName.main}`}
       >
         <TwitterIcon size={size !== undefined ? size : 32} round />
       </TwitterShareButton>

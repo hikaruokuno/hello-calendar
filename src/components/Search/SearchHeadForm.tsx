@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import React, { useState } from 'react';
 import InputBase from "@material-ui/core/InputBase";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
-// import useEventDetailsSearch from 'hooks/use-performances-search';
+import { titleName } from "constants/constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     search: {
       position: "relative",
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: "#42a5f5",
+      backgroundColor: "white",
       "&:hover": {
-        backgroundColor: "#42a5f5",
+        backgroundColor: "white",
       },
       marginLeft: theme.spacing(1),
       width: "auto",
@@ -67,7 +66,7 @@ const SearchHeadForm = () => {
         </div>
         <InputBase
           type="search"
-          placeholder="公演名・会場・都道府県で検索"
+          placeholder={titleName.search}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,

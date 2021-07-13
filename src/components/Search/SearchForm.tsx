@@ -5,6 +5,7 @@ import TextField from "@material-ui/core/TextField";
 
 import ClearIcon from "@material-ui/icons/Clear";
 import { IconButton } from "@material-ui/core";
+import { titleName } from "constants/constants";
 
 type SearchFormProps = {
   handleChange?: (targetName: string, newValue: string) => void;
@@ -51,7 +52,7 @@ const SearchForm: FC<SearchFormProps> = ({
           id="search"
           type="text"
           className={classes.input}
-          placeholder="公演名・会場・都道府県で検索"
+          placeholder={titleName.search}
           InputProps={{
             endAdornment: (
               <IconButton onClick={() => clear()}>

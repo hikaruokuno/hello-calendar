@@ -2,11 +2,14 @@ import React, { FC } from "react";
 
 import SearchMainContainer from "containers/Search/SearchMain";
 import { Helmet } from "react-helmet";
+import { titleName } from "constants/constants";
 
 const Search: FC = () => (
   <>
     <Helmet>
-      <title>公演名・会場・都道府県で検索 | ハロカレ</title>
+      <title>
+        {titleName.search} | {titleName.main}
+      </title>
     </Helmet>
     <SearchMainContainer />
   </>
