@@ -14,6 +14,13 @@ const useStyles = makeStyles(() =>
 const LinkButton: FC<{ url: string }> = ({ url }) => {
   const classes = useStyles();
 
+  const pushEventTracking = () => {
+    window.gtag("event", "calendar_click", {
+      event_category: "outbound",
+      event_label: url,
+    });
+  };
+
   return (
     <div className={classes.root}>
       <Button
@@ -23,6 +30,7 @@ const LinkButton: FC<{ url: string }> = ({ url }) => {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={pushEventTracking}
       >
         <CalendarTodayIcon fontSize="small" />
         &nbsp;Googleカレンダーに追加する

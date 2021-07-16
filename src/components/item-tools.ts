@@ -1,4 +1,5 @@
 import { differenceInCalendarDays } from "date-fns";
+import { EventDetail } from "services/hello-calendar/models/eventDetail";
 
 export const getDates = (date: string, time: string) => {
   const slashRemoved = date.replaceAll("/", "");
@@ -7,6 +8,17 @@ export const getDates = (date: string, time: string) => {
   const hhmm = time.replace(":", "");
 
   return `${yyyyMMdd}T${hhmm}00/${yyyyMMdd}T${hhmm}00`;
+};
+
+export const getTime = (detail: EventDetail) => {
+  if (detail.openText === "開演" || detail.openText === "受付") {
+    return detail.openingTime;
+  }
+  if (detail.showText === "開演" || detail.showText === "受付") {
+    return detail.showTime;
+  }
+
+  return "00:00";
 };
 
 export const getRegularTitle = (beforeTitle: string) => {

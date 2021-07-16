@@ -62,17 +62,21 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
             )}
             {detail.openText}: {detail.openingTime}
             <br />
-            {detail.showText}: {detail.showTime}
-            {detail.otherText && detail.otherDetail ? (
+            {detail.showText ? (
               <>
+                {detail.showText}: {detail.showTime}
                 <br />
-                {detail.otherText}: {detail.otherDetail}
               </>
             ) : (
+              ""
+            )}
+            {detail.otherText && detail.otherDetail ? (
               <>
+                {detail.otherText}: {detail.otherDetail}
                 <br />
-                {detail.otherText}
               </>
+            ) : (
+              <>{detail.otherText}</>
             )}
             {detail.openText.includes("開演") &&
             detail.showText.includes("開演") ? (
