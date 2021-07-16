@@ -10,3 +10,7 @@ export const tabName = {
   mLine: "M-line",
   performances: "公演一覧",
 } as const;
+
+// export const collectionName = {
+//   users: 'users',
+// };

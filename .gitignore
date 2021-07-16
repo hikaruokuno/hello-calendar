@@ -33,3 +33,5 @@ analytics-config.ts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+apiGoogleconfig.ts
