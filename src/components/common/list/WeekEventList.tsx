@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const WeekEventList: FC<{ title: string; events: EventDetail[] }> = React.memo(
   ({ title, events }) => {
     const classes = useStyles();
-    console.log("week");
 
     return (
       <div className={classes.root}>

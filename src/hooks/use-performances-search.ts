@@ -29,11 +29,7 @@ const buildQuery = (
   return query;
 };
 
-const useEventDetailsSearch = (
-  q: string,
-  options?: searchOptions,
-  includePast?: boolean
-) => {
+const useEventDetailsSearch = (q: string, options?: searchOptions) => {
   const [performances, setPerformances] = useState<EventDetail[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -53,17 +49,10 @@ const useEventDetailsSearch = (
         try {
           const snap = await query.get();
           let performancesData = [];
-          if (includePast) {
-            performancesData = snap.docs.map((doc) => ({
-              ...(doc.data() as EventDetail),
-              id: doc.id,
-            }));
-          } else {
-            for (let i = 0; i < snap.docs.length; i++) {
-              const data = snap.docs[i].data() as EventDetail;
-              if (isAfter(data.performanceDate!.toDate(), new Date())) {
-                performancesData.push(data);
-              }
+          for (let i = 0; i < snap.docs.length; i++) {
+            const data = snap.docs[i].data() as EventDetail;
+            if (isAfter(data.performanceDate!.toDate(), new Date())) {
+              performancesData.push(data);
             }
           }
 
@@ -95,7 +84,7 @@ const useEventDetailsSearch = (
     load().catch((err) => {
       console.error(err);
     });
-  }, [q, includePast]);
+  }, [q]);
 
   return { performances, loading, error };
 };

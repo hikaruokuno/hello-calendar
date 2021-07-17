@@ -31,7 +31,6 @@ const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
   let subTitle = "";
   const performanceDate = event.performanceDate!.toDate();
   let color: "secondary" | "textPrimary" | "textSecondary";
-  console.log("week-listitem");
 
   if (isToday(performanceDate)) {
     subTitle = ` [本日 ${event.showTime}〜]`;

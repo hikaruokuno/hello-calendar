@@ -47,7 +47,6 @@ const EventMain: FC<EventProps> = React.memo(
     const { confirmCount, setConfirmCount } = useContext(EventsCountContext);
     const isEvents = type === "hEvents" || type === "mEvents";
     const isHello = type === "hEvents";
-    console.log(applyEvents);
 
     const applyMore = useCallback(() => {
       setApplyCount(applyCount + 5);

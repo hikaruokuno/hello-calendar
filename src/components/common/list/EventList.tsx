@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const EventList: FC<{ title: string; events: Event[]; arrayCount: number }> =
   React.memo(({ title, events, arrayCount }) => {
     const classes = useStyles();
-    console.log("back");
 
     return (
       <div className={classes.root}>
