@@ -11,6 +11,6 @@ export const tabName = {
   performances: "公演一覧",
 } as const;
 
-// export const collectionName = {
-//   users: 'users',
-// };
+export const collectionName = {
+  users: "users",
+};

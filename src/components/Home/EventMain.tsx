@@ -2,13 +2,6 @@ import React, { FC, useContext, useCallback } from "react";
 import { EventsCountContext, EventTypeContext } from "contexts";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { gapi } from "gapi-script";
-import Config from "apiGoogleconfig";
-import firebase from "firebase";
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
 
 import Tabs from "components/common/tabs/Tabs";
 import EventList from "components/common/list/EventList";
@@ -38,35 +31,6 @@ const useStyles = makeStyles(() =>
     },
   })
 );
-
-const initClient = () => {
-  gapi.client
-    .init(Config)
-    .then(() => {
-      console.log("signIn", gapi.auth2.getAuthInstance().isSignedIn.get());
-
-      // Listen for sign-in state changes.
-      // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-      // Handle the initial sign-in state.
-      // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-      // if (onLoadCallback) {
-      //   onLoadCallback();
-      // }
-    })
-    .catch((e: any) => {
-      console.log(e);
-    });
-};
-
-const handleClientLoad = () => {
-  const script = document.createElement("script");
-  script.src = "https://apis.google.com/js/api.js";
-  document.body.appendChild(script);
-  script.onload = (): void => {
-    gapi.load("client:auth2", initClient);
-  };
-};
-handleClientLoad();
 
 const EventMain: FC<EventProps> = React.memo(
   ({
@@ -131,31 +95,8 @@ const EventMain: FC<EventProps> = React.memo(
       }
     };
 
-    const implementsLoginRes = (
-      response: any
-    ): response is GoogleLoginResponse =>
-      response !== null && typeof response === "object";
-    const responseGoogle = async (
-      response: GoogleLoginResponse | GoogleLoginResponseOffline
-    ) => {
-      if (implementsLoginRes(response)) {
-        const credential = firebase.auth.GoogleAuthProvider.credential(
-          response.tokenId
-        );
-        await firebase.auth().signInWithCredential(credential);
-        console.log("登録されたか？");
-      }
-    };
-
     return (
       <>
-        <GoogleLogin
-          clientId={Config.clientId}
-          buttonText="Googleアカウントでログイン"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          cookiePolicy="single_host_origin"
-        />
         <button type="button" onClick={() => onclickButton()}>
           Button
         </button>

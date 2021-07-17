@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-// import { User } from 'services/hello-calendar/models/user';
+import { User } from "services/hello-calendar/models/user";
 // import findUser from 'services/hello-calendar/find-user';
 import {
   FirebaseContext,
@@ -13,7 +13,7 @@ import {
 } from "./contexts";
 
 const FirebaseApp: FC = ({ children }) => {
-  // const auth = firebase.auth();
+  const auth = firebase.auth();
   const db = firebase.firestore();
   const [type, setType] = useState(useContext(EventTypeContext).type);
   const [weekEvents, setWeekEvents] = useState(
@@ -41,27 +41,28 @@ const FirebaseApp: FC = ({ children }) => {
     useContext(EventsCountContext).confirmCount
   );
 
-  // const [user, setUser] = useState<User | null>(null);
-  // const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-  //   console.log('変更されたよ');
-  //   if (firebaseUser) {
-  //     console.log('firebaseUser');
-  //     if (!user) {
-  //       // create user
-  //       const theUser = await findUser(db, firebaseUser.uid);
-  //       setUser(theUser);
-  //       console.log('findUser');
-  //     }
-  //   } else {
-  //     console.log('clearUser');
-  //     setUser(null);
-  //   }
-  // });
-  // unsubscribe();
+  const [user, setUser] = useState<User | null>(null);
+  const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+    console.log(firebaseUser?.uid);
+    if (firebaseUser) {
+      console.log("firebaseUser");
+      console.log(user);
+      // if (!user) {
+      // create user
+      // const theUser = await findUser(db, firebaseUser.uid);
+      // setUser(theUser);
+      console.log("findUser");
+      // }
+    } else {
+      console.log("clearUser");
+      setUser(null);
+    }
+  });
+  unsubscribe();
 
   return (
     // <FirebaseContext.Provider value={{ db, auth }}>
-    <FirebaseContext.Provider value={{ db }}>
+    <FirebaseContext.Provider value={{ db, auth }}>
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider
           value={{

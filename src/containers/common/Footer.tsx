@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import Signin from "components/Signin";
 // import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(() =>
@@ -35,6 +36,7 @@ const Footer: FC = () => {
           >
             <strong>Footer</strong>
           </Typography> */}
+          <Signin />
         </Toolbar>
       </AppBar>
     </div>
