@@ -10,6 +10,7 @@ import {
   GoogleLoginResponseOffline,
   GoogleLogout,
 } from "react-google-login";
+import { useNavigate } from "react-router";
 
 const initClient = () => {
   gapi.client
@@ -42,7 +43,8 @@ handleClientLoad();
 
 const Signin: FC = () => {
   // const { auth } = useContext(FirebaseContext);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  // const { pathname } = useLocation();
   // const uiConfig: firebaseui.auth.Config = {
   //   signInFlow: 'redirect',
   //   signInOptions: [
@@ -77,6 +79,8 @@ const Signin: FC = () => {
 
   const logout = () => {
     console.log("Success: logout");
+    navigate("/", { replace: true });
+
     // if (gapi) {
     //   await gapi.auth2.getAuthInstance().signOut();
     // } else {
@@ -92,9 +96,10 @@ const Signin: FC = () => {
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy="single_host_origin"
+        // redirectUri={pathname}
       />
       <GoogleLogout
-        clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+        clientId={Config.clientId}
         buttonText="ログアウト"
         onLogoutSuccess={logout}
       />

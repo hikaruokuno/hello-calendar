@@ -1,10 +1,8 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useEffect, useState, useRef } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import { User } from "services/hello-calendar/models/user";
-// import findUser from 'services/hello-calendar/find-user';
 import {
   FirebaseContext,
   EventTypeContext,
@@ -15,6 +13,7 @@ import {
 const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
   const db = firebase.firestore();
+  const counterRef = useRef(0);
   const [type, setType] = useState(useContext(EventTypeContext).type);
   const [weekEvents, setWeekEvents] = useState(
     useContext(EventsContext).weekEvents
@@ -41,28 +40,28 @@ const FirebaseApp: FC = ({ children }) => {
     useContext(EventsCountContext).confirmCount
   );
 
-  const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setLogin] = useState(false);
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-    console.log(firebaseUser?.uid);
     if (firebaseUser) {
-      console.log("firebaseUser");
-      console.log(user);
-      // if (!user) {
-      // create user
-      // const theUser = await findUser(db, firebaseUser.uid);
-      // setUser(theUser);
-      console.log("findUser");
-      // }
+      if (counterRef.current === 1) {
+        console.log("loggedIn");
+        setLogin(true);
+      }
     } else {
-      console.log("clearUser");
-      setUser(null);
+      setLogin(false);
+      console.log("loggedOut");
     }
   });
-  unsubscribe();
+
+  useEffect(() => {
+    if (isLoggedIn) counterRef.current += 1;
+
+    return unsubscribe;
+  });
 
   return (
     // <FirebaseContext.Provider value={{ db, auth }}>
-    <FirebaseContext.Provider value={{ db, auth }}>
+    <FirebaseContext.Provider value={{ db, auth, isLoggedIn }}>
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider
           value={{

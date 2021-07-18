@@ -4,24 +4,17 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { Event } from "services/hello-calendar/models/event";
-import { User } from "services/hello-calendar/models/user";
 
 type FirebaseContextValue = {
   auth: firebase.auth.Auth | null;
   db: firebase.firestore.Firestore | null;
+  isLoggedIn: boolean;
 };
 
 export const FirebaseContext = createContext<FirebaseContextValue>({
   auth: null,
   db: null,
-});
-
-type UserContextValue = {
-  user: User | null;
-};
-
-export const UserContext = createContext<UserContextValue>({
-  user: null,
+  isLoggedIn: false,
 });
 
 type EventTypeContextValue = {
