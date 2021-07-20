@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import firebase from "firebase/app";
 // import { FirebaseContext } from 'contexts';
 // import { StyledFirebaseAuth } from 'react-firebaseui';
@@ -11,6 +11,7 @@ import {
   GoogleLogout,
 } from "react-google-login";
 import { useNavigate } from "react-router";
+import { FirebaseContext } from "contexts";
 
 const initClient = () => {
   gapi.client
@@ -44,6 +45,7 @@ handleClientLoad();
 const Signin: FC = () => {
   // const { auth } = useContext(FirebaseContext);
   const navigate = useNavigate();
+  const { setCredential } = useContext(FirebaseContext);
   // const { pathname } = useLocation();
   // const uiConfig: firebaseui.auth.Config = {
   //   signInFlow: 'redirect',
@@ -72,13 +74,23 @@ const Signin: FC = () => {
       const credential = firebase.auth.GoogleAuthProvider.credential(
         response.tokenId
       );
-      await firebase.auth().signInWithCredential(credential);
-      console.log("登録されたか？");
+      await firebase
+        .auth()
+        .signInWithCredential(credential)
+        .then(() => {
+          console.log(credential);
+          setCredential(credential);
+        });
     }
   };
 
-  const logout = () => {
-    console.log("Success: logout");
+  const logout = async () => {
+    await firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("ログアウトしました");
+      });
     navigate("/", { replace: true });
 
     // if (gapi) {

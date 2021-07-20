@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState, useRef } from "react";
+import React, { FC, useContext, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -13,7 +13,6 @@ import {
 const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const counterRef = useRef(0);
   const [type, setType] = useState(useContext(EventTypeContext).type);
   const [weekEvents, setWeekEvents] = useState(
     useContext(EventsContext).weekEvents
@@ -39,12 +38,13 @@ const FirebaseApp: FC = ({ children }) => {
   const [confirmCount, setConfirmCount] = useState(
     useContext(EventsCountContext).confirmCount
   );
-
+  const [credential, setCredential] =
+    useState<firebase.auth.OAuthCredential | null>(null);
   const [isLoggedIn, setLogin] = useState(false);
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
       console.log("firebaseUser");
-      if (counterRef.current === 1) {
+      if (credential) {
         console.log("loggedIn");
         setLogin(true);
       }
@@ -53,16 +53,20 @@ const FirebaseApp: FC = ({ children }) => {
       console.log("loggedOut");
     }
   });
+  unsubscribe();
 
-  useEffect(() => {
-    if (isLoggedIn) counterRef.current += 1;
+  // useEffect(() => {
+  //   if (credential) counterRef.current += 1;
+  //   console.log('current', counterRef.current);
 
-    return unsubscribe;
-  });
+  //   return unsubscribe;
+  // });
 
   return (
     // <FirebaseContext.Provider value={{ db, auth }}>
-    <FirebaseContext.Provider value={{ db, auth, isLoggedIn }}>
+    <FirebaseContext.Provider
+      value={{ db, auth, isLoggedIn, credential, setCredential }}
+    >
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider
           value={{

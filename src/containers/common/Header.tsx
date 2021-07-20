@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -39,7 +39,8 @@ const DenseAppBar: FC = () => {
   const classes = useStyles();
   const navigete = useNavigate();
   const path = useLocation().pathname;
-  const [isLoggedIn] = useState(useContext(FirebaseContext).isLoggedIn);
+  const { isLoggedIn } = useContext(FirebaseContext);
+  console.log("isLoggedIn", isLoggedIn);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
   console.log(isLoggedIn);
