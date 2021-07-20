@@ -5,6 +5,7 @@ import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { ListItemIcon, ListItemText, Typography } from "@material-ui/core";
 import TweetButton from "components/Details/TweetButton";
 import { isToday } from "date-fns";
+import { getTime } from "components/item-tools";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,14 +34,14 @@ const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
   let color: "secondary" | "textPrimary" | "textSecondary";
 
   if (isToday(performanceDate)) {
-    subTitle = ` [本日 ${event.showTime}〜]`;
+    subTitle = ` [本日 ${getTime(event)}〜]`;
     color = "secondary";
   } else {
     const MMdd = event.performanceDay.substring(
       5,
       event.performanceDay.indexOf("(")
     );
-    subTitle = ` [${MMdd} ${event.showTime}〜]`;
+    subTitle = ` [${MMdd} ${getTime(event)}〜]`;
     color = "textSecondary";
   }
 

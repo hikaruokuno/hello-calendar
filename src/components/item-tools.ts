@@ -18,7 +18,7 @@ export const getTime = (detail: EventDetail) => {
     return detail.showTime;
   }
 
-  return "00:00";
+  return "";
 };
 
 export const getRegularTitle = (beforeTitle: string) => {

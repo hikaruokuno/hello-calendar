@@ -22,8 +22,7 @@ const TweetButton: FC<{
   );
   const otherText =
     detail.otherText && !detail.otherDetail ? ` | ${detail.otherText}` : "";
-  const time = getTime(detail);
-  const showTime = time === "00:00" ? "" : time;
+  const showTime = getTime(detail);
   const endText = type === "top" ? "に来ました！" : "に行きます！";
   const pushEventTracking = () => {
     window.gtag("event", "tweet_click", {
