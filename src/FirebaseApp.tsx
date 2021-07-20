@@ -43,6 +43,7 @@ const FirebaseApp: FC = ({ children }) => {
   const [isLoggedIn, setLogin] = useState(false);
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
+      console.log("firebaseUser");
       if (counterRef.current === 1) {
         console.log("loggedIn");
         setLogin(true);

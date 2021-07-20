@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create("width"),
       width: "0ch",
       "&:focus": {
-        width: "30ch",
+        width: "22ch",
       },
     },
   })
@@ -66,7 +66,7 @@ const SearchHeadForm = () => {
         </div>
         <InputBase
           type="search"
-          placeholder={titleName.search}
+          placeholder={titleName.searchHeader}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput,

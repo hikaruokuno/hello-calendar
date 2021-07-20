@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext, useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -6,7 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import SearchHeadForm from "components/Search/SearchHeadForm";
 import { useNavigate, useLocation } from "react-router";
-import { Container } from "@material-ui/core";
+import { Button, Container } from "@material-ui/core";
+
+import { FirebaseContext } from "contexts";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -37,8 +39,10 @@ const DenseAppBar: FC = () => {
   const classes = useStyles();
   const navigete = useNavigate();
   const path = useLocation().pathname;
+  const [isLoggedIn] = useState(useContext(FirebaseContext).isLoggedIn);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
+  console.log(isLoggedIn);
 
   return (
     <div className={classes.root}>
@@ -69,6 +73,11 @@ const DenseAppBar: FC = () => {
             </IconButton>
             <div className={classes.dammy} />
             <SearchHeadForm />
+            {isLoggedIn ? (
+              <Button>ログアウト</Button>
+            ) : (
+              <Button>ログイン</Button>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
