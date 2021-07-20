@@ -23,7 +23,13 @@ const TweetButton: FC<{
   const otherText =
     detail.otherText && !detail.otherDetail ? ` | ${detail.otherText}` : "";
   const showTime = getTime(detail);
-  const endText = type === "top" ? "に来ました！" : "に行きます！";
+
+  let endText = "";
+  if (detail.venue === "オンライン") {
+    endText = "に参加します！";
+  } else {
+    endText = type === "top" ? "に来ました！" : "に行きます！";
+  }
   const pushEventTracking = () => {
     window.gtag("event", "tweet_click", {
       event_category: "outbound",

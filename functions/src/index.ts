@@ -522,7 +522,7 @@ export const events = functions
                   ? title
                   : title.substring(title.indexOf('】') + 1),
                 performanceDay: performanceDay,
-                venue: venue,
+                venue: venue.includes('オンライン') ? 'オンライン' : venue,
                 openingTime: openingTime,
                 showTime: showTime,
                 openText: openText,
@@ -1126,7 +1126,7 @@ export const events = functions
                   ? title
                   : title.substring(title.indexOf('】') + 1),
                 performanceDay: performanceDay,
-                venue: venue,
+                venue: venue.includes('オンライン') ? 'オンライン' : venue,
                 openingTime: openingTime,
                 showTime: showTime,
                 openText: openText,
