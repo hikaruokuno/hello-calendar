@@ -38,7 +38,14 @@ const useEventsWeek = () => {
           const data = snap.docs[i].data() as EventDetail;
 
           if (isAfterThreeDays(data.performanceDate!.toDate())) {
-            eventsData.push(data);
+            if (
+              (data.openText.includes("開演") &&
+                !data.showText.includes("開演")) ||
+              (!data.openText.includes("開演") &&
+                data.showText.includes("開演"))
+            ) {
+              eventsData.push(data);
+            }
           }
         }
 

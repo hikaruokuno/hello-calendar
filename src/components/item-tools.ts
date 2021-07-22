@@ -52,4 +52,4 @@ export const getTweetPrefecture = (beforeText: string) => {
 };
 
 export const isAfterThreeDays = (date: Date) =>
-  differenceInCalendarDays(new Date(date), new Date()) <= 3;
+  differenceInCalendarDays(new Date(date), new Date()) <= 1;
