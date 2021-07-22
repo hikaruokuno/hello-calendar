@@ -13,6 +13,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import addGtag from "utils/add-gtag";
 import useTracking from "hooks/use-tracking";
 import Redirect from "components/common/atoms/Redirect";
+import Signin from "components/Signin";
 
 const theme = createMuiTheme({
   palette: {
@@ -30,7 +31,7 @@ const App: FC = () => {
     <>
       <ThemeProvider theme={theme}>
         <Header />
-        <Container>
+        <Container fixed>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
@@ -42,6 +43,7 @@ const App: FC = () => {
             <Route path="_search" element={<Redirect />} />
             <Route path="peformances" element={<Performance />} />
             <Route path="_peformances" element={<Redirect />} />
+            <Route path="login" element={<Signin />} />
           </Routes>
         </Container>
         <Footer />

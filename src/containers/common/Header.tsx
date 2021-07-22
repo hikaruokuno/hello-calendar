@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router";
 import { Button, Container } from "@material-ui/core";
 
 import { FirebaseContext } from "contexts";
+import SignOut from "components/Signin/SignOut";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,7 +44,16 @@ const DenseAppBar: FC = () => {
   console.log("isLoggedIn", isLoggedIn);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
-  console.log(isLoggedIn);
+  const LoginButton = () => {
+    if (isLoggedIn) {
+      return <SignOut />;
+    }
+    if (path === "/login") {
+      return <></>;
+    }
+
+    return <Button href="login">ログイン</Button>;
+  };
 
   return (
     <div className={classes.root}>
@@ -74,11 +84,7 @@ const DenseAppBar: FC = () => {
             </IconButton>
             <div className={classes.dammy} />
             <SearchHeadForm />
-            {isLoggedIn ? (
-              <Button>ログアウト</Button>
-            ) : (
-              <Button>ログイン</Button>
-            )}
+            <LoginButton />
           </Toolbar>
         </Container>
       </AppBar>

@@ -3,67 +3,49 @@ import firebase from "firebase/app";
 // import { FirebaseContext } from 'contexts';
 // import { StyledFirebaseAuth } from 'react-firebaseui';
 import Config from "apiGoogleconfig";
-// import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 import {
   GoogleLogin,
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
-  GoogleLogout,
+  // GoogleLogout,
 } from "react-google-login";
-import { useNavigate } from "react-router";
+// import { useNavigate } from 'react-router';
 import { FirebaseContext } from "contexts";
+import Avatar from "@material-ui/core/Avatar";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
-const initClient = () => {
-  gapi.client
-    .init(Config)
-    .then(() => {
-      console.log("signIn", gapi.auth2.getAuthInstance().isSignedIn.get());
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
-      // Listen for sign-in state changes.
-      // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-      // Handle the initial sign-in state.
-      // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-      // if (onLoadCallback) {
-      //   onLoadCallback();
-      // }
-    })
-    .catch((e: any) => {
-      console.log(e);
-    });
-};
-
-const handleClientLoad = () => {
-  const script = document.createElement("script");
-  script.src = "https://apis.google.com/js/api.js";
-  document.body.appendChild(script);
-  script.onload = (): void => {
-    gapi.load("client:auth2", initClient);
-  };
-};
-handleClientLoad();
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    paper: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: theme.spacing(8),
+      marginBottom: theme.spacing(8),
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    title: {
+      marginBottom: theme.spacing(1),
+    },
+    subTitle: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 const Signin: FC = () => {
-  // const { auth } = useContext(FirebaseContext);
   const navigate = useNavigate();
-  const { setCredential } = useContext(FirebaseContext);
-  // const { pathname } = useLocation();
-  // const uiConfig: firebaseui.auth.Config = {
-  //   signInFlow: 'redirect',
-  //   signInOptions: [
-  //     {
-  //       provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-  //       scopes: ['https://www.googleapis.com/auth/calendar.events'],
-  //     },
-  //   ],
-  //   callbacks: {
-  //     signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-  //       const dest = redirectUrl || '/';
-  //       navigate(dest, { replace: true });
-
-  //       return false;
-  //     },
-  //   },
-  // };
+  const { isLoggedIn } = useContext(FirebaseContext);
+  const classes = useStyles();
 
   const implementsLoginRes = (response: any): response is GoogleLoginResponse =>
     response !== null && typeof response === "object";
@@ -79,42 +61,43 @@ const Signin: FC = () => {
         .signInWithCredential(credential)
         .then(() => {
           console.log(credential);
-          setCredential(credential);
+          navigate("/", { replace: true });
         });
     }
   };
 
-  const logout = async () => {
-    await firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        console.log("ログアウトしました");
-      });
-    navigate("/", { replace: true });
-
-    // if (gapi) {
-    //   await gapi.auth2.getAuthInstance().signOut();
-    // } else {
-    //   console.log('Error: this.gapi not loaded');
-    // }
-  };
-
   return (
     <>
-      <GoogleLogin
-        clientId={Config.clientId}
-        buttonText="Googleアカウントでログイン"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}
-        cookiePolicy="single_host_origin"
-        // redirectUri={pathname}
-      />
-      <GoogleLogout
-        clientId={Config.clientId}
-        buttonText="ログアウト"
-        onLogoutSuccess={logout}
-      />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          {isLoggedIn ? (
+            <Typography component="h1" variant="h5" className={classes.title}>
+              ログイン済
+            </Typography>
+          ) : (
+            <>
+              <Typography component="h1" variant="h5" className={classes.title}>
+                ログイン
+              </Typography>
+              <Typography variant="body1" className={classes.subTitle}>
+                ログインすると、予定をワンタップで追加できるようになります！
+              </Typography>
+              <GoogleLogin
+                clientId={Config.clientId}
+                buttonText="Googleアカウントでログイン"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy="single_host_origin"
+                // redirectUri={pathname}
+              />
+            </>
+          )}
+        </div>
+      </Container>
     </>
   );
 };
