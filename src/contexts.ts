@@ -9,12 +9,14 @@ type FirebaseContextValue = {
   auth: firebase.auth.Auth | null;
   db: firebase.firestore.Firestore | null;
   isLoggedIn: boolean;
+  loading: boolean;
 };
 
 export const FirebaseContext = createContext<FirebaseContextValue>({
   auth: null,
   db: null,
   isLoggedIn: false,
+  loading: true,
 });
 
 type EventTypeContextValue = {

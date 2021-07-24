@@ -11,27 +11,6 @@ import {
   EventsCountContext,
 } from "./contexts";
 
-const initClient = () => {
-  gapi.client
-    .init(Config)
-    .then(() => {
-      console.log("signIn", gapi.auth2.getAuthInstance().isSignedIn.get());
-    })
-    .catch((e: any) => {
-      console.log(e);
-    });
-};
-
-const handleClientLoad = () => {
-  const script = document.createElement("script");
-  script.src = "https://apis.google.com/js/api.js";
-  document.body.appendChild(script);
-  script.onload = (): void => {
-    gapi.load("client:auth2", initClient);
-  };
-};
-handleClientLoad();
-
 const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
   const db = firebase.firestore();
@@ -62,10 +41,36 @@ const FirebaseApp: FC = ({ children }) => {
     useContext(EventsCountContext).confirmCount
   );
   const [isLoggedIn, setLogin] = useState(false);
+  const [isGoogleSignIn, setIsGoogleSignIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const initClient = () => {
+    gapi.client
+      .init(Config)
+      .then(() => {
+        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+          setIsGoogleSignIn(true);
+        }
+        setLoading(false);
+      })
+      .catch((e: any) => {
+        console.log(e);
+      });
+  };
+
+  const handleClientLoad = () => {
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/api.js";
+    document.body.appendChild(script);
+    script.onload = (): void => {
+      gapi.load("client:auth2", initClient);
+    };
+  };
+  handleClientLoad();
+
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-    if (firebaseUser && gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    if (firebaseUser && isGoogleSignIn) {
       console.log("loggedIn");
-      console.log(firebaseUser);
       setLogin(true);
     } else {
       setLogin(false);
@@ -76,7 +81,7 @@ const FirebaseApp: FC = ({ children }) => {
 
   return (
     // <FirebaseContext.Provider value={{ db, auth }}>
-    <FirebaseContext.Provider value={{ db, auth, isLoggedIn }}>
+    <FirebaseContext.Provider value={{ db, auth, isLoggedIn, loading }}>
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider
           value={{

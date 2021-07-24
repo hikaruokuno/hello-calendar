@@ -1,7 +1,6 @@
 import React, { FC, useContext, useCallback } from "react";
 import { EventsCountContext, EventTypeContext } from "contexts";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { gapi } from "gapi-script";
 
 import Tabs from "components/common/tabs/Tabs";
 import EventList from "components/common/list/EventList";
@@ -58,51 +57,8 @@ const EventMain: FC<EventProps> = React.memo(
       setConfirmCount(confirmCount + 5);
     }, [confirmCount, setConfirmCount]);
 
-    const onclickButton = async () => {
-      console.log("sign", gapi.auth2.getAuthInstance().isSignedIn.get());
-      const event = {
-        summary: "ワンタッチでイベント登録！テスト！！！！",
-        location: "中野サンプラザ",
-        description: "イベントだよーん",
-        start: {
-          dateTime: "2021-07-15T09:00:00-07:00",
-          timeZone: "Asia/Tokyo",
-        },
-        end: {
-          dateTime: "2021-07-15T17:00:00-07:00",
-          timeZone: "Asia/Tokyo",
-        },
-      };
-
-      if (gapi) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        await gapi.client.calendar.events.insert({
-          calendarId: "primary",
-          resource: event,
-          sendUpdates: "none",
-        });
-      }
-      console.log("Error: this.gapi not loaded");
-
-      return false;
-    };
-
-    const handleAuthSignOutClick = async () => {
-      if (gapi) {
-        await gapi.auth2.getAuthInstance().signOut();
-      } else {
-        console.log("Error: this.gapi not loaded");
-      }
-    };
-
     return (
       <>
-        <button type="button" onClick={() => onclickButton()}>
-          Button
-        </button>
-        <button type="button" onClick={() => handleAuthSignOutClick()}>
-          サインアウト
-        </button>
         {loading ? (
           <ListCircular />
         ) : (
