@@ -10,6 +10,7 @@ import { Button, Container } from "@material-ui/core";
 
 import { FirebaseContext } from "contexts";
 import SignOut from "components/Signin/SignOut";
+import ListCircular from "components/common/atoms/ListCircular";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -40,7 +41,7 @@ const DenseAppBar: FC = () => {
   const classes = useStyles();
   const navigete = useNavigate();
   const path = useLocation().pathname;
-  const { isLoggedIn } = useContext(FirebaseContext);
+  const { isLoggedIn, loading } = useContext(FirebaseContext);
   console.log("isLoggedIn", isLoggedIn);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
@@ -84,7 +85,7 @@ const DenseAppBar: FC = () => {
             </IconButton>
             <div className={classes.dammy} />
             <SearchHeadForm />
-            <LoginButton />
+            {loading ? <ListCircular /> : <LoginButton />}
           </Toolbar>
         </Container>
       </AppBar>

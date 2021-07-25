@@ -1,21 +1,24 @@
 import React, { FC } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-// import Typography from '@material-ui/core/Typography';
+import { Box, Container } from "@material-ui/core";
+import { Link } from "react-router-dom";
+
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      flexGrow: 1,
-      minHeight: "100px",
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
     },
-    title: {
-      display: "block",
-      fontSize: "medium",
+    text: {
+      lineHeight: "100px",
     },
-    toolBar: {
-      minHeight: "100px",
+    footer: {
+      flexShrink: 0,
+      textAlign: "center",
+      height: "100px",
     },
   })
 );
@@ -25,18 +28,21 @@ const Footer: FC = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
-        <Toolbar className={classes.toolBar}>
-          {/* <Typography
-            className={classes.title}
-            variant="h5"
-            color="inherit"
-            noWrap
-          >
-            <strong>Footer</strong>
-          </Typography> */}
-        </Toolbar>
-      </AppBar>
+      <footer className={classes.footer}>
+        <Box>
+          <Container maxWidth="lg">
+            <Link to="privacy">
+              <Typography
+                color="textSecondary"
+                variant="body2"
+                className={classes.text}
+              >
+                プライバシーポリシー
+              </Typography>
+            </Link>
+          </Container>
+        </Box>
+      </footer>
     </div>
   );
 };

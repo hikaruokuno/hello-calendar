@@ -1,5 +1,6 @@
 import React, { FC, useContext } from "react";
 import { EventTypeContext } from "contexts";
+import Footer from "containers/common/Footer";
 
 import useEventsApply from "hooks/use-events-apply";
 import useEventsConfirm from "hooks/use-events-confirm";
@@ -22,15 +23,18 @@ const EventMainContainer: FC = () => {
   const { performances } = usePerformances(10);
 
   return (
-    <EventMain
-      weekEvents={weekEvents}
-      applyEvents={applyEvents}
-      applyMEvents={applyMEvents}
-      confirmEvents={confirmEvents}
-      confirmMEvents={confirmMEvents}
-      performances={performances}
-      loading={loading}
-    />
+    <>
+      <EventMain
+        weekEvents={weekEvents}
+        applyEvents={applyEvents}
+        applyMEvents={applyMEvents}
+        confirmEvents={confirmEvents}
+        confirmMEvents={confirmMEvents}
+        performances={performances}
+        loading={loading}
+      />
+      <Footer />
+    </>
   );
 };
 

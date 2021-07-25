@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router";
 import { createMuiTheme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Header from "containers/common/Header";
-import Footer from "containers/common/Footer";
 import EventDetailsMain from "containers/Details/EventDetailMain";
 import "./App.css";
 import Home from "components/Home";
@@ -28,27 +27,22 @@ const App: FC = () => {
   useTracking();
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Header />
-        <Container fixed>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="details/:type/:eventId"
-              element={<EventDetailsMain />}
-            />
-            <Route path="_details/:type/:eventId" element={<Redirect />} />
-            <Route path="search" element={<Search />} />
-            <Route path="_search" element={<Redirect />} />
-            <Route path="peformances" element={<Performance />} />
-            <Route path="_peformances" element={<Redirect />} />
-            <Route path="login" element={<Signin />} />
-          </Routes>
-        </Container>
-        <Footer />
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <Header />
+      <Container fixed>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="details/:type/:eventId" element={<EventDetailsMain />} />
+          <Route path="_details/:type/:eventId" element={<Redirect />} />
+          <Route path="search" element={<Search />} />
+          <Route path="_search" element={<Redirect />} />
+          <Route path="peformances" element={<Performance />} />
+          <Route path="_peformances" element={<Redirect />} />
+          <Route path="login" element={<Signin />} />
+          {/* <Route path="privacy" element={<Signin />} /> */}
+        </Routes>
+      </Container>
+    </ThemeProvider>
   );
 };
 
