@@ -14,6 +14,9 @@ const useStyles = makeStyles(() =>
     title: {
       fontSize: "medium",
     },
+    moreButton: {
+      paddingBottom: "150px",
+    },
   })
 );
 
@@ -48,7 +51,9 @@ const PerformanceMainContainer: FC = () => {
       {performLoading ? (
         <ListCircular />
       ) : (
-        <MoreButton onClick={onClickMore} end={end} />
+        <div className={classes.moreButton}>
+          <MoreButton onClick={onClickMore} end={end} />
+        </div>
       )}
     </>
   );
