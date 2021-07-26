@@ -13,6 +13,7 @@ import addGtag from "utils/add-gtag";
 import useTracking from "hooks/use-tracking";
 import Redirect from "components/common/atoms/Redirect";
 import Signin from "components/Signin";
+import Privacy from "components/Privacy";
 
 const theme = createMuiTheme({
   palette: {
@@ -39,7 +40,7 @@ const App: FC = () => {
           <Route path="peformances" element={<Performance />} />
           <Route path="_peformances" element={<Redirect />} />
           <Route path="login" element={<Signin />} />
-          {/* <Route path="privacy" element={<Signin />} /> */}
+          <Route path="privacy" element={<Privacy />} />
         </Routes>
       </Container>
     </ThemeProvider>

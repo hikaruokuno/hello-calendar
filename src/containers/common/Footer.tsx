@@ -12,8 +12,12 @@ const useStyles = makeStyles(() =>
       flexDirection: "column",
       height: "100%",
     },
-    text: {
-      lineHeight: "100px",
+    privacy: {
+      // lineHeight: '100px',
+      paddingTop: "50px",
+    },
+    copy: {
+      paddingBottom: "50px",
     },
     footer: {
       flexShrink: 0,
@@ -35,11 +39,18 @@ const Footer: FC = () => {
               <Typography
                 color="textSecondary"
                 variant="body2"
-                className={classes.text}
+                className={classes.privacy}
               >
                 プライバシーポリシー
               </Typography>
             </Link>
+            <Typography
+              color="textSecondary"
+              variant="body2"
+              className={classes.copy}
+            >
+              ©Hellocale
+            </Typography>
           </Container>
         </Box>
       </footer>

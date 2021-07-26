@@ -12,6 +12,7 @@ import WeekEventList from "components/common/list/WeekEventList";
 import EventDetailList from "components/common/list/EventDetalsList";
 import { Typography } from "@material-ui/core";
 import MoreButton from "components/common/atoms/MoreButton";
+import Footer from "containers/common/Footer";
 
 type EventProps = {
   weekEvents: EventDetail[];
@@ -104,6 +105,7 @@ const EventMain: FC<EventProps> = React.memo(
                 <MoreLinkButton url="peformances" />
               </>
             )}
+            <Footer />
           </>
         )}
       </>

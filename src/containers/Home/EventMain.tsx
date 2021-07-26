@@ -1,6 +1,5 @@
 import React, { FC, useContext } from "react";
 import { EventTypeContext } from "contexts";
-import Footer from "containers/common/Footer";
 
 import useEventsApply from "hooks/use-events-apply";
 import useEventsConfirm from "hooks/use-events-confirm";
@@ -33,7 +32,6 @@ const EventMainContainer: FC = () => {
         performances={performances}
         loading={loading}
       />
-      <Footer />
     </>
   );
 };
