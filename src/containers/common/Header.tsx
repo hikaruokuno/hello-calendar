@@ -21,7 +21,13 @@ const useStyles = makeStyles(() =>
     title: {
       display: "block",
       fontSize: "large",
+      transform: "rotate(-5deg)",
       marginLeft: "2px",
+    },
+    subTitle: {
+      display: "block",
+      fontSize: "x-small",
+      marginLeft: "-5px",
     },
     dammy: {
       flexGrow: 1,
@@ -80,7 +86,21 @@ const DenseAppBar: FC = () => {
                 color="inherit"
                 noWrap
               >
-                <strong>ハロカレ</strong>
+                <strong>
+                  ハロ
+                  <br />
+                  カレ
+                </strong>
+              </Typography>
+              <Typography
+                className={classes.subTitle}
+                variant="subtitle2"
+                color="inherit"
+                noWrap
+              >
+                &nbsp;&nbsp;&nbsp;&nbsp;忙しいハロヲタのための
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;FCイベント情報サイト
               </Typography>
             </IconButton>
             <div className={classes.dammy} />
