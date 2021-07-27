@@ -91,7 +91,8 @@ export const setQueries = (detail: EventDetail) => {
   const queries = new URLSearchParams();
   queries.set("action", "TEMPLATE");
   queries.set("text", `『${detail.title}』公演日`);
-  queries.set("dates", getDates(detail.performanceDay, getTime(detail)));
+  const time = getTime(detail) === "" ? "00:00" : getTime(detail);
+  queries.set("dates", getDates(detail.performanceDay, time));
   queries.set("ctz", "Asia/Tokyo");
   queries.set("details", getDetailText(detail));
   queries.set("location", `${detail.venue}`);

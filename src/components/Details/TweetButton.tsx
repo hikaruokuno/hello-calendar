@@ -26,9 +26,14 @@ const TweetButton: FC<{
   );
   const otherText =
     detail.otherText && !detail.otherDetail ? ` | ${detail.otherText}` : "";
-  const time = getTime(detail);
-  const showTime = time === "00:00" ? "" : time;
-  const endText = type === "top" ? "に来ました！" : "に行きます！";
+  const showTime = getTime(detail);
+
+  let endText = "";
+  if (detail.venue === "オンライン") {
+    endText = "に参加します！";
+  } else {
+    endText = type === "top" ? "に来ました！" : "に行きます！";
+  }
 
   return (
     <>
