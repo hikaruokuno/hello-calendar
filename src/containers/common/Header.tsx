@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -6,7 +6,11 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import SearchHeadForm from "components/Search/SearchHeadForm";
 import { useNavigate, useLocation } from "react-router";
-import { Container } from "@material-ui/core";
+import { Button, Container } from "@material-ui/core";
+
+import { FirebaseContext } from "contexts";
+import SignOut from "components/Signin/SignOut";
+import ListCircular from "components/common/atoms/ListCircular";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,7 +21,13 @@ const useStyles = makeStyles(() =>
     title: {
       display: "block",
       fontSize: "large",
+      transform: "rotate(-5deg)",
       marginLeft: "2px",
+    },
+    subTitle: {
+      display: "block",
+      fontSize: "x-small",
+      marginLeft: "-5px",
     },
     dammy: {
       flexGrow: 1,
@@ -37,8 +47,19 @@ const DenseAppBar: FC = () => {
   const classes = useStyles();
   const navigete = useNavigate();
   const path = useLocation().pathname;
+  const { isLoggedIn, loading } = useContext(FirebaseContext);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
+  const LoginButton = () => {
+    if (isLoggedIn) {
+      return <SignOut />;
+    }
+    if (path === "/login") {
+      return <></>;
+    }
+
+    return <Button href="login">ログイン</Button>;
+  };
 
   return (
     <div className={classes.root}>
@@ -64,11 +85,26 @@ const DenseAppBar: FC = () => {
                 color="inherit"
                 noWrap
               >
-                <strong>ハロカレ</strong>
+                <strong>
+                  ハロ
+                  <br />
+                  カレ
+                </strong>
+              </Typography>
+              <Typography
+                className={classes.subTitle}
+                variant="subtitle2"
+                color="inherit"
+                noWrap
+              >
+                &nbsp;&nbsp;&nbsp;&nbsp;忙しいハロヲタのための
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;FCイベント情報サイト
               </Typography>
             </IconButton>
             <div className={classes.dammy} />
             <SearchHeadForm />
+            {loading ? <ListCircular size={20} /> : <LoginButton />}
           </Toolbar>
         </Container>
       </AppBar>

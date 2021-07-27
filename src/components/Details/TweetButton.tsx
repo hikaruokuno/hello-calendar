@@ -1,7 +1,11 @@
 import React, { FC } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { TwitterShareButton, TwitterIcon } from "react-share";
-import { getTime, getTweetPrefecture } from "components/item-tools";
+import {
+  getTime,
+  getTweetPrefecture,
+  pushEventTracking,
+} from "components/item-tools";
 import { useLocation } from "react-router";
 import { titleName } from "constants/constants";
 
@@ -30,19 +34,13 @@ const TweetButton: FC<{
   } else {
     endText = type === "top" ? "に来ました！" : "に行きます！";
   }
-  const pushEventTracking = () => {
-    window.gtag("event", "tweet_click", {
-      event_category: "outbound",
-      event_label: url,
-    });
-  };
 
   return (
     <>
       <TwitterShareButton
         url={url}
         title={`『${detail.title}』${prefecture}${otherText} | ${performanceDay} ${showTime}〜 ${endText} #${titleName.main}`}
-        onClick={pushEventTracking}
+        onClick={() => pushEventTracking("tweet_click", url)}
       >
         <TwitterIcon size={size !== undefined ? size : 32} round />
       </TwitterShareButton>

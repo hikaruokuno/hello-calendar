@@ -1,47 +1,120 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-import LinkButton from "components/common/atoms/LinkButton";
-import { getDates, getTime } from "components/item-tools";
-import { titleName } from "constants/constants";
+import {
+  pushEventTracking,
+  setEvents,
+  setQueries,
+  sleep,
+} from "components/item-tools";
+
+import { FirebaseContext } from "contexts";
+import Button from "@material-ui/core/Button";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import Popper from "@material-ui/core/Popper";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingTop: "8px",
+    },
+    paper: {
+      border: "1px solid",
+      borderColor: theme.palette.grey[900],
+      padding: theme.spacing(1),
+      backgroundColor: theme.palette.grey[900],
+      color: "white",
+      fontSize: "13px",
+    },
+  })
+);
+
+type Event = {
+  summary: string;
+  location: string;
+  description: string;
+  start: {
+    dateTime: string;
+    timeZone: string;
+  };
+  end: {
+    dateTime: string;
+    timeZone: string;
+  };
+};
 
 const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
-  const queries = new URLSearchParams();
-  queries.set("action", "TEMPLATE");
-  queries.set("text", `『${detail.title}』公演日`);
-  const time = getTime(detail) === "" ? "00:00" : getTime(detail);
-  queries.set("dates", getDates(detail.performanceDay, time));
-  queries.set("ctz", "Asia/Tokyo");
+  const classes = useStyles();
+  const { isLoggedIn } = useContext(FirebaseContext);
+  const events = isLoggedIn ? setEvents(detail) : setQueries(detail);
+  const url = `https://calendar.google.com/calendar/u/0/r/eventedit?${events.toString()}`;
 
-  let detailText = "";
-  if (detail.performer) {
-    detailText = detailText.concat(`${detail.performer.replace(":", "：")}\n`);
-  }
-  if (detail.openText && !detail.showText) {
-    detailText = detailText.concat(
-      `${detail.openText}： ${detail.openingTime}\n`
-    );
-  } else {
-    detailText = detailText.concat(
-      `${detail.openText}： ${detail.openingTime} | ${detail.showText}： ${detail.showTime}\n`
-    );
-  }
-  if (detail.otherText && detail.otherDetail) {
-    detailText = detailText.concat(
-      `${detail.otherText}： ${detail.otherDetail}\n`
-    );
-  } else if (detail.otherText && !detail.otherDetail) {
-    detailText = detailText.concat(`${detail.otherText}\n`);
-  }
-  queries.set("details", detailText.concat(`@${titleName.main}`));
+  const [anchorEl, setAnchorEl] =
+    React.useState<HTMLButtonElement | null>(null);
 
-  queries.set("location", `${detail.venue}`);
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("sign", gapi.auth2.getAuthInstance().isSignedIn.get());
+    console.log(events);
+    const target = event.currentTarget;
+
+    if (gapi) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      await gapi.client.calendar.events
+        .insert({
+          calendarId: "primary",
+          resource: events as Event,
+          sendUpdates: "none",
+        })
+        .then(() => {
+          pushEventTracking("calendar_click", detail.performanceDay);
+        });
+    }
+    setAnchorEl(anchorEl ? null : target);
+    console.log("Error: this.gapi not loaded");
+    await sleep(4000);
+    setAnchorEl(null);
+
+    return false;
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
   return (
-    <>
-      <LinkButton
-        url={`https://calendar.google.com/calendar/u/0/r/eventedit?${queries.toString()}`}
-      />
-    </>
+    <div className={classes.root}>
+      {isLoggedIn ? (
+        <>
+          <Button
+            aria-describedby={id}
+            size="medium"
+            variant="outlined"
+            color="primary"
+            onClick={(e) => handleClick(e)}
+          >
+            <CalendarTodayIcon fontSize="small" />
+            &nbsp;Googleカレンダーに追加
+          </Button>
+          <Popper id={id} open={open} anchorEl={anchorEl}>
+            <div className={classes.paper}>Googleカレンダーに追加しました</div>
+          </Popper>
+        </>
+      ) : (
+        <Button
+          size="medium"
+          variant="outlined"
+          color="primary"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() =>
+            pushEventTracking("calendar_click", detail.performanceDay)
+          }
+        >
+          <CalendarTodayIcon fontSize="small" />
+          &nbsp;Googleカレンダーに追加
+        </Button>
+      )}
+    </div>
   );
 };
 export default AddCalendarButton;

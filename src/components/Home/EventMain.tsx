@@ -1,6 +1,6 @@
 import React, { FC, useContext, useCallback } from "react";
 import { EventsCountContext, EventTypeContext } from "contexts";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 import Tabs from "components/common/tabs/Tabs";
 import EventList from "components/common/list/EventList";
@@ -12,6 +12,7 @@ import WeekEventList from "components/common/list/WeekEventList";
 import EventDetailList from "components/common/list/EventDetalsList";
 import { Typography } from "@material-ui/core";
 import MoreButton from "components/common/atoms/MoreButton";
+import Footer from "containers/common/Footer";
 
 type EventProps = {
   weekEvents: EventDetail[];
@@ -23,10 +24,17 @@ type EventProps = {
   loading?: boolean;
 };
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       fontSize: "medium",
+    },
+    circular: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: theme.spacing(8),
+      marginBottom: theme.spacing(8),
     },
   })
 );
@@ -59,7 +67,9 @@ const EventMain: FC<EventProps> = React.memo(
     return (
       <>
         {loading ? (
-          <ListCircular />
+          <div className={classes.circular}>
+            <ListCircular />
+          </div>
         ) : (
           <>
             {weekEvents.length === 0 ? (
@@ -103,6 +113,7 @@ const EventMain: FC<EventProps> = React.memo(
                 <MoreLinkButton url="peformances" />
               </>
             )}
+            <Footer />
           </>
         )}
       </>
