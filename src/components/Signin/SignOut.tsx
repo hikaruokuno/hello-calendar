@@ -12,8 +12,6 @@ const SignOut = () => {
       .then(() => {
         navigate(0);
         navigate("/", { replace: true });
-
-        console.log("ログアウトしました");
       });
     if (gapi) {
       await gapi.auth2.getAuthInstance().signOut();

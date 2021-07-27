@@ -70,11 +70,9 @@ const FirebaseApp: FC = ({ children }) => {
 
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser && isGoogleSignIn) {
-      console.log("loggedIn");
       setLogin(true);
     } else {
       setLogin(false);
-      console.log("loggedOut");
     }
   });
   unsubscribe();

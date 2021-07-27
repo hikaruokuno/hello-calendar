@@ -48,7 +48,6 @@ const DenseAppBar: FC = () => {
   const navigete = useNavigate();
   const path = useLocation().pathname;
   const { isLoggedIn, loading } = useContext(FirebaseContext);
-  console.log("isLoggedIn", isLoggedIn);
 
   const onClickHome = () => (path === "/" ? false : navigete("/"));
   const LoginButton = () => {
