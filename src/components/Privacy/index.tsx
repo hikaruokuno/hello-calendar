@@ -1,6 +1,5 @@
-import { Container, Typography } from "@material-ui/core";
 import React, { FC } from "react";
-import { Link } from "react-router-dom";
+import { Container, Typography } from "@material-ui/core";
 
 const Privacy: FC = () => (
   <Container fixed>
@@ -21,9 +20,13 @@ const Privacy: FC = () => (
       <br />
       取得する情報、利用目的、第三者への提供等の詳細につきましては、以下のプライバシーポリシーのリンクよりご確認ください。
       <br />
-      <Link to="https://policies.google.com/privacy">
+      <a
+        href="https://policies.google.com/privacy"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Firebase Analytics（Google Inc.）
-      </Link>
+      </a>
     </Typography>
     <br />
     <Typography variant="body2">
@@ -31,7 +34,13 @@ const Privacy: FC = () => (
     </Typography>
     <Typography variant="body2">
       Google（
-      <Link to="https://policies.google.com/privacy">プライバシーポリシー</Link>
+      <a
+        href="https://policies.google.com/privacy"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        プライバシーポリシー
+      </a>
       ）<br />
       &nbsp;Google Calendar API
       <br />
@@ -46,7 +55,13 @@ const Privacy: FC = () => (
       <strong>3.お問い合わせ先</strong>
     </Typography>
     <Typography variant="body2">
-      <Link to="https://twitter.com/ssk_hk">https://twitter.com/ssk_hk</Link>
+      <a
+        href="https://twitter.com/ssk_hk"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        https://twitter.com/ssk_hk
+      </a>
     </Typography>
   </Container>
 );

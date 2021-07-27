@@ -58,7 +58,7 @@ const DenseAppBar: FC = () => {
       return <></>;
     }
 
-    return <Button href="login">ログイン</Button>;
+    return <Button href="/login">ログイン</Button>;
   };
 
   return (

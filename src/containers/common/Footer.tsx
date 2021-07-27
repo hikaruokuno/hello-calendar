@@ -39,7 +39,7 @@ const Footer: FC = () => {
       <footer className={classes.footer}>
         <Box>
           <Container maxWidth="lg">
-            <Link to="privacy">
+            <Link to="/privacy">
               <Typography
                 color="textSecondary"
                 variant="body2"
