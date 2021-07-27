@@ -4,7 +4,7 @@ import ListCircular from "components/common/atoms/ListCircular";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import EventDetalsList from "components/common/list/EventDetalsList";
 import { Event } from "services/hello-calendar/models/event";
-import { Typography, Link } from "@material-ui/core";
+import { Typography, Link, Theme } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { titleName } from "constants/constants";
 
@@ -15,7 +15,7 @@ type EventDetailProps = {
   loading?: boolean;
 };
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: "8px",
@@ -26,6 +26,13 @@ const useStyles = makeStyles(() =>
     body: {
       paddingLeft: "16px",
       fontSize: "smaller",
+    },
+    circular: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: theme.spacing(8),
+      marginBottom: theme.spacing(8),
     },
   })
 );
@@ -49,7 +56,9 @@ const EventDetailMain: FC<EventDetailProps> = ({
         </title>
       </Helmet>
       {loading ? (
-        <ListCircular />
+        <div className={classes.circular}>
+          <ListCircular />
+        </div>
       ) : (
         <div className={classes.root}>
           <Typography

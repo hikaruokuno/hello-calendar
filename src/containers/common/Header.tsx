@@ -105,7 +105,7 @@ const DenseAppBar: FC = () => {
             </IconButton>
             <div className={classes.dammy} />
             <SearchHeadForm />
-            {loading ? <ListCircular /> : <LoginButton />}
+            {loading ? <ListCircular size={20} /> : <LoginButton />}
           </Toolbar>
         </Container>
       </AppBar>

@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import usePerformances from "hooks/use-performances";
 import ListCircular from "components/common/atoms/ListCircular";
 import EventDetailList from "components/common/list/EventDetalsList";
@@ -9,13 +9,20 @@ import { Typography } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { titleName } from "constants/constants";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       fontSize: "medium",
     },
     moreButton: {
       paddingBottom: "150px",
+    },
+    circular: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: theme.spacing(8),
+      marginBottom: theme.spacing(8),
     },
   })
 );
@@ -49,7 +56,9 @@ const PerformanceMainContainer: FC = () => {
       </Typography>
       <EventDetailList eventDetails={performances} />
       {performLoading ? (
-        <ListCircular />
+        <div className={classes.circular}>
+          <ListCircular />
+        </div>
       ) : (
         <div className={classes.moreButton}>
           <MoreButton onClick={onClickMore} end={end} />

@@ -81,7 +81,7 @@ const Signin: FC = () => {
           ) : (
             <>
               <Typography component="h1" variant="h5" className={classes.title}>
-                ログイン
+                ログイン（テスト中）
               </Typography>
               <Typography variant="body1" className={classes.subTitle}>
                 ログインすると、予定をワンタップで追加できるようになります！
@@ -92,7 +92,6 @@ const Signin: FC = () => {
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
                 cookiePolicy="single_host_origin"
-                // redirectUri={pathname}
               />
             </>
           )}
