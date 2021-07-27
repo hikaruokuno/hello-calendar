@@ -19,14 +19,20 @@ export const getDatesLoggedIn = (date: string, time: string) => {
 };
 
 export const getTime = (detail: EventDetail) => {
-  if (detail.openText === "開演" || detail.openText === "受付") {
+  if (detail.openText === "開演") {
     return detail.openingTime;
   }
-  if (detail.showText === "開演" || detail.showText === "受付") {
+  if (detail.showText === "開演") {
+    return detail.showTime;
+  }
+  if (detail.openText === "受付") {
+    return detail.openingTime;
+  }
+  if (detail.showText === "受付") {
     return detail.showTime;
   }
 
-  return "00:00";
+  return "";
 };
 
 export const getRegularTitle = (beforeTitle: string) => {
@@ -54,7 +60,7 @@ export const getTweetPrefecture = (beforeText: string) => {
 };
 
 export const isAfterThreeDays = (date: Date) =>
-  differenceInCalendarDays(new Date(date), new Date()) <= 3;
+  differenceInCalendarDays(new Date(date), new Date()) <= 1;
 
 export const getDetailText = (detail: EventDetail) => {
   let detailText = "";
