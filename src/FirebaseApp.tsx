@@ -69,6 +69,9 @@ const FirebaseApp: FC = ({ children }) => {
   handleClientLoad();
 
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+    console.log("firebaseUser", firebaseUser);
+    console.log("isGoogleSignIn", isGoogleSignIn);
+
     if (firebaseUser && isGoogleSignIn) {
       setLogin(true);
     } else {
