@@ -48,11 +48,6 @@ const FirebaseApp: FC = ({ children }) => {
     gapi.client
       .init(Config)
       .then(() => {
-        console.log("auth", gapi.auth2.getAuthInstance().isSignedIn.get());
-        console.log(
-          "currentUser",
-          gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse()
-        );
         if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
           setIsGoogleSignIn(true);
         }
