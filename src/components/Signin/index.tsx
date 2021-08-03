@@ -42,6 +42,27 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
+const refreshTokenSetup = (res: GoogleLoginResponse) => {
+  // Timing to renew access token
+  let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
+
+  const refreshToken = async () => {
+    const newAuthRes = await res.reloadAuthResponse();
+    refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
+    // console.log(newAuthRes.access_token);
+
+    localStorage.setItem("accessTokenKey", newAuthRes.access_token);
+
+    // Setup the other timer after the first one
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    setTimeout(refreshToken, refreshTiming);
+  };
+
+  // Setup first refresh timer
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  setTimeout(refreshToken, refreshTiming);
+};
+
 const Signin: FC = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useContext(FirebaseContext);
@@ -53,14 +74,22 @@ const Signin: FC = () => {
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
     if (implementsLoginRes(response)) {
+      localStorage.setItem("accessTokenKey", response.accessToken);
+      refreshTokenSetup(response);
+      // console.log(response.accessToken);
+      // const newAuthRes = await response.reloadAuthResponse();
+      // console.log('newAuthRes', newAuthRes.access_token);
+
       const credential = firebase.auth.GoogleAuthProvider.credential(
         response.tokenId
       );
+
+      // localStorage.setItem('refreshTokenKey', refresh_token);
       await firebase
         .auth()
         .signInWithCredential(credential)
         .then(() => {
-          console.log(credential);
+          // console.log(credential);
           navigate("/", { replace: true });
         });
     }
@@ -92,6 +121,7 @@ const Signin: FC = () => {
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
                 cookiePolicy="single_host_origin"
+                isSignedIn
               />
             </>
           )}

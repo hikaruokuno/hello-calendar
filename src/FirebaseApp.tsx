@@ -44,10 +44,32 @@ const FirebaseApp: FC = ({ children }) => {
   const [isGoogleSignIn, setIsGoogleSignIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // const updateSigninStatus = (isSignedIn: boolean) => {
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   sign = isSignedIn;
+  // };
+
   const initClient = () => {
     gapi.client
       .init(Config)
       .then(() => {
+        // console.log('auth', gapi.auth2.getAuthInstance().isSignedIn.get());
+        // console.log(
+        //   'currentUser',
+        //   gapi.auth2
+        //     .getAuthInstance()
+        //     .currentUser.get()
+        //     .reloadAuthResponse()
+        //     .then((res) => {
+        //       console.log(res.access_token);
+        //     })
+        //     .catch((error) => {
+        //       console.log(error);
+        //     })
+        // );
+        // Listen for sign-in state changes.
+        // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
         if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
           setIsGoogleSignIn(true);
         }
@@ -59,24 +81,20 @@ const FirebaseApp: FC = ({ children }) => {
   };
 
   const handleClientLoad = () => {
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/api.js";
-    document.body.appendChild(script);
-    script.onload = (): void => {
-      gapi.load("client:auth2", initClient);
-    };
+    gapi.load("client:auth2", initClient);
   };
   handleClientLoad();
 
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
       console.log("firebaseUser", "OK");
+      // console.log(firebaseUser.refreshToken);
     } else {
       console.log("firebaseUser", "NG");
     }
     console.log("isGoogleSignIn", isGoogleSignIn);
 
-    if (firebaseUser && isGoogleSignIn) {
+    if (firebaseUser) {
       setLogin(true);
     } else {
       setLogin(false);

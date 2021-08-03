@@ -9,15 +9,15 @@ const SignOut = () => {
     await firebase
       .auth()
       .signOut()
-      .then(() => {
+      .then(async () => {
+        if (gapi) {
+          await gapi.auth2.getAuthInstance().signOut();
+        } else {
+          console.log("Error: this.gapi not loaded");
+        }
         navigate(0);
         navigate("/", { replace: true });
       });
-    if (gapi) {
-      await gapi.auth2.getAuthInstance().signOut();
-    } else {
-      console.log("Error: this.gapi not loaded");
-    }
   };
 
   return <Button onClick={() => logout()}>ログアウト</Button>;
