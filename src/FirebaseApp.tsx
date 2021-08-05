@@ -56,16 +56,14 @@ const FirebaseApp: FC = ({ children }) => {
         // console.log('auth', gapi.auth2.getAuthInstance().isSignedIn.get());
         // console.log(
         //   'currentUser',
-        //   gapi.auth2
-        //     .getAuthInstance()
-        //     .currentUser.get()
-        //     .reloadAuthResponse()
-        //     .then((res) => {
-        //       console.log(res.access_token);
-        //     })
-        //     .catch((error) => {
-        //       console.log(error);
-        //     })
+        //   gapi.auth2.getAuthInstance().currentUser.get()
+        // .reloadAuthResponse()
+        // .then((res) => {
+        //   console.log(res.access_token);
+        // })
+        // .catch((error) => {
+        //   console.log(error);
+        // })
         // );
         // Listen for sign-in state changes.
         // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
@@ -88,6 +86,7 @@ const FirebaseApp: FC = ({ children }) => {
   const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
     if (firebaseUser) {
       console.log("firebaseUser", "OK");
+      // console.log(firebaseUser.getIdToken());
       // console.log(firebaseUser.refreshToken);
     } else {
       console.log("firebaseUser", "NG");

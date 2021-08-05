@@ -1,9 +1,9 @@
 import React, { FC, useContext } from "react";
-import firebase from "firebase/app";
+// import firebase from 'firebase/app';
 // import { FirebaseContext } from 'contexts';
 // import { StyledFirebaseAuth } from 'react-firebaseui';
 import Config from "apiGoogleconfig";
-import { useNavigate } from "react-router";
+// import { useNavigate } from 'react-router';
 import {
   GoogleLogin,
   GoogleLoginResponse,
@@ -42,56 +42,55 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const refreshTokenSetup = (res: GoogleLoginResponse) => {
-  // Timing to renew access token
-  let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
+// const refreshTokenSetup = (res: GoogleLoginResponse) => {
+//   // Timing to renew access token
+//   let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
 
-  const refreshToken = async () => {
-    const newAuthRes = await res.reloadAuthResponse();
-    refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-    // console.log(newAuthRes.access_token);
+//   const refreshToken = async () => {
+//     const newAuthRes = await res.reloadAuthResponse();
+//     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
+//     // console.log(newAuthRes.access_token);
 
-    localStorage.setItem("accessTokenKey", newAuthRes.access_token);
+//     localStorage.setItem("accessTokenKey", newAuthRes.access_token);
 
-    // Setup the other timer after the first one
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    setTimeout(refreshToken, refreshTiming);
-  };
+//     // Setup the other timer after the first one
+//     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+//     setTimeout(refreshToken, refreshTiming);
+//   };
 
-  // Setup first refresh timer
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  setTimeout(refreshToken, refreshTiming);
-};
+//   // Setup first refresh timer
+//   // eslint-disable-next-line @typescript-eslint/no-misused-promises
+//   setTimeout(refreshToken, refreshTiming);
+// };
 
 const Signin: FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { isLoggedIn } = useContext(FirebaseContext);
   const classes = useStyles();
 
   const implementsLoginRes = (response: any): response is GoogleLoginResponse =>
     response !== null && typeof response === "object";
-  const responseGoogle = async (
+  const responseGoogle = (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
     if (implementsLoginRes(response)) {
-      localStorage.setItem("accessTokenKey", response.accessToken);
-      refreshTokenSetup(response);
+      // console.log(response);
+      // localStorage.setItem('accessTokenKey', response.accessToken);
+      // refreshTokenSetup(response);
       // console.log(response.accessToken);
       // const newAuthRes = await response.reloadAuthResponse();
       // console.log('newAuthRes', newAuthRes.access_token);
-
-      const credential = firebase.auth.GoogleAuthProvider.credential(
-        response.tokenId
-      );
-
+      // const credential = firebase.auth.GoogleAuthProvider.credential(
+      //   response.tokenId
+      // );
       // localStorage.setItem('refreshTokenKey', refresh_token);
-      await firebase
-        .auth()
-        .signInWithCredential(credential)
-        .then(() => {
-          // console.log(credential);
-          navigate("/", { replace: true });
-        });
+      // await firebase
+      //   .auth()
+      //   .signInWithCredential(credential)
+      //   .then(() => {
+      //     // console.log(credential);
+      //     navigate('/', { replace: true });
+      //   });
     }
   };
 
@@ -121,6 +120,9 @@ const Signin: FC = () => {
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
                 cookiePolicy="single_host_origin"
+                scope={Config.scope}
+                responseType="code"
+                accessType="offline"
                 isSignedIn
               />
             </>
