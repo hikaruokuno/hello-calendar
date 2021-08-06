@@ -1,4 +1,5 @@
 import React, { FC, useContext } from "react";
+import axios from "axios";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import {
   pushEventTracking,
@@ -12,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import Popper from "@material-ui/core/Popper";
+import Config from "apiGoogleconfig";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +45,16 @@ type Event = {
   };
 };
 
+type RestApiResponse = {
+  access_token: string; // eslint-disable-line camelcase
+  expires_in: number; // eslint-disable-line camelcase
+  id_token: string; // eslint-disable-line camelcase
+  refresh_token: string; // eslint-disable-line camelcase
+  scope: string; // eslint-disable-line camelcase
+};
+
+const { clientId, clientSecret, apiKey } = Config;
+
 const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
   const classes = useStyles();
   const { isLoggedIn } = useContext(FirebaseContext);
@@ -53,32 +65,66 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
     React.useState<HTMLButtonElement | null>(null);
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("sign", gapi.auth2.getAuthInstance().isSignedIn.get());
-    console.log(events);
     const target = event.currentTarget;
 
     if (gapi) {
+      pushEventTracking("calendar_click", detail.performanceDay);
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       gapi.client.setToken({
         access_token: localStorage.getItem("accessTokenKey")!,
       });
-      // console.log(gapi.client.getToken().access_token);
-      // console.log(gapi.client.getToken().state);
-      // console.log(gapi.client.getToken().session_state);
+
       await gapi.client.calendar.events
         .insert({
           calendarId: "primary",
           resource: events as Event,
           sendUpdates: "none",
         })
-        .then(() => {
-          pushEventTracking("calendar_click", detail.performanceDay);
+        .then(async () => {
+          setAnchorEl(anchorEl ? null : target);
+          await sleep(4000);
+          setAnchorEl(null);
+        })
+        .catch(async () => {
+          const params = new URLSearchParams();
+          params.append("client_id", clientId);
+          params.append("client_secret", clientSecret);
+          params.append("grant_type", "refresh_token");
+          params.append(
+            "refresh_token",
+            localStorage.getItem("refreshTokenKey")!
+          );
+          await axios
+            .post(`https://oauth2.googleapis.com/token?key=${apiKey}`, params, {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            })
+            .then(async (res) => {
+              const data = res.data as RestApiResponse;
+              localStorage.setItem("accessTokenKey", data.access_token);
+              gapi.client.setToken({
+                access_token: localStorage.getItem("accessTokenKey")!,
+              });
+              await gapi.client.calendar.events
+                .insert({
+                  calendarId: "primary",
+                  resource: events as Event,
+                  sendUpdates: "none",
+                })
+                .then(async () => {
+                  setAnchorEl(anchorEl ? null : target);
+                  await sleep(4000);
+                  setAnchorEl(null);
+                });
+            })
+            .catch((err) => {
+              // 再ログインを促す または ログアウトする
+              console.log(err);
+            });
         });
     }
-    setAnchorEl(anchorEl ? null : target);
-    console.log("Error: this.gapi not loaded");
-    await sleep(4000);
-    setAnchorEl(null);
 
     return false;
   };
