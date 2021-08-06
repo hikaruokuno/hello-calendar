@@ -11,6 +11,7 @@ const SignOut = () => {
       .signOut()
       .then(async () => {
         if (gapi) {
+          localStorage.clear();
           await gapi.auth2.getAuthInstance().signOut();
         } else {
           console.log("Error: this.gapi not loaded");

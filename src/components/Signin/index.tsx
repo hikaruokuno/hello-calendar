@@ -1,16 +1,13 @@
 import React, { FC, useContext } from "react";
-// import firebase from 'firebase/app';
-// import { FirebaseContext } from 'contexts';
-// import { StyledFirebaseAuth } from 'react-firebaseui';
+import axios from "axios";
+import firebase from "firebase/app";
 import Config from "apiGoogleconfig";
-// import { useNavigate } from 'react-router';
 import {
   GoogleLogin,
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
-  // GoogleLogout,
 } from "react-google-login";
-// import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 import { FirebaseContext } from "contexts";
 import Avatar from "@material-ui/core/Avatar";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -42,55 +39,58 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-// const refreshTokenSetup = (res: GoogleLoginResponse) => {
-//   // Timing to renew access token
-//   let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
+type RestApiResponse = {
+  access_token: string; // eslint-disable-line camelcase
+  expires_in: number; // eslint-disable-line camelcase
+  id_token: string; // eslint-disable-line camelcase
+  refresh_token: string; // eslint-disable-line camelcase
+  scope: string; // eslint-disable-line camelcase
+};
 
-//   const refreshToken = async () => {
-//     const newAuthRes = await res.reloadAuthResponse();
-//     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000;
-//     // console.log(newAuthRes.access_token);
-
-//     localStorage.setItem("accessTokenKey", newAuthRes.access_token);
-
-//     // Setup the other timer after the first one
-//     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-//     setTimeout(refreshToken, refreshTiming);
-//   };
-
-//   // Setup first refresh timer
-//   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-//   setTimeout(refreshToken, refreshTiming);
-// };
+const { clientId, clientSecret } = Config;
 
 const Signin: FC = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { isLoggedIn } = useContext(FirebaseContext);
   const classes = useStyles();
 
   const implementsLoginRes = (response: any): response is GoogleLoginResponse =>
     response !== null && typeof response === "object";
-  const responseGoogle = (
+  const responseGoogle = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
   ) => {
     if (implementsLoginRes(response)) {
-      // console.log(response);
-      // localStorage.setItem('accessTokenKey', response.accessToken);
-      // refreshTokenSetup(response);
-      // console.log(response.accessToken);
-      // const newAuthRes = await response.reloadAuthResponse();
-      // console.log('newAuthRes', newAuthRes.access_token);
-      // const credential = firebase.auth.GoogleAuthProvider.credential(
-      //   response.tokenId
-      // );
-      // localStorage.setItem('refreshTokenKey', refresh_token);
-      // await firebase
-      //   .auth()
-      //   .signInWithCredential(credential)
-      //   .then(() => {
-      //     // console.log(credential);
-      //     navigate('/', { replace: true });
-      //   });
+      const params = new URLSearchParams();
+      params.append("client_id", clientId);
+      params.append("client_secret", clientSecret);
+      params.append("code", response.code!);
+      params.append("grant_type", "authorization_code");
+      params.append("redirect_uri", "https://hellocale.com");
+      await axios
+        .post(`https://oauth2.googleapis.com/token`, params, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        })
+        .then(async (res) => {
+          const data = res.data as RestApiResponse;
+          localStorage.setItem("accessTokenKey", data.access_token);
+          localStorage.setItem("refreshTokenKey", data.refresh_token);
+
+          const credential = firebase.auth.GoogleAuthProvider.credential(
+            data.id_token
+          );
+
+          await firebase
+            .auth()
+            .signInWithCredential(credential)
+            .then(() => {
+              navigate("/", { replace: true });
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -115,15 +115,15 @@ const Signin: FC = () => {
                 ログインすると、予定をワンタップで追加できるようになります！
               </Typography>
               <GoogleLogin
+                scope={Config.scope}
+                accessType="offline"
+                responseType="code"
                 clientId={Config.clientId}
+                cookiePolicy="single_host_origin"
+                prompt="consent"
                 buttonText="Googleアカウントでログイン"
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}
-                cookiePolicy="single_host_origin"
-                scope={Config.scope}
-                responseType="code"
-                accessType="offline"
-                isSignedIn
               />
             </>
           )}
