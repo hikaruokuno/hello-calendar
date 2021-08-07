@@ -13,6 +13,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import Popper from "@material-ui/core/Popper";
 import { useNavigate } from "react-router";
+import { get } from "services/hello-calendar/CookieServise";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +63,8 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       gapi.client.setToken({
-        access_token: localStorage.getItem("accessTokenKey")!,
+        access_token: get("accessTokenKey")!,
+        // access_token: localStorage.getItem("accessTokenKey")!,
       });
 
       await gapi.client.calendar.events

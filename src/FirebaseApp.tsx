@@ -6,6 +6,7 @@ import "firebase/firestore";
 import Config from "apiGoogleconfig";
 
 import { format, setSeconds } from "date-fns";
+import { get, set } from "services/hello-calendar/CookieServise";
 import {
   FirebaseContext,
   EventTypeContext,
@@ -69,7 +70,8 @@ const FirebaseApp: FC = ({ children }) => {
             params.append("grant_type", "refresh_token");
             params.append(
               "refresh_token",
-              localStorage.getItem("refreshTokenKey")!
+              get("refreshTokenKey")!
+              // localStorage.getItem("refreshTokenKey")!
             );
 
             await axios
@@ -84,14 +86,15 @@ const FirebaseApp: FC = ({ children }) => {
               )
               .then((res) => {
                 const data = res.data as RestApiResponse;
-                localStorage.setItem("accessTokenKey", data.access_token);
+                set("accessTokenKey", data.access_token);
+                // localStorage.setItem("accessTokenKey", data.access_token);
                 const newTimeLimit = setSeconds(new Date(), data.expires_in);
                 localStorage.setItem(
                   "timeLimit",
                   format(newTimeLimit, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
                 );
                 gapi.client.setToken({
-                  access_token: localStorage.getItem("accessTokenKey")!,
+                  access_token: data.access_token,
                 });
               })
               .catch((err) => {

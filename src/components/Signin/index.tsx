@@ -17,6 +17,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { format, setSeconds } from "date-fns";
+import { set } from "services/hello-calendar/CookieServise";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -76,8 +77,10 @@ const Signin: FC = () => {
         })
         .then(async (res) => {
           const data = res.data as RestApiResponse;
-          localStorage.setItem("accessTokenKey", data.access_token);
-          localStorage.setItem("refreshTokenKey", data.refresh_token);
+          set("accessTokenKey", data.access_token);
+          set("refreshTokenKey", data.refresh_token);
+          // localStorage.setItem("accessTokenKey", data.access_token);
+          // localStorage.setItem("refreshTokenKey", data.refresh_token);
           const timeLimit = setSeconds(new Date(), data.expires_in);
           localStorage.setItem(
             "timeLimit",
