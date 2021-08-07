@@ -14,6 +14,7 @@ import useTracking from "hooks/use-tracking";
 import Redirect from "components/common/atoms/Redirect";
 import Signin from "components/Signin";
 import Privacy from "components/Privacy";
+import Calendar from "components/Error/Calendar";
 
 const theme = createMuiTheme({
   palette: {
@@ -40,6 +41,7 @@ const App: FC = () => {
           <Route path="peformances" element={<Performance />} />
           <Route path="_peformances" element={<Redirect />} />
           <Route path="login" element={<Signin />} />
+          <Route path="error/calendar" element={<Calendar />} />
           <Route path="privacy" element={<Privacy />} />
         </Routes>
       </Container>

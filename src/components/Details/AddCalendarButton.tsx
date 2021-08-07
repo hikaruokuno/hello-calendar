@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import Popper from "@material-ui/core/Popper";
+import { useNavigate } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +49,7 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
   const { isLoggedIn } = useContext(FirebaseContext);
   const events = isLoggedIn ? setEvents(detail) : setQueries(detail);
   const url = `https://calendar.google.com/calendar/u/0/r/eventedit?${events.toString()}`;
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] =
     React.useState<HTMLButtonElement | null>(null);
@@ -76,6 +78,7 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
         })
         .catch((err) => {
           console.log(err);
+          navigate("/error/calendar", { replace: true });
         });
     }
 
