@@ -1,15 +1,27 @@
 import React, { FC, useContext, useState } from "react";
+import axios from "axios";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Config from "apiGoogleconfig";
 
+import { format, setSeconds } from "date-fns";
 import {
   FirebaseContext,
   EventTypeContext,
   EventsContext,
   EventsCountContext,
 } from "./contexts";
+
+const { clientId, clientSecret, apiKey } = Config;
+
+type RestApiResponse = {
+  access_token: string; // eslint-disable-line camelcase
+  expires_in: number; // eslint-disable-line camelcase
+  id_token: string; // eslint-disable-line camelcase
+  refresh_token: string; // eslint-disable-line camelcase
+  scope: string; // eslint-disable-line camelcase
+};
 
 const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
@@ -46,7 +58,49 @@ const FirebaseApp: FC = ({ children }) => {
   const initClient = () => {
     gapi.client
       .init(Config)
-      .then(() => {
+      .then(async () => {
+        const timeLimitString = localStorage.getItem("timeLimit");
+        if (timeLimitString) {
+          const timeLimit = new Date(timeLimitString);
+          if (new Date() > timeLimit) {
+            const params = new URLSearchParams();
+            params.append("client_id", clientId);
+            params.append("client_secret", clientSecret);
+            params.append("grant_type", "refresh_token");
+            params.append(
+              "refresh_token",
+              localStorage.getItem("refreshTokenKey")!
+            );
+
+            await axios
+              .post(
+                `https://oauth2.googleapis.com/token?key=${apiKey}`,
+                params,
+                {
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                }
+              )
+              .then((res) => {
+                const data = res.data as RestApiResponse;
+                localStorage.setItem("accessTokenKey", data.access_token);
+                const newTimeLimit = setSeconds(new Date(), data.expires_in);
+                localStorage.setItem(
+                  "timeLimit",
+                  format(newTimeLimit, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+                );
+                gapi.client.setToken({
+                  access_token: localStorage.getItem("accessTokenKey")!,
+                });
+              })
+              .catch((err) => {
+                // 再ログインを促す または ログアウトする
+                console.log(err);
+              });
+          }
+        }
+
         setLoading(false);
       })
       .catch((e: any) => {
