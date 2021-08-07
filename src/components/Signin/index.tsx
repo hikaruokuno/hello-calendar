@@ -67,8 +67,8 @@ const Signin: FC = () => {
       params.append("client_secret", clientSecret);
       params.append("code", response.code!);
       params.append("grant_type", "authorization_code");
-      // params.append('redirect_uri', 'https://hellocale.com');
-      params.append("redirect_uri", "http://localhost:3000");
+      params.append("redirect_uri", "https://hellocale.com");
+      // params.append("redirect_uri", "http://localhost:3000");
       await axios
         .post(`https://oauth2.googleapis.com/token`, params, {
           headers: {
