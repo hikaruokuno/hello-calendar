@@ -16,6 +16,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { format, setSeconds } from "date-fns";
+import { set } from "services/hello-calendar/CookieServise";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -66,6 +68,7 @@ const Signin: FC = () => {
       params.append("code", response.code!);
       params.append("grant_type", "authorization_code");
       params.append("redirect_uri", "https://hellocale.com");
+      // params.append("redirect_uri", "http://localhost:3000");
       await axios
         .post(`https://oauth2.googleapis.com/token`, params, {
           headers: {
@@ -74,8 +77,15 @@ const Signin: FC = () => {
         })
         .then(async (res) => {
           const data = res.data as RestApiResponse;
-          localStorage.setItem("accessTokenKey", data.access_token);
-          localStorage.setItem("refreshTokenKey", data.refresh_token);
+          set("accessTokenKey", data.access_token);
+          set("refreshTokenKey", data.refresh_token);
+          // localStorage.setItem("accessTokenKey", data.access_token);
+          // localStorage.setItem("refreshTokenKey", data.refresh_token);
+          const timeLimit = setSeconds(new Date(), data.expires_in);
+          localStorage.setItem(
+            "timeLimit",
+            format(timeLimit, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+          );
 
           const credential = firebase.auth.GoogleAuthProvider.credential(
             data.id_token
