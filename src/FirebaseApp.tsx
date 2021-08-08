@@ -5,7 +5,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import Config from "apiGoogleconfig";
 
-import { format, setSeconds } from "date-fns";
+import { addYears, format, setSeconds } from "date-fns";
 import { get, set } from "services/hello-calendar/CookieServise";
 import {
   FirebaseContext,
@@ -86,7 +86,10 @@ const FirebaseApp: FC = ({ children }) => {
               )
               .then((res) => {
                 const data = res.data as RestApiResponse;
-                set("accessTokenKey", data.access_token);
+                set("accessTokenKey", data.access_token, {
+                  path: "/",
+                  expires: addYears(new Date(), 1),
+                });
                 // localStorage.setItem("accessTokenKey", data.access_token);
                 const newTimeLimit = setSeconds(new Date(), data.expires_in);
                 localStorage.setItem(
