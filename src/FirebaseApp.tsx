@@ -68,11 +68,7 @@ const FirebaseApp: FC = ({ children }) => {
             params.append("client_id", clientId);
             params.append("client_secret", clientSecret);
             params.append("grant_type", "refresh_token");
-            params.append(
-              "refresh_token",
-              get("refreshTokenKey")!
-              // localStorage.getItem("refreshTokenKey")!
-            );
+            params.append("refresh_token", get("refreshTokenKey")!);
 
             await axios
               .post(
@@ -90,7 +86,6 @@ const FirebaseApp: FC = ({ children }) => {
                   path: "/",
                   expires: addYears(new Date(), 1),
                 });
-                // localStorage.setItem("accessTokenKey", data.access_token);
                 const newTimeLimit = setSeconds(new Date(), data.expires_in);
                 localStorage.setItem(
                   "timeLimit",
@@ -101,7 +96,6 @@ const FirebaseApp: FC = ({ children }) => {
                 });
               })
               .catch((err) => {
-                // 再ログインを促す または ログアウトする
                 console.log(err);
               });
           }
@@ -129,7 +123,6 @@ const FirebaseApp: FC = ({ children }) => {
   unsubscribe();
 
   return (
-    // <FirebaseContext.Provider value={{ db, auth }}>
     <FirebaseContext.Provider value={{ db, auth, isLoggedIn, loading }}>
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider

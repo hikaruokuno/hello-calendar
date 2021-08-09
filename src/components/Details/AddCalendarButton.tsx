@@ -64,7 +64,6 @@ const AddCalendarButton: FC<{ detail: EventDetail }> = ({ detail }) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       gapi.client.setToken({
         access_token: get("accessTokenKey")!,
-        // access_token: localStorage.getItem("accessTokenKey")!,
       });
 
       await gapi.client.calendar.events
