@@ -448,6 +448,19 @@ export const events = functions
           return null;
         });
 
+        // 料金を取得する
+        const getFee: string | null = await page.evaluate(() => {
+          const selector = document.querySelector<HTMLElement>('.Note5');
+          const text = selector!.innerText;
+
+          if (text.indexOf('￥') != -1) {
+            const startText = text.substring(text.indexOf('￥'));
+            const fee = startText.substring(0, startText.indexOf('\n'));
+            return fee;
+          }
+          return null;
+        });
+
         // 公演の数だけループして、公演の情報を取得する
         const eventDetails: EventDetails[] = await page.evaluate(
           (eventId: string, title: string) => {
@@ -549,6 +562,7 @@ export const events = functions
           title: string;
           performer: string | null;
           mc: string | null;
+          fee: string | null;
           isConfirmEnded: boolean;
           isApplyEnded: boolean;
           applyPeriodStr: string;
@@ -569,6 +583,7 @@ export const events = functions
           title: title,
           performer: getPerformer,
           mc: getMc,
+          fee: getFee,
           isConfirmEnded: false,
           isApplyEnded: false,
           applyPeriodStr: getApplicationPeriod,
@@ -1052,6 +1067,19 @@ export const events = functions
           return null;
         });
 
+        // 料金を取得する
+        const getFee: string | null = await page.evaluate(() => {
+          const selector = document.querySelector<HTMLElement>('.Note5');
+          const text = selector!.innerText;
+
+          if (text.indexOf('￥') != -1) {
+            const startText = text.substring(text.indexOf('￥'));
+            const fee = startText.substring(0, startText.indexOf('\n'));
+            return fee;
+          }
+          return null;
+        });
+
         // 公演の数だけループして、公演の情報を取得する
         const eventDetails: EventDetails[] = await page.evaluate(
           (eventId: string, title: string) => {
@@ -1153,6 +1181,7 @@ export const events = functions
           title: string;
           performer: string | null;
           mc: string | null;
+          fee: string | null;
           isConfirmEnded: boolean;
           isApplyEnded: boolean;
           applyPeriodStr: string;
@@ -1173,6 +1202,7 @@ export const events = functions
           title: title,
           performer: getPerformer,
           mc: getMc,
+          fee: getFee,
           isConfirmEnded: false,
           isApplyEnded: false,
           applyPeriodStr: getApplicationPeriod,

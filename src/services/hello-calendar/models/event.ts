@@ -6,6 +6,7 @@ export type Event = {
   title: string;
   performer: string | null;
   mc: string | null;
+  fee: string | null;
   isConfirmEnded: boolean;
   isApplyEnded: boolean;
   applyPeriodStr: string;
@@ -26,6 +27,7 @@ export const blankEvent: Event = {
   title: "",
   performer: null,
   mc: null,
+  fee: null,
   isConfirmEnded: false,
   isApplyEnded: false,
   applyPeriodStr: "",

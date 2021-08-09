@@ -128,6 +128,15 @@ const EventDetailMain: FC<EventDetailProps> = ({
                 </Typography>
               </>
             )}
+            {event.fee ? (
+              <Typography variant="body2" color="inherit">
+                <strong>料金</strong>
+                <br />
+                {event.fee}
+              </Typography>
+            ) : (
+              ""
+            )}
           </div>
           <EventDetalsList eventDetails={eventDetails} />
         </div>
