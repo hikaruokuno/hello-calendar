@@ -20,7 +20,7 @@ export const events = functions
     timeoutSeconds: 120,
     memory: '2GB',
   })
-  .pubsub.schedule('0,5 10,12,15-20 * * 1-5')
+  .pubsub.schedule('0,5 10,12,15-20 * * *')
   .timeZone('Asia/Tokyo')
   .onRun(async () => {
     const buildTokenMap = (...words: string[]) => {
