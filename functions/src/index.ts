@@ -1248,6 +1248,94 @@ export const events = functions
         });
       }
     }
+    interface EventDetails {
+      docId: string;
+      details: Details;
+    }
+
+    interface Details {
+      id: string;
+      title: string;
+      performanceDay: string;
+      venue: string;
+      openingTime: string;
+      showTime: string;
+      openText: string;
+      showText: string;
+      otherText: string | null;
+      otherDetail: string | null;
+      performer: string;
+      performanceDate: firebase.firestore.Timestamp | null;
+      tokenMap: { [token: string]: boolean } | null;
+      createdAt: firebase.firestore.FieldValue | null;
+      updatedAt: firebase.firestore.FieldValue | null;
+    }
+
+    const eventDetails: EventDetails[] = [];
+    await admin
+      .firestore()
+      .collection('eventDetails')
+      .where('performanceDate', '<=', new Date())
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          const docId = doc.id;
+          const details: Details = {
+            id: doc.data().id,
+            title: doc.data().title,
+            performanceDay: doc.data().performanceDay,
+            venue: doc.data().venue,
+            openingTime: doc.data().openingTime,
+            showTime: doc.data().showTime,
+            openText: doc.data().openText,
+            showText: doc.data().showText,
+            otherText: doc.data().otherText,
+            otherDetail: doc.data().otherDetail,
+            performer: doc.data().performer,
+            performanceDate: doc.data().performanceDate,
+            tokenMap: doc.data().tokenMap,
+            createdAt: doc.data().createdAt,
+            updatedAt: doc.data().updatedAt,
+          };
+          eventDetails.push({ docId, details });
+        });
+      });
+    const detailCollectionName = admin
+      .firestore()
+      .collection('finishedEventDetails');
+    const removeCollectionName = admin.firestore().collection('eventDetails');
+
+    eventDetails.map((detail) => {
+      const docId = detailCollectionName.doc(detail.docId);
+      docId
+        .set(detail.details)
+        .then(function () {
+          console.log(
+            'Document successfully written!',
+            ' eventId: ',
+            detail.docId
+          );
+
+          removeCollectionName
+            .doc(detail.docId)
+            .delete()
+            .then(async () => {
+              console.log('Document successfully deleted!');
+            })
+            .catch((error) => {
+              console.error('Error removing document: ', error);
+            });
+        })
+        .catch(function (error) {
+          console.error(
+            'Error writing document: ',
+            ' eventId: ',
+            detail.docId,
+            error
+          );
+        });
+    });
     await browser.close();
   });
 
@@ -1282,65 +1370,65 @@ export const events = functions
 //       });
 //   });
 
-export const updateText = functions
-  .region('asia-northeast1')
-  .https.onRequest(async (req, res) => {
-    const buildTokenMap = (...words: string[]) => {
-      const tokenMap: { [k: string]: boolean } = {};
+// export const updateText = functions
+//   .region('asia-northeast1')
+//   .https.onRequest(async (req, res) => {
+//     const buildTokenMap = (...words: string[]) => {
+//       const tokenMap: { [k: string]: boolean } = {};
 
-      tokenize(...words).forEach((token) => {
-        tokenMap[token] = true;
-      });
+//       tokenize(...words).forEach((token) => {
+//         tokenMap[token] = true;
+//       });
 
-      return tokenMap;
-    };
-    await admin
-      .firestore()
-      .collection('eventDetails')
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          if (doc.data().id === '2335') {
-            const title = doc.data().title;
-            const venue = doc.data().venue;
-            const performer =
-              doc.data().performer === null ||
-              doc.data().performer === undefined
-                ? ''
-                : doc.data().performer;
-            let other = '';
-            if (doc.data().otherText === 'チーム「花」') {
-              other = 'hana';
-            } else if (doc.data().otherText === 'チーム「鳥」') {
-              other = 'tori';
-            } else if (doc.data().otherText === 'チーム「風」') {
-              other = 'kaze';
-            } else if (doc.data().otherText === 'チーム「月」') {
-              other = 'tsuki';
-            }
+//       return tokenMap;
+//     };
+//     await admin
+//       .firestore()
+//       .collection('eventDetails')
+//       .get()
+//       .then(function (querySnapshot) {
+//         querySnapshot.forEach(function (doc) {
+//           if (doc.data().id === '2335') {
+//             const title = doc.data().title;
+//             const venue = doc.data().venue;
+//             const performer =
+//               doc.data().performer === null ||
+//               doc.data().performer === undefined
+//                 ? ''
+//                 : doc.data().performer;
+//             let other = '';
+//             if (doc.data().otherText === 'チーム「花」') {
+//               other = 'hana';
+//             } else if (doc.data().otherText === 'チーム「鳥」') {
+//               other = 'tori';
+//             } else if (doc.data().otherText === 'チーム「風」') {
+//               other = 'kaze';
+//             } else if (doc.data().otherText === 'チーム「月」') {
+//               other = 'tsuki';
+//             }
 
-            let eventPerformer = '';
-            if (doc.data().id === '1410') {
-              eventPerformer = '田中れいな';
-            } else if (doc.data().id === '1409') {
-              eventPerformer = '清水佐紀';
-            }
+//             let eventPerformer = '';
+//             if (doc.data().id === '1410') {
+//               eventPerformer = '田中れいな';
+//             } else if (doc.data().id === '1409') {
+//               eventPerformer = '清水佐紀';
+//             }
 
-            const tokenMap = buildTokenMap(
-              title,
-              venue,
-              performer,
-              eventPerformer,
-              other
-            );
+//             const tokenMap = buildTokenMap(
+//               title,
+//               venue,
+//               performer,
+//               eventPerformer,
+//               other
+//             );
 
-            doc.ref.update({
-              tokenMap: tokenMap,
-            });
-          }
-        });
-      });
-  });
+//             doc.ref.update({
+//               tokenMap: tokenMap,
+//             });
+//           }
+//         });
+//       });
+//   });
 
 // export const updateText = functions
 //   .region('asia-northeast1')
