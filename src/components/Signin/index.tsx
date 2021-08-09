@@ -86,8 +86,6 @@ const Signin: FC = () => {
             path: "/",
             expires: dateOneYear,
           });
-          // localStorage.setItem("accessTokenKey", data.access_token);
-          // localStorage.setItem("refreshTokenKey", data.refresh_token);
           const timeLimit = setSeconds(new Date(), data.expires_in);
           localStorage.setItem(
             "timeLimit",
@@ -126,7 +124,7 @@ const Signin: FC = () => {
           ) : (
             <>
               <Typography component="h1" variant="h5" className={classes.title}>
-                ログイン（テスト中）
+                ログイン
               </Typography>
               <Typography variant="body1" className={classes.subTitle}>
                 ログインすると、予定をワンタップで追加できるようになります！
