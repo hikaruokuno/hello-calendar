@@ -1,26 +1,20 @@
-import React, { FC, useContext, useCallback } from "react";
+import React, { FC, useCallback, useContext } from "react";
 import { EventsCountContext, EventTypeContext } from "contexts";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
-import Tabs from "components/common/tabs/Tabs";
 import EventList from "components/common/list/EventList";
 import ListCircular from "components/common/atoms/ListCircular";
 import MoreLinkButton from "components/common/atoms/MoreLinkButton";
 import { Event } from "services/hello-calendar/models/event";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import WeekEventList from "components/common/list/WeekEventList";
-import EventDetailList from "components/common/list/EventDetalsList";
-import { Typography } from "@material-ui/core";
-import MoreButton from "components/common/atoms/MoreButton";
 import Footer from "containers/common/Footer";
+import MoreDisplayedButton from "components/common/atoms/MoreDisplayedButton";
 
 type EventProps = {
   weekEvents: EventDetail[];
-  applyEvents: Event[];
-  applyMEvents: Event[];
-  confirmEvents: Event[];
-  confirmMEvents: Event[];
-  performances: EventDetail[];
+  mainEvents: Event[];
+  mainMEvents: Event[];
   loading?: boolean;
 };
 
@@ -40,29 +34,20 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const EventMain: FC<EventProps> = React.memo(
-  ({
-    weekEvents,
-    applyEvents,
-    applyMEvents,
-    confirmEvents,
-    confirmMEvents,
-    performances,
-    loading,
-  }) => {
+  ({ weekEvents, mainEvents, mainMEvents, loading }) => {
     const classes = useStyles();
     const { type } = useContext(EventTypeContext);
-    const { applyCount, setApplyCount } = useContext(EventsCountContext);
-    const { confirmCount, setConfirmCount } = useContext(EventsCountContext);
-    const isEvents = type === "hEvents" || type === "mEvents";
+    const { displayCount, setDisplayCount } = useContext(EventsCountContext);
     const isHello = type === "hEvents";
 
-    const applyMore = useCallback(() => {
-      setApplyCount(applyCount + 5);
-    }, [applyCount, setApplyCount]);
-
-    const confirmMore = useCallback(() => {
-      setConfirmCount(confirmCount + 5);
-    }, [confirmCount, setConfirmCount]);
+    const displayMore = useCallback(() => {
+      const initCount = 5;
+      if (displayCount === initCount) {
+        setDisplayCount(displayCount + 25);
+      } else {
+        setDisplayCount(initCount);
+      }
+    }, [displayCount, setDisplayCount]);
 
     return (
       <>
@@ -72,45 +57,23 @@ const EventMain: FC<EventProps> = React.memo(
           </div>
         ) : (
           <>
+            <>
+              <EventList
+                title="イベント情報"
+                events={isHello ? mainEvents : mainMEvents}
+                arrayCount={displayCount}
+              />
+              <MoreDisplayedButton onClick={displayMore} count={displayCount} />
+            </>
             {weekEvents.length === 0 ? (
               ""
             ) : (
-              <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />
-            )}
-            <Tabs />
-            {isEvents ? (
               <>
-                <EventList
-                  title="申込期間中のイベント"
-                  events={isHello ? applyEvents : applyMEvents}
-                  arrayCount={applyCount}
+                <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />
+                <MoreLinkButton
+                  url="peformances"
+                  text="公演スケジュールを見る"
                 />
-                {(isHello && applyEvents.length <= applyCount) ||
-                (!isHello && applyMEvents.length <= applyCount) ? (
-                  ""
-                ) : (
-                  <MoreButton onClick={applyMore} />
-                )}
-                <EventList
-                  title="当落確認期間中のイベント"
-                  events={isHello ? confirmEvents : confirmMEvents}
-                  arrayCount={confirmCount}
-                />
-                {(isHello && confirmEvents.length <= confirmCount) ||
-                (!isHello && confirmMEvents.length <= confirmCount) ? (
-                  ""
-                ) : (
-                  <MoreButton onClick={confirmMore} />
-                )}
-              </>
-            ) : (
-              <>
-                <br />
-                <Typography color="inherit" className={classes.title}>
-                  <strong>本日以降の公演</strong>
-                </Typography>
-                <EventDetailList eventDetails={performances} />
-                <MoreLinkButton url="peformances" />
               </>
             )}
             <Footer />

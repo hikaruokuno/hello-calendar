@@ -1,9 +1,10 @@
-import { FirebaseContext } from "contexts";
+import { EventsContext, FirebaseContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Event } from "services/hello-calendar/models/event";
 
 const useEvents = (type: string) => {
-  const [mainEvents, setEvents] = useState<Event[]>([]);
+  const { mainEvents, setMainEvents, mainMEvents, setMainMEvents } =
+    useContext(EventsContext);
   const [mainLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -12,8 +13,15 @@ const useEvents = (type: string) => {
   useEffect(() => {
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
+    console.log("main");
+    if (
+      (type === "hEvents" && mainEvents.length !== 0) ||
+      (type === "mEvents" && mainMEvents.length !== 0)
+    ) {
+      return;
+    }
 
-    const query = db.collection(type).orderBy("id", "desc");
+    const query = db.collection(type).orderBy("id", "desc").limit(30);
 
     const load = async () => {
       setLoading(true);
@@ -24,7 +32,11 @@ const useEvents = (type: string) => {
           ...(doc.data() as Event),
           id: doc.id,
         }));
-        setEvents(eventsData);
+        if (type === "hEvents" && eventsData.length !== 0) {
+          setMainEvents(eventsData);
+        } else if (type === "mEvents" && eventsData.length !== 0) {
+          setMainMEvents(eventsData);
+        }
         setError(null);
       } catch (err) {
         setError(err);
@@ -35,9 +47,9 @@ const useEvents = (type: string) => {
     load().catch((err) => {
       console.error(err);
     });
-  }, [type]);
+  }, [type, mainEvents, setMainEvents, mainMEvents, setMainMEvents]);
 
-  return { mainEvents, mainLoading, error };
+  return { mainEvents, mainMEvents, mainLoading, error };
 };
 
 export default useEvents;

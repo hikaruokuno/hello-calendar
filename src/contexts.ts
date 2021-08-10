@@ -32,43 +32,27 @@ export const EventTypeContext = createContext<EventTypeContextValue>({
 type EventsValue = {
   weekEvents: EventDetail[];
   setWeekEvents: (events: EventDetail[]) => void;
-  applyEvents: Event[];
-  setApplyEvents: (events: Event[]) => void;
-  applyMEvents: Event[];
-  setApplyMEvents: (events: Event[]) => void;
-  confirmEvents: Event[];
-  setConfirmEvents: (events: Event[]) => void;
-  confirmMEvents: Event[];
-  setConfirmMEvents: (events: Event[]) => void;
-  performances: EventDetail[];
-  setPerformances: (events: EventDetail[]) => void;
+  mainEvents: Event[];
+  setMainEvents: (events: Event[]) => void;
+  mainMEvents: Event[];
+  setMainMEvents: (events: Event[]) => void;
 };
 
 export const EventsContext = createContext<EventsValue>({
   weekEvents: [],
   setWeekEvents: () => undefined,
-  applyEvents: [],
-  setApplyEvents: () => undefined,
-  applyMEvents: [],
-  setApplyMEvents: () => undefined,
-  confirmEvents: [],
-  setConfirmEvents: () => undefined,
-  confirmMEvents: [],
-  setConfirmMEvents: () => undefined,
-  performances: [],
-  setPerformances: () => undefined,
+  mainEvents: [],
+  setMainEvents: () => undefined,
+  mainMEvents: [],
+  setMainMEvents: () => undefined,
 });
 
 type EventsCountValue = {
-  applyCount: number;
-  setApplyCount: (applyCount: number) => void;
-  confirmCount: number;
-  setConfirmCount: (applyCount: number) => void;
+  displayCount: number;
+  setDisplayCount: (displayCount: number) => void;
 };
 
 export const EventsCountContext = createContext<EventsCountValue>({
-  applyCount: 3,
-  setApplyCount: () => undefined,
-  confirmCount: 3,
-  setConfirmCount: () => undefined,
+  displayCount: 5,
+  setDisplayCount: () => undefined,
 });

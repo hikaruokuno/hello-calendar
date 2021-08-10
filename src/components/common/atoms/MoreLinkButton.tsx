@@ -11,13 +11,13 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const MoreLinkButton: FC<{ url: string }> = ({ url }) => {
+const MoreLinkButton: FC<{ url: string; text: string }> = ({ url, text }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <Button size="medium" variant="outlined" href={url} fullWidth>
-        もっと見る
+        {text}
       </Button>
     </div>
   );

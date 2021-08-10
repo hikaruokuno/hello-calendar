@@ -1618,7 +1618,7 @@ export const rewritesHtmlDetails = functions.https.onRequest(
       title = '公演名・会場・都道府県で検索 | ハロカレ';
       redirectPath = `/_${first}?q=${query.q}`;
     } else if (first === 'peformances') {
-      title = '公演一覧 | ハロカレ';
+      title = '公演スケジュール | ハロカレ';
       redirectPath = `/_${first}`;
     }
     console.log(first, second, third);

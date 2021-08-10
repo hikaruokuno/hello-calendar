@@ -9,6 +9,7 @@ import { tabName } from "constants/constants";
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
+    marginTop: "8px",
   },
 });
 
@@ -32,10 +33,6 @@ const CenteredTabs: FC = () => {
       >
         <Tab label={tabName.hello} onClick={() => setType("hEvents")} />
         <Tab label={tabName.mLine} onClick={() => setType("mEvents")} />
-        <Tab
-          label={tabName.performances}
-          onClick={() => setType("performances")}
-        />
       </Tabs>
     </Paper>
   );

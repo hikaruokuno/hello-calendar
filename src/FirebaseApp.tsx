@@ -27,31 +27,18 @@ type RestApiResponse = {
 const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
   const db = firebase.firestore();
-  // const counterRef = useRef(0);
   const [type, setType] = useState(useContext(EventTypeContext).type);
   const [weekEvents, setWeekEvents] = useState(
     useContext(EventsContext).weekEvents
   );
-  const [applyEvents, setApplyEvents] = useState(
-    useContext(EventsContext).applyEvents
+  const [mainEvents, setMainEvents] = useState(
+    useContext(EventsContext).mainEvents
   );
-  const [applyMEvents, setApplyMEvents] = useState(
-    useContext(EventsContext).applyMEvents
+  const [mainMEvents, setMainMEvents] = useState(
+    useContext(EventsContext).mainMEvents
   );
-  const [confirmEvents, setConfirmEvents] = useState(
-    useContext(EventsContext).confirmEvents
-  );
-  const [performances, setPerformances] = useState(
-    useContext(EventsContext).performances
-  );
-  const [confirmMEvents, setConfirmMEvents] = useState(
-    useContext(EventsContext).confirmMEvents
-  );
-  const [applyCount, setApplyCount] = useState(
-    useContext(EventsCountContext).applyCount
-  );
-  const [confirmCount, setConfirmCount] = useState(
-    useContext(EventsCountContext).confirmCount
+  const [displayCount, setDisplayCount] = useState(
+    useContext(EventsCountContext).displayCount
   );
   const [isLoggedIn, setLogin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -129,20 +116,14 @@ const FirebaseApp: FC = ({ children }) => {
           value={{
             weekEvents,
             setWeekEvents,
-            applyEvents,
-            setApplyEvents,
-            applyMEvents,
-            setApplyMEvents,
-            confirmEvents,
-            setConfirmEvents,
-            confirmMEvents,
-            setConfirmMEvents,
-            performances,
-            setPerformances,
+            mainEvents,
+            setMainEvents,
+            mainMEvents,
+            setMainMEvents,
           }}
         >
           <EventsCountContext.Provider
-            value={{ applyCount, setApplyCount, confirmCount, setConfirmCount }}
+            value={{ displayCount, setDisplayCount }}
           >
             {children}
           </EventsCountContext.Provider>
