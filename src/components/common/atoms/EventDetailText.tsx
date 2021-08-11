@@ -3,7 +3,6 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { ListItemText, ListItemIcon, Typography } from "@material-ui/core";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import AddCalendarButton from "components/Details/AddCalendarButton";
-import TweetButton from "components/Details/TweetButton";
 import { useLocation } from "react-router";
 
 const useStyles = makeStyles(() =>
@@ -20,9 +19,6 @@ const useStyles = makeStyles(() =>
     listItem: {
       paddingTop: "0px",
       paddingBottom: "0px",
-    },
-    tweet: {
-      padding: "5px 0px 0px 5px",
     },
   })
 );
@@ -84,9 +80,6 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
             ) : (
               <ListItemIcon>
                 <AddCalendarButton detail={detail} />
-                <div className={classes.tweet}>
-                  <TweetButton detail={detail} />
-                </div>
               </ListItemIcon>
             )}
           </>

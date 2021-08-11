@@ -4,9 +4,12 @@ import ListCircular from "components/common/atoms/ListCircular";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import EventDetalsList from "components/common/list/EventDetalsList";
 import { Event } from "services/hello-calendar/models/event";
-import { Typography, Link, Theme } from "@material-ui/core";
+import { Typography, Link, Theme, BottomNavigation } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { titleName } from "constants/constants";
+import { TwitterIcon, TwitterShareButton } from "react-share";
+import Footer from "containers/common/Footer";
+import { pushEventTracking } from "components/item-tools";
 
 type EventDetailProps = {
   event: Event;
@@ -33,6 +36,16 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
+    },
+    bottomNav: {
+      position: "fixed",
+      bottom: 0,
+      width: "100%",
+      backgroundColor: "transparent",
+    },
+    tweet: {
+      marginRight: "320px",
+      marginTop: "-87px",
     },
   })
 );
@@ -139,6 +152,19 @@ const EventDetailMain: FC<EventDetailProps> = ({
             )}
           </div>
           <EventDetalsList eventDetails={eventDetails} />
+          <BottomNavigation className={classes.bottomNav}>
+            <TwitterShareButton
+              url={window.location.href}
+              title={`${event.title}`}
+              className={classes.tweet}
+              onClick={() =>
+                pushEventTracking("tweet_click", window.location.href)
+              }
+            >
+              <TwitterIcon size={40} round />
+            </TwitterShareButton>
+          </BottomNavigation>
+          <Footer />
         </div>
       )}
     </>
