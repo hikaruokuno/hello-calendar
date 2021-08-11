@@ -60,7 +60,7 @@ export const getTweetPrefecture = (beforeText: string) => {
 };
 
 export const isAfterThreeDays = (date: Date) =>
-  differenceInCalendarDays(new Date(date), new Date()) <= 1;
+  differenceInCalendarDays(new Date(date), new Date()) <= 3;
 
 export const getDetailText = (detail: EventDetail) => {
   let detailText = "";

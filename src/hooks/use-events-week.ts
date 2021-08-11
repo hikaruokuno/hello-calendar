@@ -2,8 +2,6 @@
 import { FirebaseContext, EventsContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-import { isAfterThreeDays } from "components/item-tools";
-// import { startOfDay } from 'date-fns';
 
 const useEventsWeek = () => {
   // const [weekEvents, setWeekEvents] = useState<EventDetail[]>([]);
@@ -24,8 +22,8 @@ const useEventsWeek = () => {
     const query = db
       .collection("eventDetails")
       .where("performanceDate", ">=", new Date())
-      .orderBy("performanceDate", "asc");
-    // .orderBy('isWeekEnded');
+      .orderBy("performanceDate", "asc")
+      .limit(10);
 
     const load = async () => {
       setLoading(true);
@@ -35,17 +33,17 @@ const useEventsWeek = () => {
 
         let eventsData = [];
         for (let i = 0; i < snap.docs.length; i++) {
+          if (eventsData.length > 5) break;
           const data = snap.docs[i].data() as EventDetail;
 
-          if (isAfterThreeDays(data.performanceDate!.toDate())) {
-            if (
-              (data.openText.includes("開演") &&
-                !data.showText.includes("開演")) ||
-              (!data.openText.includes("開演") &&
-                data.showText.includes("開演"))
-            ) {
-              eventsData.push(data);
-            }
+          if (
+            (data.openText.includes("開演") &&
+              !data.showText.includes("開演")) ||
+            (!data.openText.includes("開演") &&
+              data.showText.includes("開演")) ||
+            (!data.openText.includes("開演") && !data.showText.includes("開演"))
+          ) {
+            eventsData.push(data);
           }
         }
 

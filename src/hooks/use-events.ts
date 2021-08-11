@@ -13,7 +13,6 @@ const useEvents = (type: string) => {
   useEffect(() => {
     const { db } = firebaseRef.current;
     if (!db) throw new Error("Firestore is not initialized");
-    console.log("main");
     if (
       (type === "hEvents" && mainEvents.length !== 0) ||
       (type === "mEvents" && mainMEvents.length !== 0)
