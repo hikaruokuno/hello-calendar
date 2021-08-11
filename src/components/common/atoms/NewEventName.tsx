@@ -29,7 +29,7 @@ const NewEventName: FC<{ event: Event }> = ({ event }) => {
       ? `${event.title.substring(0, 40)}...`
       : event.title;
   const subTitle = event.type === "hello" ? "[ ﾊﾛﾌﾟﾛ ] " : "[ M-line ] ";
-  const secondary = `[${format(
+  const secondary = ` [${format(
     event.createdAt!.toDate(),
     "yyyy-MM-dd HH:mm"
   )}]`;
