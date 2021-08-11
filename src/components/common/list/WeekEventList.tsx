@@ -29,6 +29,7 @@ const WeekEventList: FC<{ title: string; events: EventDetail[] }> = React.memo(
 
     return (
       <div className={classes.root}>
+        <br />
         <Grid container direction="row" alignItems="center">
           <Grid item>
             <LaunchIcon fontSize="small" color="inherit" />

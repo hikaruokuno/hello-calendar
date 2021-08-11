@@ -36,6 +36,8 @@ type EventsValue = {
   setMainEvents: (events: Event[]) => void;
   mainMEvents: Event[];
   setMainMEvents: (events: Event[]) => void;
+  newEvents: Event[];
+  setNewEvents: (events: Event[]) => void;
 };
 
 export const EventsContext = createContext<EventsValue>({
@@ -45,6 +47,8 @@ export const EventsContext = createContext<EventsValue>({
   setMainEvents: () => undefined,
   mainMEvents: [],
   setMainMEvents: () => undefined,
+  newEvents: [],
+  setNewEvents: () => undefined,
 });
 
 type EventsCountValue = {

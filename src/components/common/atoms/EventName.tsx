@@ -3,8 +3,6 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { ListItem, ListItemText, Typography } from "@material-ui/core";
 import { Event } from "services/hello-calendar/models/event";
-import { FiberNew } from "@material-ui/icons";
-import { differenceInCalendarDays } from "date-fns";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,7 +25,6 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
   let subTitle = "";
   let color: "primary" | "secondary" | "textSecondary";
   let secondary = "";
-  let newTitle = false;
 
   const isOpenAppryPeriod =
     event.applyStartDate!.toDate() <= new Date() && !event.isApplyEnded;
@@ -39,12 +36,6 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
     secondary = `申込期限: ${event.applyPeriodStr.substring(
       event.applyPeriodStr.indexOf("～") + 1
     )}`;
-
-    newTitle =
-      differenceInCalendarDays(
-        new Date(),
-        new Date(event.applyStartDate!.toDate())
-      ) <= 2;
   } else if (isOpenConfirmPeriod) {
     subTitle = " [当落確認期間中]";
     color = "primary";
@@ -64,7 +55,6 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
               <Typography component="span" variant="body2" color={color}>
                 <strong>{subTitle}</strong>
               </Typography>
-              {newTitle ? <FiberNew fontSize="small" color="secondary" /> : ""}
             </>
           }
           secondary={secondary}

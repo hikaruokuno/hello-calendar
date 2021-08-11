@@ -3,6 +3,7 @@ import { EventsCountContext, EventTypeContext } from "contexts";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 import EventList from "components/common/list/EventList";
+import NewEventList from "components/common/list/NewEventList";
 import ListCircular from "components/common/atoms/ListCircular";
 import MoreLinkButton from "components/common/atoms/MoreLinkButton";
 import { Event } from "services/hello-calendar/models/event";
@@ -12,6 +13,7 @@ import Footer from "containers/common/Footer";
 import MoreDisplayedButton from "components/common/atoms/MoreDisplayedButton";
 
 type EventProps = {
+  newEvents: Event[];
   weekEvents: EventDetail[];
   mainEvents: Event[];
   mainMEvents: Event[];
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const EventMain: FC<EventProps> = React.memo(
-  ({ weekEvents, mainEvents, mainMEvents, loading }) => {
+  ({ newEvents, weekEvents, mainEvents, mainMEvents, loading }) => {
     const classes = useStyles();
     const { type } = useContext(EventTypeContext);
     const { displayCount, setDisplayCount } = useContext(EventsCountContext);
@@ -57,6 +59,9 @@ const EventMain: FC<EventProps> = React.memo(
           </div>
         ) : (
           <>
+            <>
+              <NewEventList title="新着イベント" events={newEvents} />
+            </>
             <>
               <EventList
                 title="イベント情報"

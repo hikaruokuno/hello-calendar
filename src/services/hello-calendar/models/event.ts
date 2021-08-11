@@ -17,8 +17,8 @@ export type Event = {
   confirmStartDate: Firebase.firestore.Timestamp | null;
   confirmEndDate: Firebase.firestore.Timestamp | null;
   paymentDate: Firebase.firestore.Timestamp | null;
-  createdAt: Firebase.firestore.FieldValue | null;
-  updatedAt: Firebase.firestore.FieldValue | null;
+  createdAt: Firebase.firestore.Timestamp | null;
+  updatedAt: Firebase.firestore.Timestamp | null;
 };
 
 export const blankEvent: Event = {

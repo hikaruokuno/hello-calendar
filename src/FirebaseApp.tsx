@@ -37,6 +37,9 @@ const FirebaseApp: FC = ({ children }) => {
   const [mainMEvents, setMainMEvents] = useState(
     useContext(EventsContext).mainMEvents
   );
+  const [newEvents, setNewEvents] = useState(
+    useContext(EventsContext).newEvents
+  );
   const [displayCount, setDisplayCount] = useState(
     useContext(EventsCountContext).displayCount
   );
@@ -120,6 +123,8 @@ const FirebaseApp: FC = ({ children }) => {
             setMainEvents,
             mainMEvents,
             setMainMEvents,
+            newEvents,
+            setNewEvents,
           }}
         >
           <EventsCountContext.Provider
