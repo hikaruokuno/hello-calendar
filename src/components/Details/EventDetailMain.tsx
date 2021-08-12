@@ -1,10 +1,16 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import ListCircular from "components/common/atoms/ListCircular";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import EventDetalsList from "components/common/list/EventDetalsList";
 import { Event } from "services/hello-calendar/models/event";
-import { Typography, Link, Theme, BottomNavigation } from "@material-ui/core";
+import {
+  Typography,
+  Link,
+  Theme,
+  BottomNavigation,
+  Button,
+} from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import { titleName } from "constants/constants";
 import { TwitterIcon, TwitterShareButton } from "react-share";
@@ -60,6 +66,15 @@ const EventDetailMain: FC<EventDetailProps> = ({
   const applyUrl = `https://www.up-fc.jp/${type}/fan_AllEventTour_List.php`;
   const confirmUrl = `https://www.up-fc.jp/${type}/mypage02.php`;
   const isConfirmStarted = event.confirmStartDate!.toDate() <= new Date();
+  const [textShow, setTextShow] = useState(true);
+  const [buttonShow, setButtonShow] = useState(false);
+
+  useEffect(() => {
+    if (event.performer && event.performer.length > 38) {
+      setTextShow(false);
+      setButtonShow(true);
+    }
+  }, [event.performer, setTextShow, setButtonShow]);
 
   return (
     <>
@@ -85,8 +100,29 @@ const EventDetailMain: FC<EventDetailProps> = ({
             {event.performer ? (
               <Typography variant="body2" color="inherit">
                 <strong>出演</strong>
-                <br />
-                {event.performer}
+                {buttonShow && (
+                  <Button
+                    type="button"
+                    size="small"
+                    color="primary"
+                    onClick={() => setTextShow((prev) => !prev)}
+                  >
+                    {textShow ? "非表示にする" : "表示する"}
+                  </Button>
+                )}
+                {textShow && <br />}
+                {textShow &&
+                  event.performer.split("改行").map((item, index) => {
+                    if (index === 0 && !item) return "";
+                    const key = `P${index}`;
+
+                    return (
+                      <React.Fragment key={key}>
+                        {item}
+                        <br />
+                      </React.Fragment>
+                    );
+                  })}
               </Typography>
             ) : (
               ""

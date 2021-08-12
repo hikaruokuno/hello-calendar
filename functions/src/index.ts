@@ -406,12 +406,18 @@ export const events = functions
           const selector = document.querySelector<HTMLElement>('.Note5');
           const text = selector!.innerText;
 
-          if (text.indexOf('出演：') === -1) {
+          let performString = '';
+          if (text.indexOf('出演：') === -1 && text.indexOf('出演:') === -1) {
             return null;
+          } else if (text.indexOf('出演：') !== -1) {
+            performString = '出演：';
+          } else {
+            performString = '出演:';
           }
-
-          const performText = text.substring(text.indexOf('出演：') + 3);
-          const array = performText.split(/\r\n|\r|\n/);
+          const performText = text.substring(text.indexOf(performString) + 3);
+          const array = performText
+            .replaceAll('\n', '\n改行')
+            .split(/\r\n|\r|\n/);
 
           let performer = '';
           for (let i = 0; i < array.length; i++) {
