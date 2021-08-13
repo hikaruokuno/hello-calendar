@@ -48,10 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       width: "100%",
       backgroundColor: "transparent",
-    },
-    tweet: {
-      marginRight: "320px",
-      marginTop: "-87px",
+      justifyContent: "unset",
     },
   })
 );
@@ -192,7 +189,6 @@ const EventDetailMain: FC<EventDetailProps> = ({
             <TwitterShareButton
               url={window.location.href}
               title={`${event.title}`}
-              className={classes.tweet}
               onClick={() =>
                 pushEventTracking("tweet_click", window.location.href)
               }

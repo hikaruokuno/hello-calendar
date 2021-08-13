@@ -11,6 +11,9 @@ import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import WeekEventList from "components/common/list/WeekEventList";
 import Footer from "containers/common/Footer";
 import MoreDisplayedButton from "components/common/atoms/MoreDisplayedButton";
+import { BottomNavigation } from "@material-ui/core";
+import { TwitterIcon, TwitterShareButton } from "react-share";
+import { pushEventTracking } from "components/item-tools";
 
 type EventProps = {
   newEvents: Event[];
@@ -31,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
+    },
+    bottomNav: {
+      justifyContent: "unset",
     },
   })
 );
@@ -82,6 +88,17 @@ const EventMain: FC<EventProps> = React.memo(
               </>
             )}
             <Footer />
+            <BottomNavigation className={classes.bottomNav}>
+              <TwitterShareButton
+                url={window.location.href}
+                title="ハロカレ | ハロプロのFCイベント情報サイト"
+                onClick={() =>
+                  pushEventTracking("tweet_click", window.location.href)
+                }
+              >
+                <TwitterIcon size={40} round />
+              </TwitterShareButton>
+            </BottomNavigation>
           </>
         )}
       </>
