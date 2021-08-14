@@ -84,13 +84,13 @@ const FirebaseApp: FC = ({ children }) => {
                 gapi.client.setToken({
                   access_token: data.access_token,
                 });
+                setLoading(false);
               })
               .catch((err) => {
                 console.log(err);
               });
           }
         }
-
         setLoading(false);
       })
       .catch((e: any) => {

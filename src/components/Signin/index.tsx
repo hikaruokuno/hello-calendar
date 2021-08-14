@@ -18,6 +18,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { addYears, format, setSeconds } from "date-fns";
 import { set } from "services/hello-calendar/CookieServise";
+import ListCircular from "components/common/atoms/ListCircular";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -38,6 +39,13 @@ const useStyles = makeStyles((theme) =>
     subTitle: {
       marginBottom: theme.spacing(2),
     },
+    circular: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: theme.spacing(8),
+      marginBottom: theme.spacing(8),
+    },
   })
 );
 
@@ -53,7 +61,7 @@ const { clientId, clientSecret } = Config;
 
 const Signin: FC = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useContext(FirebaseContext);
+  const { isLoggedIn, loading } = useContext(FirebaseContext);
   const classes = useStyles();
 
   const implementsLoginRes = (response: any): response is GoogleLoginResponse =>
@@ -111,39 +119,49 @@ const Signin: FC = () => {
 
   return (
     <>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          {isLoggedIn ? (
-            <Typography component="h1" variant="h5" className={classes.title}>
-              ログイン済
-            </Typography>
-          ) : (
-            <>
-              <Typography component="h1" variant="h5" className={classes.title}>
-                ログイン
-              </Typography>
-              <Typography variant="body1" className={classes.subTitle}>
-                ログインすると、予定をワンタップで追加できるようになります！
-              </Typography>
-              <GoogleLogin
-                scope={Config.scope}
-                accessType="offline"
-                responseType="code"
-                clientId={Config.clientId}
-                cookiePolicy="single_host_origin"
-                prompt="consent"
-                buttonText="Googleアカウントでログイン"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
-              />
-            </>
-          )}
+      {loading ? (
+        <div className={classes.circular}>
+          <ListCircular />
         </div>
-      </Container>
+      ) : (
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            {isLoggedIn ? (
+              <Typography component="h1" variant="h5" className={classes.title}>
+                ログイン済
+              </Typography>
+            ) : (
+              <>
+                <Typography
+                  component="h1"
+                  variant="h5"
+                  className={classes.title}
+                >
+                  ログイン
+                </Typography>
+                <Typography variant="body1" className={classes.subTitle}>
+                  ログインすると、予定をワンタップで追加できるようになります！
+                </Typography>
+                <GoogleLogin
+                  scope={Config.scope}
+                  accessType="offline"
+                  responseType="code"
+                  clientId={Config.clientId}
+                  cookiePolicy="single_host_origin"
+                  prompt="consent"
+                  buttonText="Googleアカウントでログイン"
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                />
+              </>
+            )}
+          </div>
+        </Container>
+      )}
     </>
   );
 };
