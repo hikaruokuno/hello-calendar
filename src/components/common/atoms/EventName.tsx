@@ -3,7 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { ListItem, ListItemText, Typography } from "@material-ui/core";
 import { Event } from "services/hello-calendar/models/event";
-import { isToday, isTomorrow } from "date-fns";
+import { isToday } from "date-fns";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -24,7 +24,8 @@ const useStyles = makeStyles(() =>
 const EventName: FC<{ event: Event }> = ({ event }) => {
   const classes = useStyles();
   let subTitle = "";
-  let color: "primary" | "secondary" | "textSecondary";
+  let primaryColor: "primary" | "secondary" | "textSecondary";
+  let secondaryColor: "secondary" | "textSecondary" = "textSecondary";
   let secondary = "";
 
   const isOpenAppryPeriod =
@@ -32,26 +33,24 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
   const isOpenConfirmPeriod =
     event.confirmStartDate!.toDate() <= new Date() && !event.isConfirmEnded;
   if (isOpenAppryPeriod) {
-    if (isToday(event.applyEndDate!.toDate())) {
-      subTitle = " [受付中（本日締切）]";
-    } else {
-      subTitle = " [受付中]";
-    }
-    color = "secondary";
+    subTitle = " [受付中]";
+    primaryColor = "secondary";
     secondary = `申込期限: ${event.applyPeriodStr.substring(
       event.applyPeriodStr.indexOf("～") + 1
     )}`;
-  } else if (isOpenConfirmPeriod) {
-    if (event.paymentDate! && isTomorrow(event.paymentDate.toDate())) {
-      subTitle = " [当落確認期間中（本日支払期日）]";
-    } else {
-      subTitle = " [当落確認期間中]";
+    if (isToday(event.applyEndDate!.toDate())) {
+      secondaryColor = "secondary";
     }
-    color = "primary";
+  } else if (isOpenConfirmPeriod) {
+    subTitle = " [当落確認期間中]";
+    primaryColor = "primary";
     secondary = `支払期限: ${event.paymentDateStr}`;
+    if (event.paymentDate! && isToday(event.paymentDate.toDate())) {
+      secondaryColor = "secondary";
+    }
   } else {
     subTitle = " [受付終了]";
-    color = "textSecondary";
+    primaryColor = "textSecondary";
     if (!event.isConfirmEnded) {
       secondary = `当落確認開始: ${event.confirmPeriodStr.substring(
         0,
@@ -67,12 +66,22 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
           primary={
             <>
               {event.title}
-              <Typography component="span" variant="body2" color={color}>
+              <Typography component="span" variant="body2" color={primaryColor}>
                 <strong>{subTitle}</strong>
               </Typography>
             </>
           }
-          secondary={secondary}
+          secondary={
+            <>
+              <Typography
+                component="span"
+                variant="body2"
+                color={secondaryColor}
+              >
+                {secondary}
+              </Typography>
+            </>
+          }
           classes={{ primary: classes.primary, secondary: classes.secondary }}
         />
       </ListItem>
