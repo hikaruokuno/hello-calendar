@@ -93,109 +93,121 @@ const EventDetailMain: FC<EventDetailProps> = ({
           >
             <strong>{event.title}</strong>
           </Typography>
-          <div className={classes.body}>
-            {event.performer ? (
-              <Typography variant="body2" color="inherit">
-                <strong>出演</strong>
-                {buttonShow && (
-                  <Button
-                    type="button"
-                    size="small"
-                    color="primary"
-                    onClick={() => setTextShow((prev) => !prev)}
-                  >
-                    {textShow ? "非表示にする" : "表示する"}
-                  </Button>
-                )}
-                {textShow && <br />}
-                {textShow &&
-                  event.performer.split("改行").map((item, index) => {
-                    if (index === 0 && !item) return "";
-                    const key = `P${index}`;
+          {eventDetails.length === 0 ? (
+            <Typography variant="subtitle2">
+              すべての公演が終了しました。
+            </Typography>
+          ) : (
+            <>
+              <div className={classes.body}>
+                {event.performer ? (
+                  <Typography variant="body2" color="inherit">
+                    <strong>出演</strong>
+                    {buttonShow && (
+                      <Button
+                        type="button"
+                        size="small"
+                        color="primary"
+                        onClick={() => setTextShow((prev) => !prev)}
+                      >
+                        {textShow ? "非表示にする" : "表示する"}
+                      </Button>
+                    )}
+                    {textShow && <br />}
+                    {textShow &&
+                      event.performer.split("改行").map((item, index) => {
+                        if (index === 0 && !item) return "";
+                        const key = `P${index}`;
 
-                    return (
-                      <React.Fragment key={key}>
-                        {item}
-                        <br />
-                      </React.Fragment>
-                    );
-                  })}
-              </Typography>
-            ) : (
-              ""
-            )}
-            {event.mc ? (
-              <Typography variant="body2" color="inherit">
-                <strong>MC</strong>
-                <br />
-                {event.mc}
-              </Typography>
-            ) : (
-              ""
-            )}
-            {event.isApplyEnded ? (
-              ""
-            ) : (
-              <Typography variant="body2" color="inherit">
-                <strong>申込期間</strong>
-                <Link href={applyUrl} target="_blank" rel="noopener noreferrer">
-                  {" "}
-                  [ファンクラブで申し込む]
-                </Link>
-                <br />
-                {event.applyPeriodStr}
-              </Typography>
-            )}
-            {event.isConfirmEnded ? (
-              ""
-            ) : (
-              <>
-                <Typography variant="body2" color="inherit">
-                  <strong>当落確認期間</strong>
-                  {isConfirmStarted ? (
+                        return (
+                          <React.Fragment key={key}>
+                            {item}
+                            <br />
+                          </React.Fragment>
+                        );
+                      })}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+                {event.mc ? (
+                  <Typography variant="body2" color="inherit">
+                    <strong>MC</strong>
+                    <br />
+                    {event.mc}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+                {event.isApplyEnded ? (
+                  ""
+                ) : (
+                  <Typography variant="body2" color="inherit">
+                    <strong>申込期間</strong>
                     <Link
-                      href={confirmUrl}
+                      href={applyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       {" "}
-                      [ファンクラブで確認する]
+                      [ファンクラブで申し込む]
                     </Link>
-                  ) : (
-                    ""
-                  )}
-                  <br />
-                  {event.confirmPeriodStr}
-                </Typography>
-                <Typography variant="body2" color="inherit">
-                  <strong>入金締切日</strong>
-                  <br />
-                  {event.paymentDateStr}
-                </Typography>
-              </>
-            )}
-            {event.fee ? (
-              <Typography variant="body2" color="inherit">
-                <strong>料金</strong>
-                <br />
-                {event.fee}
-              </Typography>
-            ) : (
-              ""
-            )}
-          </div>
-          <EventDetalsList eventDetails={eventDetails} />
-          <BottomNavigation className={classes.bottomNav}>
-            <TwitterShareButton
-              url={window.location.href}
-              title={`${event.title}`}
-              onClick={() =>
-                pushEventTracking("tweet_click", window.location.href)
-              }
-            >
-              <TwitterIcon size={40} round />
-            </TwitterShareButton>
-          </BottomNavigation>
+                    <br />
+                    {event.applyPeriodStr}
+                  </Typography>
+                )}
+                {event.isConfirmEnded ? (
+                  ""
+                ) : (
+                  <>
+                    <Typography variant="body2" color="inherit">
+                      <strong>当落確認期間</strong>
+                      {isConfirmStarted ? (
+                        <Link
+                          href={confirmUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {" "}
+                          [ファンクラブで確認する]
+                        </Link>
+                      ) : (
+                        ""
+                      )}
+                      <br />
+                      {event.confirmPeriodStr}
+                    </Typography>
+                    <Typography variant="body2" color="inherit">
+                      <strong>入金締切日</strong>
+                      <br />
+                      {event.paymentDateStr}
+                    </Typography>
+                  </>
+                )}
+                {event.fee ? (
+                  <Typography variant="body2" color="inherit">
+                    <strong>料金</strong>
+                    <br />
+                    {event.fee}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+              </div>
+              <EventDetalsList eventDetails={eventDetails} />
+              <BottomNavigation className={classes.bottomNav}>
+                <TwitterShareButton
+                  url={window.location.href}
+                  title={`${event.title}`}
+                  onClick={() =>
+                    pushEventTracking("tweet_click", window.location.href)
+                  }
+                >
+                  <TwitterIcon size={40} round />
+                </TwitterShareButton>
+              </BottomNavigation>
+            </>
+          )}
           <Footer />
         </div>
       )}
