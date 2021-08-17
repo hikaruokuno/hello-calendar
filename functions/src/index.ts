@@ -1406,7 +1406,54 @@ export const events = functions
 //       });
 //   });
 
-// export const updateText = functions
+// export const updateOtherText = functions
+//   .region('asia-northeast1')
+//   .https.onRequest(async (req, res) => {
+//     const otherTextArray = [
+//       'チーム「花」',
+//       'チーム「鳥」',
+//       'チーム「風」',
+//       'チーム「月」',
+//     ];
+//     interface EventDetails {
+//       id: string;
+//       title: string;
+//       performanceDay: string;
+//       venue: string;
+//       openingTime: string;
+//       showTime: string;
+//       openText: string;
+//       showText: string;
+//       otherText: string | null;
+//       otherDetail: string | null;
+//       performer: string;
+//       performanceDate: firebase.firestore.Timestamp | null;
+//       tokenMap: { [token: string]: boolean } | null;
+//       createdAt: firebase.firestore.FieldValue | null;
+//       updatedAt: firebase.firestore.FieldValue | null;
+//     }
+
+//     const snap = await admin
+//       .firestore()
+//       .collection('eventDetails')
+//       .where('id', '==', '2335')
+//       .get();
+//     const eventDetails = snap.docs.map((doc) => ({
+//       ...(doc.data() as EventDetails),
+//       id: doc.id,
+//     }));
+//     eventDetails.map(async (detail, index) => {
+//       const detailRef = admin
+//         .firestore()
+//         .collection('eventDetails')
+//         .doc(`H2335-${index}`);
+//       await detailRef.update({
+//         otherText: otherTextArray[index],
+//       });
+//     });
+//   });
+
+// export const updateTokenMap = functions
 //   .region('asia-northeast1')
 //   .https.onRequest(async (req, res) => {
 //     const buildTokenMap = (...words: string[]) => {
@@ -1421,47 +1468,47 @@ export const events = functions
 //     await admin
 //       .firestore()
 //       .collection('eventDetails')
+//       .where('id', '==', '2335')
 //       .get()
 //       .then(function (querySnapshot) {
 //         querySnapshot.forEach(function (doc) {
-//           if (doc.data().id === '2335') {
-//             const title = doc.data().title;
-//             const venue = doc.data().venue;
-//             const performer =
-//               doc.data().performer === null ||
-//               doc.data().performer === undefined
-//                 ? ''
-//                 : doc.data().performer;
-//             let other = '';
-//             if (doc.data().otherText === 'チーム「花」') {
-//               other = 'hana';
-//             } else if (doc.data().otherText === 'チーム「鳥」') {
-//               other = 'tori';
-//             } else if (doc.data().otherText === 'チーム「風」') {
-//               other = 'kaze';
-//             } else if (doc.data().otherText === 'チーム「月」') {
-//               other = 'tsuki';
-//             }
-
-//             let eventPerformer = '';
-//             if (doc.data().id === '1410') {
-//               eventPerformer = '田中れいな';
-//             } else if (doc.data().id === '1409') {
-//               eventPerformer = '清水佐紀';
-//             }
-
-//             const tokenMap = buildTokenMap(
-//               title,
-//               venue,
-//               performer,
-//               eventPerformer,
-//               other
-//             );
-
-//             doc.ref.update({
-//               tokenMap: tokenMap,
-//             });
+//           // if (doc.data().id === '2335') {
+//           const title = doc.data().title;
+//           const venue = doc.data().venue;
+//           const performer =
+//             doc.data().performer === null || doc.data().performer === undefined
+//               ? ''
+//               : doc.data().performer;
+//           let other = '';
+//           if (doc.data().otherText === 'チーム「花」') {
+//             other = 'hana';
+//           } else if (doc.data().otherText === 'チーム「鳥」') {
+//             other = 'tori';
+//           } else if (doc.data().otherText === 'チーム「風」') {
+//             other = 'kaze';
+//           } else if (doc.data().otherText === 'チーム「月」') {
+//             other = 'tsuki';
 //           }
+
+//           // let eventPerformer = '';
+//           // if (doc.data().id === '1410') {
+//           //   eventPerformer = '田中れいな';
+//           // } else if (doc.data().id === '1409') {
+//           //   eventPerformer = '清水佐紀';
+//           // }
+
+//           const tokenMap = buildTokenMap(
+//             title,
+//             venue,
+//             performer,
+//             // eventPerformer,
+//             other
+//           );
+
+//           doc.ref.update({
+//             tokenMap: tokenMap,
+//           });
+//           // }
 //         });
 //       });
 //   });
