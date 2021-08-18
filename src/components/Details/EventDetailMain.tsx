@@ -198,7 +198,7 @@ const EventDetailMain: FC<EventDetailProps> = ({
               <BottomNavigation className={classes.bottomNav}>
                 <TwitterShareButton
                   url={window.location.href}
-                  title={`${event.title}`}
+                  title={`${event.title} #ハロカレ`}
                   onClick={() =>
                     pushEventTracking("tweet_click", window.location.href)
                   }

@@ -91,7 +91,7 @@ const EventMain: FC<EventProps> = React.memo(
             <BottomNavigation className={classes.bottomNav}>
               <TwitterShareButton
                 url={window.location.href}
-                title="ハロカレ | ハロプロのFCイベント情報サイト"
+                title="ハロカレ | ハロプロのFCイベント情報サイト #ハロカレ"
                 onClick={() =>
                   pushEventTracking("tweet_click", window.location.href)
                 }

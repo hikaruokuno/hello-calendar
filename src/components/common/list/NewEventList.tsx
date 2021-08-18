@@ -42,11 +42,20 @@ const NewEventList: FC<{
         </Typography>
       </Grid>
       <Divider className={classes.divider} />
-      <List component="nav" aria-label="main mailbox folders">
-        {events.map((event) => (
-          <NewEventName event={event} />
-        ))}
-      </List>
+      {events.length === 0 ? (
+        <>
+          <br />
+          <Typography variant="subtitle2">
+            &nbsp;&nbsp;過去3日以内に追加されたイベントはありません。
+          </Typography>
+        </>
+      ) : (
+        <List component="nav" aria-label="main mailbox folders">
+          {events.map((event) => (
+            <NewEventName event={event} />
+          ))}
+        </List>
+      )}
     </div>
   );
 });
