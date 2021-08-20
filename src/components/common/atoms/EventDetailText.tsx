@@ -4,6 +4,7 @@ import { ListItemText, ListItemIcon, Typography } from "@material-ui/core";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import AddCalendarButton from "components/Details/AddCalendarButton";
 import { useLocation } from "react-router";
+import DividerWithText from "./DividerWithText";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -23,7 +24,11 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
+const EventDetailText: FC<{
+  detail: EventDetail;
+  count: number;
+  display: boolean;
+}> = ({ detail, count, display }) => {
   const classes = useStyles();
   const path = useLocation().pathname;
   const isNotDetail =
@@ -41,21 +46,26 @@ const EventDetailText: FC<{ detail: EventDetail }> = ({ detail }) => {
               {detail.performanceDay}
             </>
           ) : (
-            detail.performanceDay
+            display && detail.performanceDay
           )
         }
         secondary={
           <>
-            会場: {detail.venue}
-            <br />
-            {detail.performer ? (
+            {display && (
               <>
-                {detail.performer}
+                会場: {detail.venue}
                 <br />
+                {detail.performer ? (
+                  <>
+                    {detail.performer}
+                    <br />
+                  </>
+                ) : (
+                  ""
+                )}
               </>
-            ) : (
-              ""
             )}
+            <DividerWithText text={`0${count}`} />
             {detail.openText}: {detail.openingTime}
             <br />
             {detail.showText ? (
