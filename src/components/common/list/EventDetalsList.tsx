@@ -22,31 +22,13 @@ const EventDetalsList: FC<{ eventDetails: EventDetail[] }> = ({
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-        {eventDetails.map((detail, index) => {
-          let count = 1;
-          let display = true;
-          const prevDetail = eventDetails[index - 1];
-          if (
-            index !== 0 &&
-            detail.performanceDay === prevDetail.performanceDay &&
-            detail.venue === prevDetail.venue
-          ) {
-            count += 1;
-            display = false;
-          }
-
-          return (
-            <>
-              <ListItem key={detail.id}>
-                <EventDetailText
-                  detail={detail}
-                  count={count}
-                  display={display}
-                />
-              </ListItem>
-            </>
-          );
-        })}
+        {eventDetails.map((detail) => (
+          <>
+            <ListItem key={detail.id} divider>
+              <EventDetailText detail={detail} />
+            </ListItem>
+          </>
+        ))}
       </List>
       <Divider />
     </div>
