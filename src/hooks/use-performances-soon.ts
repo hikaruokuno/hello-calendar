@@ -3,17 +3,17 @@ import { FirebaseContext, EventsContext } from "contexts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 
-const useEventsWeek = () => {
-  // const [weekEvents, setWeekEvents] = useState<EventDetail[]>([]);
-  const { weekEvents, setWeekEvents } = useContext(EventsContext);
-  const [weekLoading, setLoading] = useState(false);
+const usePerformancesSoon = () => {
+  // const [soonPerformances, setSoonPerformances] = useState<EventDetail[]>([]);
+  const { soonPerformances, setSoonPerformances } = useContext(EventsContext);
+  const [soonLoading, setLoading] = useState(false);
 
   const [error, setError] = useState<Error | null>(null);
 
   const firebaseRef = useRef(useContext(FirebaseContext));
 
   useEffect(() => {
-    if (weekEvents.length !== 0) {
+    if (soonPerformances.length !== 0) {
       return;
     }
     const { db } = firebaseRef.current;
@@ -59,7 +59,7 @@ const useEventsWeek = () => {
         );
 
         if (eventsData.length !== 0) {
-          setWeekEvents(eventsData);
+          setSoonPerformances(eventsData);
         }
         setError(null);
       } catch (err) {
@@ -71,9 +71,9 @@ const useEventsWeek = () => {
     load().catch((err) => {
       console.error(err);
     });
-  }, [weekEvents, setWeekEvents]);
+  }, [soonPerformances, setSoonPerformances]);
 
-  return { weekEvents, weekLoading, error };
+  return { soonPerformances, soonLoading, error };
 };
 
-export default useEventsWeek;
+export default usePerformancesSoon;

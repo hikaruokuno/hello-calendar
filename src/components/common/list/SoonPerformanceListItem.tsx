@@ -27,7 +27,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
+const SoonPerformanceListItem: FC<{ event: EventDetail }> = ({ event }) => {
   const classes = useStyles();
   let subTitle = "";
   const performanceDate = event.performanceDate!.toDate();
@@ -74,4 +74,4 @@ const WeekEventListItem: FC<{ event: EventDetail }> = ({ event }) => {
   );
 };
 
-export default WeekEventListItem;
+export default SoonPerformanceListItem;

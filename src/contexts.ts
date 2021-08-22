@@ -30,8 +30,8 @@ export const EventTypeContext = createContext<EventTypeContextValue>({
 });
 
 type EventsValue = {
-  weekEvents: EventDetail[];
-  setWeekEvents: (events: EventDetail[]) => void;
+  soonPerformances: EventDetail[];
+  setSoonPerformances: (events: EventDetail[]) => void;
   mainEvents: Event[];
   setMainEvents: (events: Event[]) => void;
   mainMEvents: Event[];
@@ -41,8 +41,8 @@ type EventsValue = {
 };
 
 export const EventsContext = createContext<EventsValue>({
-  weekEvents: [],
-  setWeekEvents: () => undefined,
+  soonPerformances: [],
+  setSoonPerformances: () => undefined,
   mainEvents: [],
   setMainEvents: () => undefined,
   mainMEvents: [],

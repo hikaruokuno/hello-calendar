@@ -28,8 +28,8 @@ const FirebaseApp: FC = ({ children }) => {
   const auth = firebase.auth();
   const db = firebase.firestore();
   const [type, setType] = useState(useContext(EventTypeContext).type);
-  const [weekEvents, setWeekEvents] = useState(
-    useContext(EventsContext).weekEvents
+  const [soonPerformances, setSoonPerformances] = useState(
+    useContext(EventsContext).soonPerformances
   );
   const [mainEvents, setMainEvents] = useState(
     useContext(EventsContext).mainEvents
@@ -117,8 +117,8 @@ const FirebaseApp: FC = ({ children }) => {
       <EventTypeContext.Provider value={{ type, setType }}>
         <EventsContext.Provider
           value={{
-            weekEvents,
-            setWeekEvents,
+            soonPerformances,
+            setSoonPerformances,
             mainEvents,
             setMainEvents,
             mainMEvents,

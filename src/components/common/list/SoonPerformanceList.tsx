@@ -5,7 +5,7 @@ import Divider from "@material-ui/core/Divider";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
 import { Grid, Typography } from "@material-ui/core";
 import LaunchIcon from "@material-ui/icons/Launch";
-import WeekEventListItem from "./WeekEventListItem";
+import SoonPerformanceListItem from "./SoonPerformanceListItem";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const WeekEventList: FC<{ title: string; events: EventDetail[] }> = React.memo(
-  ({ title, events }) => {
+const SoonPerformanceList: FC<{ title: string; events: EventDetail[] }> =
+  React.memo(({ title, events }) => {
     const classes = useStyles();
 
     return (
@@ -42,13 +42,12 @@ const WeekEventList: FC<{ title: string; events: EventDetail[] }> = React.memo(
         <List component="nav" aria-label="main mailbox folders">
           {events.map((detail) => (
             <>
-              <WeekEventListItem event={detail} />
+              <SoonPerformanceListItem event={detail} />
             </>
           ))}
         </List>
       </div>
     );
-  }
-);
+  });
 
-export default WeekEventList;
+export default SoonPerformanceList;

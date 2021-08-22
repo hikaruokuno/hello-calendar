@@ -8,7 +8,7 @@ import ListCircular from "components/common/atoms/ListCircular";
 import MoreLinkButton from "components/common/atoms/MoreLinkButton";
 import { Event } from "services/hello-calendar/models/event";
 import { EventDetail } from "services/hello-calendar/models/eventDetail";
-import WeekEventList from "components/common/list/WeekEventList";
+import SoonPerformanceList from "components/common/list/SoonPerformanceList";
 import Footer from "containers/common/Footer";
 import MoreDisplayedButton from "components/common/atoms/MoreDisplayedButton";
 import { BottomNavigation } from "@material-ui/core";
@@ -17,7 +17,7 @@ import { pushEventTracking } from "components/item-tools";
 
 type EventProps = {
   newEvents: Event[];
-  weekEvents: EventDetail[];
+  soonPerformances: EventDetail[];
   mainEvents: Event[];
   mainMEvents: Event[];
   loading?: boolean;
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const EventMain: FC<EventProps> = React.memo(
-  ({ newEvents, weekEvents, mainEvents, mainMEvents, loading }) => {
+  ({ newEvents, soonPerformances, mainEvents, mainMEvents, loading }) => {
     const classes = useStyles();
     const { type } = useContext(EventTypeContext);
     const { displayCount, setDisplayCount } = useContext(EventsCountContext);
@@ -76,11 +76,14 @@ const EventMain: FC<EventProps> = React.memo(
               />
               <MoreDisplayedButton onClick={displayMore} count={displayCount} />
             </>
-            {weekEvents.length === 0 ? (
+            {soonPerformances.length === 0 ? (
               ""
             ) : (
               <>
-                <WeekEventList title="もうすぐ始まる公演" events={weekEvents} />
+                <SoonPerformanceList
+                  title="もうすぐ始まる公演"
+                  events={soonPerformances}
+                />
                 <MoreLinkButton
                   url="peformances"
                   text="公演スケジュールを見る"
