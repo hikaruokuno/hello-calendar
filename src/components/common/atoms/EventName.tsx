@@ -56,6 +56,9 @@ const EventName: FC<{ event: Event }> = ({ event }) => {
         0,
         event.confirmPeriodStr.indexOf("～") + 1
       )}`;
+      if (isToday(event.confirmStartDate!.toDate())) {
+        secondaryColor = "secondary";
+      }
     }
   }
 
