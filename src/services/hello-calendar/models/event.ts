@@ -1,4 +1,4 @@
-import Firebase from "firebase/app";
+import firebase from "firebase/app";
 
 export type Event = {
   id: string;
@@ -12,13 +12,13 @@ export type Event = {
   applyPeriodStr: string;
   confirmPeriodStr: string;
   paymentDateStr: string;
-  applyStartDate: Firebase.firestore.Timestamp | null;
-  applyEndDate: Firebase.firestore.Timestamp | null;
-  confirmStartDate: Firebase.firestore.Timestamp | null;
-  confirmEndDate: Firebase.firestore.Timestamp | null;
-  paymentDate: Firebase.firestore.Timestamp | null;
-  createdAt: Firebase.firestore.Timestamp | null;
-  updatedAt: Firebase.firestore.Timestamp | null;
+  applyStartDate: firebase.firestore.Timestamp | null;
+  applyEndDate: firebase.firestore.Timestamp | null;
+  confirmStartDate: firebase.firestore.Timestamp | null;
+  confirmEndDate: firebase.firestore.Timestamp | null;
+  paymentDate: firebase.firestore.Timestamp | null;
+  createdAt: firebase.firestore.Timestamp | null;
+  updatedAt: firebase.firestore.Timestamp | null;
 };
 
 export const blankEvent: Event = {

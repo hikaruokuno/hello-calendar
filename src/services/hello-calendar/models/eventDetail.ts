@@ -1,4 +1,4 @@
-import Firebase from "firebase/app";
+import firebase from "firebase/app";
 
 export type EventDetail = {
   id: string;
@@ -12,9 +12,9 @@ export type EventDetail = {
   otherText: string | null;
   otherDetail: string | null;
   performer: string | null;
-  performanceDate: Firebase.firestore.Timestamp | null;
-  createdAt: Firebase.firestore.Timestamp | null;
-  updatedAt: Firebase.firestore.Timestamp | null;
+  performanceDate: firebase.firestore.Timestamp | null;
+  createdAt: firebase.firestore.Timestamp | null;
+  updatedAt: firebase.firestore.Timestamp | null;
 };
 
 export const blankEventDetail: EventDetail = {
