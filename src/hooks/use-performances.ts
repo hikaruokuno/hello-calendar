@@ -41,7 +41,12 @@ const usePerformances = (
           ...(doc.data() as EventDetail),
           id: doc.id,
         }));
-        setEnd(performancesData.length === 0);
+        if (
+          performancesData.length !== 20 &&
+          performancesData.length !== limit
+        ) {
+          setEnd(true);
+        }
 
         performancesData = performancesData.filter(
           (element, index, self) =>
